@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class DrawCardsGA : GameAction
 {
-    public int Amount {  get; set; }
+    public CharacterView CharacterView { get; set; }
+    public int Amount { get; set; }
 
-    public DrawCardsGA(int amount)
+    public DrawCardsGA(int amount, CharacterView characterView)
     {
         Amount = amount;
+        CharacterView = characterView;
     }
 }

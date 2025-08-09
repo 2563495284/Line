@@ -23,10 +23,9 @@ public class MoneyUI : MonoBehaviour
         stockDisplay.UpdateStock(currentStock);
     }
 
-    public void UpdateValuesText()
+    public void UpdateAllValuesText(float stockPrice)
     {
-        const float stockValue = 100000;
-        valuesDisplay.UpdateValues(moneyDisplay.CurrentMoney + stockDisplay.CurrentStock * stockValue);
+        valuesDisplay.UpdateValues(moneyDisplay.CurrentMoney + stockDisplay.CurrentStock * stockPrice);
     }
 
 }

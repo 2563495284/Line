@@ -2,23 +2,16 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class CardSystem : Singleton<CardSystem>
 {
-    [SerializeField] private HandView handView;
-    [SerializeField] private Transform drawPilePoint;
-    [SerializeField] private Transform discardPilePoint;
-    [SerializeField] private float doTweenScaleDuration = 0.15f;
-    [SerializeField] private float doTweenMoveDuration = 0.15f;
-    [SerializeField] private int enemyDrawCardsAmount = 5;
-
-    private readonly List<Card> drawPile = new();
-    private readonly List<Card> discardPile = new();
-    private readonly List<Card> hand = new();
+    [SerializeField] public PlayerView playerView;
 
     private void OnEnable()
     {
+        ActionSystem.AttachPerformer<ChangeStrategyGA>(ChangeStrategyPerformer);
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
@@ -28,6 +21,7 @@ public class CardSystem : Singleton<CardSystem>
 
     private void OnDisable()
     {
+        ActionSystem.DetachPerformer<ChangeStrategyGA>();
         ActionSystem.DetachPerformer<DrawCardsGA>();
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
@@ -35,56 +29,78 @@ public class CardSystem : Singleton<CardSystem>
         // ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
     }
 
-    public void Setup(List<CardData> deckData)
+    public void Setup(PlayerData playerData)
     {
-        foreach (CardData cardData in deckData)
-        {
-            Card card = new(cardData);
-            drawPile.Add(card);
-        }
+        playerView.Setup(playerData);
     }
 
     #region Performers
+    private IEnumerator ChangeStrategyPerformer(ChangeStrategyGA changeStrategyGA)
+    {
+        CharacterView characterView = changeStrategyGA.CharacterView;
+        characterView.ChangeStrategy(changeStrategyGA.StrategyType);
+        yield return null;
+    }
+
     private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGA)
     {
-        int actualAmount = Mathf.Min(drawCardsGA.Amount, drawPile.Count);
-        int notDrawnAmount = drawCardsGA.Amount - actualAmount;
+        CharacterView characterView = drawCardsGA.CharacterView;
+
+        int handCapacity = characterView.MaxHandSize - characterView.hand.Count;
+        if (handCapacity <= 0)
+        {
+            TipsSystem.Instance.ShowError("手牌已满！");
+            yield break;
+        }
+        bool handFull = drawCardsGA.Amount > handCapacity;
+        int amount = math.min(drawCardsGA.Amount, handCapacity);
+
+
+        int actualAmount = Mathf.Min(amount, characterView.drawPile.Count);
+        int notDrawnAmount = amount - actualAmount;
 
         for (int i = 0; i < actualAmount; i++)
         {
-            yield return DrawCard();
+            yield return characterView.DrawCard();
         }
 
         if (notDrawnAmount > 0)
         {
-            RefillDeck();
+            characterView.RefillDeck();
 
             for (int i = 0; i < notDrawnAmount; i++)
             {
-                yield return DrawCard();
+                yield return characterView.DrawCard();
             }
+        }
+        if (handFull)
+        {
+            TipsSystem.Instance.ShowInfo("手牌已满!");
         }
     }
 
     private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
     {
-        foreach (Card card in hand)
+        CharacterView characterView = discardAllCardsGA.CharacterView;
+        foreach (Card card in characterView.hand)
         {
-            CardView cardView = handView.RemoveCard(card);
-            yield return DiscardCard(cardView);
+            yield return characterView.RemoveCard(card);
+
         }
 
-        hand.Clear();
+        characterView.hand.Clear();
     }
 
     private IEnumerator PlayCardPerformer(PlayCardGA playCardGA)
     {
-        hand.Remove(playCardGA.Card);
-        CardView cardView = handView.RemoveCard(playCardGA.Card);
-        yield return DiscardCard(cardView);
+        CharacterView characterView = playCardGA.CharacterView;
+        characterView.hand.Remove(playCardGA.Card);
+        yield return characterView.RemoveCard(playCardGA.Card);
 
-        DoManualTargetEffect(playCardGA);
-        DoAutoTargetEffect(playCardGA);
+        characterView.DoManualTargetEffect(playCardGA);
+        characterView.DoAutoTargetEffect(playCardGA);
+
+        Debug.Log($"玩家 {characterView.name} 出牌: {playCardGA.Card.Title}");
     }
     #endregion
 
@@ -100,48 +116,5 @@ public class CardSystem : Singleton<CardSystem>
     //     DrawCardsGA drawCardsGA = new(enemyDrawCardsAmount);
     //     ActionSystem.Instance.AddReaction(drawCardsGA);
     // }
-    #endregion
-
-    #region Helpers
-    private IEnumerator DiscardCard(CardView cardView)
-    {
-        discardPile.Add(cardView.Card);
-        cardView.transform.DOScale(Vector3.zero, doTweenScaleDuration);
-        Tween tween = cardView.transform.DOMove(discardPilePoint.position, doTweenMoveDuration);
-        yield return tween.WaitForCompletion();
-        Destroy(cardView.gameObject);
-    }
-
-    private IEnumerator DrawCard()
-    {
-        Card card = drawPile.Draw();
-        CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint.position, drawPilePoint.rotation);
-        hand.Add(card);
-        yield return handView.AddCard(cardView);
-    }
-
-    private void RefillDeck()
-    {
-        drawPile.AddRange(discardPile);
-        discardPile.Clear();
-    }
-
-    private void DoManualTargetEffect(PlayCardGA playCardGA)
-    {
-        if (playCardGA.Card.ManualTargetEffect != null)
-        {
-            PerformEffectGA performEffectGA = new(playCardGA.Card.ManualTargetEffect);
-            ActionSystem.Instance.AddReaction(performEffectGA);
-        }
-    }
-
-    private void DoAutoTargetEffect(PlayCardGA playCardGA)
-    {
-        foreach (AutoTargetEffect effectWrapper in playCardGA.Card.OtherEffects)
-        {
-            PerformEffectGA performEffectGA = new(effectWrapper.Effect);
-            ActionSystem.Instance.AddReaction(performEffectGA);
-        }
-    }
     #endregion
 }

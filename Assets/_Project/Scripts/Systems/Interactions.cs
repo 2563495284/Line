@@ -9,9 +9,7 @@ public class Interactions : Singleton<Interactions>
 
     public bool PlayerCanInteract()
     {
-        if (!ActionSystem.Instance.IsPerforming) return true;
-
-        return false;
+        return true;
     }
 
     public bool PlayerCanHover()

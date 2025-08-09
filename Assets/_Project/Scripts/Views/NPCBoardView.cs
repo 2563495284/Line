@@ -16,6 +16,10 @@ public class NPCBoardView : MonoBehaviour
         Transform slot = slots[NPCViews.Count];
         NPCView npcView = NPCViewCreator.Instance.CreateNPCView(npcData, slot.position, slot.rotation);
         npcView.transform.parent = slot;
+        //初始手牌
+        DrawCardsGA drawCardsGA = new(npcData.initialDrawCount, npcView);
+        ActionSystem.Instance.Perform(drawCardsGA);
+
         NPCViews.Add(npcView);
     }
 

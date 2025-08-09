@@ -39,7 +39,7 @@ public class ValuesDisplay : MonoBehaviour
     {
         if (valuesText != null)
         {
-            valuesText.text = "0";
+            valuesText.text = $"总资产: {0.ToString(valuesFormat)}";
         }
 
         if (changeText != null)
@@ -73,7 +73,7 @@ public class ValuesDisplay : MonoBehaviour
     {
         if (valuesText != null)
         {
-            valuesText.text = currentValues.ToString(valuesFormat);
+            valuesText.text = $"总资产: {currentValues.ToString(valuesFormat)}";
         }
     }
 
@@ -105,7 +105,7 @@ public class ValuesDisplay : MonoBehaviour
 
             if (valuesText != null)
             {
-                valuesText.text = currentValue.ToString(valuesFormat);
+                valuesText.text = $"总资产: {currentValue.ToString(valuesFormat)}";
             }
 
             yield return null;

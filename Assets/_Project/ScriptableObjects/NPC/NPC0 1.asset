@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d29fd05596854ed3b096d45b1c4d4ac, type: 3}
+  m_Name: NPC0 1
+  m_EditorClassIdentifier: 
+  <Deck>k__BackingField:
+  - {fileID: 11400000, guid: 29c2a80a9660f4ae8bb90940ba608e5a, type: 2}
+  - {fileID: 11400000, guid: 29c2a80a9660f4ae8bb90940ba608e5a, type: 2}
+  - {fileID: 11400000, guid: 29c2a80a9660f4ae8bb90940ba608e5a, type: 2}
+  - {fileID: 11400000, guid: 18ef49aa4925a41a78287dc6be3f505d, type: 2}
+  - {fileID: 11400000, guid: 18ef49aa4925a41a78287dc6be3f505d, type: 2}
+  - {fileID: 11400000, guid: d2e1d744d56f145ff81e4c380490dc3a, type: 2}
+  <Image>k__BackingField: {fileID: 21300000, guid: e9c5533276fe3ba4b843f407d7f70b83, type: 3}
+  <maxHandSize>k__BackingField: 3
+  <initialDrawCount>k__BackingField: 3
+  <CharacterType>k__BackingField: 1
+  <StrategyType>k__BackingField: 1
+  <Id>k__BackingField: 0
+  <Name>k__BackingField: 0

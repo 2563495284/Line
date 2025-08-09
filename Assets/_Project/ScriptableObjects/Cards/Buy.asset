@@ -13,15 +13,16 @@ MonoBehaviour:
   m_Name: Buy
   m_EditorClassIdentifier: 
   <Image>k__BackingField: {fileID: 21300000, guid: e9c5533276fe3ba4b843f407d7f70b83, type: 3}
-  <Title>k__BackingField: buy
-  <Description>k__BackingField: buy 10 stock
+  <Title>k__BackingField: "\u4E70\u5165"
+  <Description>k__BackingField: "\u4E70\u5165100\u80A1"
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
       rid: 9019116889392545866
     <Effect>k__BackingField:
-      rid: 9019116889392545867
+      rid: 9019116980302250132
+  <buyStockAmount>k__BackingField: 10
   references:
     version: 2
     RefIds:
@@ -30,7 +31,7 @@ MonoBehaviour:
     - rid: 9019116889392545866
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 9019116889392545867
-      type: {class: AddStockEffect, ns: , asm: Assembly-CSharp}
+    - rid: 9019116980302250132
+      type: {class: BuyStockEffect, ns: , asm: Assembly-CSharp}
       data:
-        stockAmount: 10
+        stockAmount: 100

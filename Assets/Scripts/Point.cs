@@ -34,16 +34,6 @@ public class Point : MonoBehaviour
         UpdatePriceLabelVisibility();
     }
 
-    void Update()
-    {
-        // 确保价格标签始终面向摄像机
-        if (priceLabel != null && Camera.main != null)
-        {
-            priceLabel.transform.LookAt(Camera.main.transform);
-            priceLabel.transform.Rotate(0, 180, 0);
-        }
-    }
-
     public void RefreshPriceLabel(float price, int index, bool defaultVisible)
     {
         originalPrice = price;
@@ -53,7 +43,7 @@ public class Point : MonoBehaviour
         // 更新价格标签文本
         if (priceLabel != null)
         {
-            priceLabel.text = price.ToString("F1");
+            priceLabel.text = price.ToString("F2");
         }
 
         // 更新显示状态

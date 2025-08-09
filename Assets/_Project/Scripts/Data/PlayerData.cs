@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Data/Player")]
-public class PlayerData : ScriptableObject
+public class PlayerData : CharacterData
 {
-    [field: SerializeField] public List<CardData> Deck { get; private set; }
-    [field: SerializeField] public Sprite Image { get; private set; }
+    [field: SerializeField] public float doTweenScaleDuration { get; private set; }
+    [field: SerializeField] public float doTweenMoveDuration { get; private set; }
 }

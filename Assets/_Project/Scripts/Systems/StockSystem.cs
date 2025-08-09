@@ -8,129 +8,112 @@ using UnityEngine;
 /// </summary>
 public class StockSystem : Singleton<StockSystem>
 {
+    private const int MAX_PRICE_HISTORY = 40; // 最大价格历史记录数
+
     [Header("股票设置")]
-    [SerializeField] private LineUI lineUI;
+    [SerializeField] private LineView lineView;
     [SerializeField] private float initialStockPrice = 100f;
     [SerializeField] private float minStockPrice = 1f;
     [SerializeField] private float maxStockPrice = 1000f;
 
-    private float currentStockPrice;
+    [Header("账户")]
+    [SerializeField] public MoneyUI moneyUI;
+    [SerializeField] public StockPriceDisplay stockPriceDisplay;
+    [SerializeField] float initialMoney = 10000;
+
+    private float currentMoney;
+    private int stockCount;
+
+    //
+    private float nextStockPrice;
     private List<float> priceHistory = new List<float>();
     private Coroutine priceRefreshCoroutine;
     [SerializeField] private float priceRefreshInterval = 3f; // 价格刷新间隔（秒）
 
-    public float CurrentStockPrice => currentStockPrice;
+    public float NextStockPrice => nextStockPrice;
     public List<float> PriceHistory => new List<float>(priceHistory);
 
-    public float ViewStockPrice => lineUI.ViewPrice;
+    public float CurrentStockPrice => lineView.ViewPrice;
     protected override void Awake()
     {
         base.Awake();
-        currentStockPrice = initialStockPrice;
-        priceHistory.Add(currentStockPrice);
-        lineUI.SetNewPrice(currentStockPrice);
+    }
+    private void Start()
+    {
+        nextStockPrice = Mathf.Round(initialStockPrice * 100f) / 100f;
+        priceHistory.Add(nextStockPrice);
+        lineView.SetNewPrice(nextStockPrice);
 
         // 启动价格刷新协程
         StartPriceRefreshCoroutine();
-    }
 
+        currentMoney = initialMoney;
+        moneyUI.UpdateMoneyText(currentMoney);
+        moneyUI.UpdateStockText(stockCount);
+        moneyUI.UpdateAllValuesText(stockCount * nextStockPrice);
+        stockPriceDisplay.UpdatePrice(nextStockPrice);
+    }
     private void OnEnable()
     {
-        ActionSystem.AttachPerformer<RaiseStockPriceGA>(RaiseStockPricePerformer);
-        ActionSystem.AttachPerformer<LowerStockPriceGA>(LowerStockPricePerformer);
+        ActionSystem.AttachPerformer<BuyStockGA>(BuyStockPerformer);
+        ActionSystem.AttachPerformer<SellStockGA>(SellStockPerformer);
+        ActionSystem.AttachPerformer<ChangeStockPriceGA>(ChangeStockPricePerformer);
     }
 
     private void OnDisable()
     {
-        ActionSystem.DetachPerformer<RaiseStockPriceGA>();
-        ActionSystem.DetachPerformer<LowerStockPriceGA>();
-        ActionSystem.DetachPerformer<ChangeStockValueGA>();
+        ActionSystem.DetachPerformer<BuyStockGA>();
+        ActionSystem.DetachPerformer<SellStockGA>();
+        ActionSystem.DetachPerformer<ChangeStockPriceGA>();
 
         // 停止价格刷新协程
         StopPriceRefreshCoroutine();
     }
 
     #region Performers
+    private IEnumerator BuyStockPerformer(BuyStockGA action)
+    {
+        currentMoney -= action.Amount * CurrentStockPrice;
+        stockCount += action.Amount;
+        moneyUI.UpdateMoneyText(currentMoney);
+        moneyUI.UpdateStockText(stockCount);
+        moneyUI.UpdateAllValuesText(CurrentStockPrice);
+        yield return null;
+    }
+
+    private IEnumerator SellStockPerformer(SellStockGA action)
+    {
+        currentMoney += action.Amount * CurrentStockPrice;
+        stockCount -= action.Amount;
+        moneyUI.UpdateMoneyText(currentMoney);
+        moneyUI.UpdateStockText(stockCount);
+        moneyUI.UpdateAllValuesText(CurrentStockPrice);
+        yield return null;
+    }
     /// <summary>
     /// 处理股票价格上涨
     /// </summary>
-    private IEnumerator RaiseStockPricePerformer(RaiseStockPriceGA action)
+    private IEnumerator ChangeStockPricePerformer(ChangeStockPriceGA action)
     {
-        float oldPrice = currentStockPrice;
-
+        float oldPrice = nextStockPrice;
+        ECharacterStrategyType characterStrategyType = action.characterView.StrategyType;
+        int index = (int)characterStrategyType;
+        float changeStockPrice = 0;
+        float changeStockPersentPrice = 0;
+        action.ChangePriceDictionary.TryGetValue(characterStrategyType, out changeStockPrice);
+        action.ChangePricePersentDictionary.TryGetValue(characterStrategyType, out changeStockPersentPrice);
         // 计算新的价格
-        float priceIncrease = action.RaisePrice;
-        if (action.RaisePersent > 0)
-        {
-            priceIncrease += currentStockPrice * action.RaisePersent;
-        }
+        float priceIncrease = changeStockPrice;
+        priceIncrease += Mathf.Round(nextStockPrice * changeStockPersentPrice) / 100f;
 
-        currentStockPrice += priceIncrease;
+        nextStockPrice = Mathf.Round((nextStockPrice + priceIncrease) * 100f) / 100f;
 
-        // 限制价格范围
-        currentStockPrice = Mathf.Clamp(currentStockPrice, minStockPrice, maxStockPrice);
+        // 限制价格范围并保留两位小数
+        nextStockPrice = Mathf.Round(Mathf.Clamp(nextStockPrice, minStockPrice, maxStockPrice) * 100f) / 100f;
 
         // 更新价格历史
         UpdatePriceHistory();
-
-        // 通知其他系统
-        NotifyPriceChange(oldPrice, currentStockPrice);
-
-        Debug.Log($"股票价格上涨: {oldPrice:F2} -> {currentStockPrice:F2} (+{priceIncrease:F2})");
-
-        yield return null;
-    }
-
-    /// <summary>
-    /// 处理股票价格下跌
-    /// </summary>
-    private IEnumerator LowerStockPricePerformer(LowerStockPriceGA action)
-    {
-        float oldPrice = currentStockPrice;
-
-        // 计算新的价格
-        float priceDecrease = action.LowerPrice;
-        if (action.LowerPersent > 0)
-        {
-            priceDecrease += currentStockPrice * action.LowerPersent;
-        }
-
-        currentStockPrice -= priceDecrease;
-
-        // 限制价格范围
-        currentStockPrice = Mathf.Clamp(currentStockPrice, minStockPrice, maxStockPrice);
-
-        // 更新价格历史
-        UpdatePriceHistory();
-
-        // 通知其他系统
-        NotifyPriceChange(oldPrice, currentStockPrice);
-
-        Debug.Log($"股票价格下跌: {oldPrice:F2} -> {currentStockPrice:F2} (-{priceDecrease:F2})");
-
-        yield return null;
-    }
-
-    /// <summary>
-    /// 处理股票价格变化（通用）
-    /// </summary>
-    private IEnumerator ChangeStockValuePerformer(ChangeStockValueGA action)
-    {
-        float oldPrice = currentStockPrice;
-        currentStockPrice += action.Value;
-
-        // 限制价格范围
-        currentStockPrice = Mathf.Clamp(currentStockPrice, minStockPrice, maxStockPrice);
-
-        // 更新价格历史
-        UpdatePriceHistory();
-
-        // 通知其他系统
-        NotifyPriceChange(oldPrice, currentStockPrice);
-
-        string changeType = action.Value >= 0 ? "上涨" : "下跌";
-        Debug.Log($"股票价格{changeType}: {oldPrice:F2} -> {currentStockPrice:F2} ({action.Value:F2})");
-
+        Debug.Log($"NPC {action.characterView.name} 投资策略: {characterStrategyType} 价格: {oldPrice:F2} -> {nextStockPrice:F2} ({priceIncrease:F2})");
         yield return null;
     }
     #endregion
@@ -141,10 +124,10 @@ public class StockSystem : Singleton<StockSystem>
     /// </summary>
     private void UpdatePriceHistory()
     {
-        priceHistory.Add(currentStockPrice);
+        priceHistory.Add(nextStockPrice);
 
-        // 限制历史记录数量，避免内存过多
-        if (priceHistory.Count > 1000)
+        // 限制历史记录数量，最多40条记录
+        if (priceHistory.Count > MAX_PRICE_HISTORY)
         {
             priceHistory.RemoveAt(0);
         }
@@ -155,8 +138,8 @@ public class StockSystem : Singleton<StockSystem>
     /// </summary>
     private void NotifyPriceChange(float oldPrice, float newPrice)
     {
-        // 可以在这里添加其他系统的通知
-        // 例如：通知UI系统、通知音效系统等
+        moneyUI.UpdateAllValuesText(stockCount * newPrice);
+        stockPriceDisplay.UpdatePrice(newPrice);
     }
 
     /// <summary>
@@ -197,69 +180,29 @@ public class StockSystem : Singleton<StockSystem>
             yield return new WaitForSeconds(priceRefreshInterval);
 
             // 刷新价格到UI
-            if (lineUI != null)
+            if (lineView != null)
             {
-                lineUI.SetNewPrice(currentStockPrice);
-                Debug.Log($"价格刷新到UI: {currentStockPrice:F2}");
+                float oldPrice = CurrentStockPrice;
+                lineView.SetNewPrice(nextStockPrice);
+                NewsSystem.Instance.BroadcastStockPriceChange(oldPrice, nextStockPrice, "定期刷新");
+                Debug.Log($"价格刷新到UI: {nextStockPrice:F2}");
+
+                // 通知其他系统
+                NotifyPriceChange(oldPrice, nextStockPrice);
             }
         }
     }
 
-    /// <summary>
-    /// 手动设置股票价格（用于测试）
-    /// </summary>
-    public void SetStockPrice(float newPrice)
-    {
-        float oldPrice = currentStockPrice;
-        currentStockPrice = Mathf.Clamp(newPrice, minStockPrice, maxStockPrice);
-
-        UpdatePriceHistory();
-        NotifyPriceChange(oldPrice, currentStockPrice);
-
-        Debug.Log($"手动设置股票价格: {oldPrice:F2} -> {currentStockPrice:F2}");
-    }
-
-    /// <summary>
-    /// 获取价格变化百分比
-    /// </summary>
-    public float GetPriceChangePercent()
-    {
-        if (priceHistory.Count < 2) return 0f;
-
-        float previousPrice = priceHistory[priceHistory.Count - 2];
-        if (previousPrice == 0) return 0f;
-
-        return ((currentStockPrice - previousPrice) / previousPrice) * 100f;
-    }
-
-    /// <summary>
-    /// 重置股票价格
-    /// </summary>
-    public void ResetStockPrice()
-    {
-        float oldPrice = currentStockPrice;
-        currentStockPrice = initialStockPrice;
-
-        priceHistory.Clear();
-        priceHistory.Add(currentStockPrice);
-
-        NotifyPriceChange(oldPrice, currentStockPrice);
-
-        Debug.Log($"重置股票价格: {oldPrice:F2} -> {currentStockPrice:F2}");
-    }
     #endregion
 
     #region Public Methods
-    public bool HasEnoughMoney(int buyStockAmount, float money)
+    public bool HasEnoughMoney(int buyStockAmount)
     {
-        return money >= buyStockAmount * ViewStockPrice;
-    }
-    /// <summary>
-    /// 获取当前股票价格
-    /// </summary>
-    public float GetCurrentStockPrice()
-    {
-        return currentStockPrice;
+        if (buyStockAmount <= 0)
+        {
+            return true;
+        }
+        return currentMoney >= buyStockAmount * CurrentStockPrice;
     }
     #endregion
 }

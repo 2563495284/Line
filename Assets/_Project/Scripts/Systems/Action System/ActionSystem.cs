@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class ActionSystem : Singleton<ActionSystem>
 {
-    public bool IsPerforming { get; private set; } = false;
 
     private static Dictionary<Type, List<Action<GameAction>>> preSubs = new();
     private static Dictionary<Type, Func<GameAction, IEnumerator>> performers = new();
@@ -12,14 +11,24 @@ public class ActionSystem : Singleton<ActionSystem>
 
     private List<GameAction> reactions = null;
 
+    // 动作队列相关
+    private Queue<ActionRequest> actionQueue = new();
+    private bool isProcessingQueue = false;
+
+    private struct ActionRequest
+    {
+        public GameAction action;
+        public Action onFinished;
+    }
+
     public static void AttachPerformer<T>(Func<T, IEnumerator> performer) where T : GameAction
     {
         Type type = typeof(T);
         IEnumerator wrappedPerformer(GameAction action) => performer((T)action);
 
-        if 
+        if
             (performers.ContainsKey(type)) performers[type] = wrappedPerformer;
-        else 
+        else
             performers.Add(type, wrappedPerformer);
     }
 
@@ -52,27 +61,48 @@ public class ActionSystem : Singleton<ActionSystem>
 
         if (subs.ContainsKey(typeof(T)))
         {
-            void wrappedReaction(GameAction action ) => reaction((T)action);
+            void wrappedReaction(GameAction action) => reaction((T)action);
             subs[typeof(T)].Remove(wrappedReaction);
         }
     }
 
     public void Perform(GameAction action, Action OnPerformFinished = null)
     {
-        if (IsPerforming) return;
-
-        IsPerforming = true;
-
-        StartCoroutine(Flow(action, () =>
+        // 将动作加入队列
+        ActionRequest request = new ActionRequest
         {
-            IsPerforming = false;
-            OnPerformFinished?.Invoke();
-        }));
+            action = action,
+            onFinished = OnPerformFinished
+        };
+
+        actionQueue.Enqueue(request);
+
+        // 如果队列未在处理中，开始处理
+        if (!isProcessingQueue)
+        {
+            StartCoroutine(ProcessActionQueue());
+        }
     }
 
     public void AddReaction(GameAction gameAction)
     {
         reactions?.Add(gameAction);
+    }
+
+    /// <summary>
+    /// 处理动作队列，确保动作按顺序执行
+    /// </summary>
+    private IEnumerator ProcessActionQueue()
+    {
+        isProcessingQueue = true;
+
+        while (actionQueue.Count > 0)
+        {
+            ActionRequest request = actionQueue.Dequeue();
+            yield return Flow(request.action, request.onFinished);
+        }
+
+        isProcessingQueue = false;
     }
 
     private IEnumerator Flow(GameAction action, Action OnFlowFinished = null)
@@ -111,7 +141,7 @@ public class ActionSystem : Singleton<ActionSystem>
     private void PerformSubscribers(GameAction action, Dictionary<Type, List<Action<GameAction>>> subs)
     {
         Type type = action.GetType();
-        
+
         if (subs.ContainsKey(type))
         {
             foreach (Action<GameAction> sub in subs[type])

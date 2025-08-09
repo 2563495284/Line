@@ -8,18 +8,18 @@ public class MatchSetupSystem : MonoBehaviour
     [SerializeField] private PlayerData playerData;
     [SerializeField] private PerkData perkData;
     [SerializeField] private List<NPCData> npcDataList;
-    [SerializeField] private int startingHandSize = 5;
 
     private void Start()
     {
 
         NPCSystem.Instance.Setup(npcDataList);
 
-        CardSystem.Instance.Setup(playerData.Deck);
+        CardSystem.Instance.Setup(playerData);
 
         PerkSystem.Instance.AddPerk(new Perk(perkData));
 
-        DrawCardsGA drawCardsGA = new(startingHandSize);
+
+        DrawCardsGA drawCardsGA = new(playerData.initialDrawCount, CardSystem.Instance.playerView);
 
         ActionSystem.Instance.Perform(drawCardsGA);
     }

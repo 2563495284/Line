@@ -39,7 +39,7 @@ public class MoneyDisplay : MonoBehaviour
     {
         if (moneyText != null)
         {
-            moneyText.text = "0";
+            moneyText.text = $"金钱: {0.ToString(moneyFormat)}";
         }
 
         if (changeText != null)
@@ -73,7 +73,7 @@ public class MoneyDisplay : MonoBehaviour
     {
         if (moneyText != null)
         {
-            moneyText.text = currentMoney.ToString(moneyFormat);
+            moneyText.text = $"金钱: {currentMoney.ToString(moneyFormat)}";
         }
     }
 
@@ -105,7 +105,7 @@ public class MoneyDisplay : MonoBehaviour
 
             if (moneyText != null)
             {
-                moneyText.text = currentValue.ToString(moneyFormat);
+                moneyText.text = $"金钱: {currentValue.ToString(moneyFormat)}";
             }
 
             yield return null;

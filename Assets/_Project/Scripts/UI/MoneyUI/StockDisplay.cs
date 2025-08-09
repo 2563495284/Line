@@ -39,7 +39,7 @@ public class StockDisplay : MonoBehaviour
     {
         if (stockText != null)
         {
-            stockText.text = "0";
+            stockText.text = $"股票: {0.ToString(stockFormat)}";
         }
 
         if (changeText != null)
@@ -73,7 +73,7 @@ public class StockDisplay : MonoBehaviour
     {
         if (stockText != null)
         {
-            stockText.text = currentStock.ToString(stockFormat);
+            stockText.text = $"股票: {currentStock.ToString(stockFormat)}";
         }
     }
 
@@ -105,7 +105,7 @@ public class StockDisplay : MonoBehaviour
 
             if (stockText != null)
             {
-                stockText.text = currentValue.ToString(stockFormat);
+                stockText.text = $"股票: {currentValue.ToString(stockFormat)}";
             }
 
             yield return null;

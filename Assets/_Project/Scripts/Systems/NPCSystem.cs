@@ -10,11 +10,10 @@ public class NPCSystem : Singleton<NPCSystem>
 
     [Header("NPC出牌设置")]
     [SerializeField] private NPCBoardView npcBoardView;
-    [SerializeField] private float npcPlayInterval = 0.5f; // NPC出牌间隔（秒）
+    [SerializeField] private float npcPlayInterval = 3f; // NPC出牌间隔（秒）
+    [SerializeField] private Timer npcPlayTimer; // NPC出牌计时器
 
-    private Coroutine npcPlayCoroutine;
     private int currentNPCIndex = 0; // 当前出牌的NPC索引
-
 
     private void OnEnable()
     {
@@ -23,12 +22,8 @@ public class NPCSystem : Singleton<NPCSystem>
 
     private void OnDisable()
     {
-        // 停止NPC出牌协程
-        if (npcPlayCoroutine != null)
-        {
-            StopCoroutine(npcPlayCoroutine);
-            npcPlayCoroutine = null;
-        }
+        // 停止NPC出牌计时器
+        StopNPCAutoPlay();
     }
 
     public void Setup(List<NPCData> npcDataList)
@@ -36,23 +31,37 @@ public class NPCSystem : Singleton<NPCSystem>
         foreach (NPCData npcData in npcDataList)
         {
             npcBoardView.AddNPC(npcData);
+
         }
 
         // 启动NPC自动出牌
         StartNPCAutoPlay();
     }
 
+
     /// <summary>
     /// 启动NPC自动出牌
     /// </summary>
     public void StartNPCAutoPlay()
     {
-        if (npcPlayCoroutine != null)
+        if (npcPlayTimer != null && npcPlayTimer.IsRunning)
         {
-            StopCoroutine(npcPlayCoroutine);
+            return; // 已经在运行中
         }
 
-        npcPlayCoroutine = StartCoroutine(NPCAutoPlayCoroutine());
+        // 如果没有Timer组件，创建一个
+        if (npcPlayTimer == null)
+        {
+            npcPlayTimer = gameObject.AddComponent<Timer>();
+        }
+
+        // 设置Timer参数
+        npcPlayTimer.SetDuration(npcPlayInterval);
+        npcPlayTimer.SetCountdown(true); // 倒计时
+        npcPlayTimer.SetLoop(true); // 循环
+        npcPlayTimer.OnTimerComplete += PlayNextNPCCard;
+
+        npcPlayTimer.StartTimer();
         Debug.Log("NPC自动出牌已启动");
     }
 
@@ -61,77 +70,67 @@ public class NPCSystem : Singleton<NPCSystem>
     /// </summary>
     public void StopNPCAutoPlay()
     {
-        if (npcPlayCoroutine != null)
+        if (npcPlayTimer != null)
         {
-            StopCoroutine(npcPlayCoroutine);
-            npcPlayCoroutine = null;
+            npcPlayTimer.StopTimer();
+            npcPlayTimer.OnTimerComplete -= PlayNextNPCCard;
         }
-
         Debug.Log("NPC自动出牌已停止");
     }
 
     /// <summary>
-    /// NPC自动出牌协程
+    /// 暂停NPC自动出牌
     /// </summary>
-    private IEnumerator NPCAutoPlayCoroutine()
+    public void PauseNPCAutoPlay()
     {
-        while (true)
+        if (npcPlayTimer != null)
         {
-            yield return new WaitForSeconds(npcPlayInterval);
-
-            // 检查是否有NPC可以出牌
-            if (npcBoardView.NPCViews.Count > 0)
-            {
-                PlayNextNPCCard();
-            }
+            npcPlayTimer.PauseTimer();
+            Debug.Log("NPC自动出牌已暂停");
         }
     }
 
     /// <summary>
-    /// 让下一个NPC出牌
+    /// 恢复NPC自动出牌
+    /// </summary>
+    public void ResumeNPCAutoPlay()
+    {
+        if (npcPlayTimer != null && npcBoardView.NPCViews.Count > 0)
+        {
+            npcPlayTimer.ResumeTimer();
+            Debug.Log("NPC自动出牌已恢复");
+        }
+    }
+
+    /// <summary>
+    /// 让下一个NPC出牌（计时器回调方法）
     /// </summary>
     private void PlayNextNPCCard()
     {
-        // 找到有手牌的NPC
-        int attempts = 0;
-        int maxAttempts = npcBoardView.NPCViews.Count;
-
-        while (attempts < maxAttempts)
+        // 检查是否有NPC可以出牌
+        if (npcBoardView.NPCViews.Count == 0)
         {
-            NPCView npc = npcBoardView.NPCViews[currentNPCIndex];
+            return;
+        }
 
-            if (npc != null && npc.Hand.Count > 0)
+        // 找到有手牌的NPC
+        npcBoardView.NPCViews.ForEach(npc =>
+        {
+            Debug.Log($"NPC {npc.name} 手牌数量: {npc.hand.Count}");
+
+            if (npc.hand.Count > 0)
             {
-                // 随机选择一张手牌并出牌
-                int randomIndex = UnityEngine.Random.Range(0, npc.Hand.Count);
-                Card cardToPlay = npc.Hand[randomIndex];
-
-                bool success = npc.PlayCard(cardToPlay);
-
-                if (success)
-                {
-                    Debug.Log($"NPC {npc.name} 出牌: {cardToPlay.Title}");
-                }
-                else
-                {
-                    Debug.LogWarning($"NPC {npc.name} 出牌失败: {cardToPlay.Title}");
-                }
-
-                // 移动到下一个NPC
-                currentNPCIndex = (currentNPCIndex + 1) % npcBoardView.NPCViews.Count;
-                break;
+                int randomIndex = UnityEngine.Random.Range(0, npc.hand.Count);
+                Card cardToPlay = npc.hand[randomIndex];
+                PlayCardGA playCardGA = new(cardToPlay, npc);
+                ActionSystem.Instance.Perform(playCardGA);
             }
             else
             {
-                // 当前NPC没有手牌，移动到下一个
-                currentNPCIndex = (currentNPCIndex + 1) % npcBoardView.NPCViews.Count;
-                attempts++;
+                Debug.Log($"NPC {npc.name} 补牌");
+                DrawCardsGA drawCardsGA = new(npc.MaxHandSize, npc);
+                ActionSystem.Instance.Perform(drawCardsGA);
             }
-        }
-
-        if (attempts >= maxAttempts)
-        {
-            Debug.LogWarning("所有NPC都没有手牌可出");
-        }
+        });
     }
 }

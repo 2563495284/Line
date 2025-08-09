@@ -7,8 +7,11 @@ public class PlayCardGA : GameAction
 {
     public Card Card { get; set; }
 
-    public PlayCardGA(Card card)
+    public CharacterView CharacterView { get; set; }
+
+    public PlayCardGA(Card card, CharacterView characterView)
     {
         Card = card;
+        CharacterView = characterView;
     }
 }

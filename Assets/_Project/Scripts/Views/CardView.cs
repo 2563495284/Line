@@ -95,14 +95,23 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private bool CanPlayCard()
     {
-        return Physics.Raycast(transform.position, Vector3.forward, out _, mouseUpRaycastDistance, dropAreaLayer);
+        if (!Physics.Raycast(transform.position, Vector3.forward, out _, mouseUpRaycastDistance, dropAreaLayer))
+        {
+            return false;
+        }
+        if (!StockSystem.Instance.HasEnoughMoney(Card.BuyStockAmount))
+        {
+            TipsSystem.Instance.ShowError("资金不足！");
+            return false;
+        }
+        return true;
     }
 
     private void PlayCardOrResetPosition()
     {
         if (CanPlayCard())
         {
-            PlayCardGA playCardGA = new(Card);
+            PlayCardGA playCardGA = new(Card, CardSystem.Instance.playerView);
             ActionSystem.Instance.Perform(playCardGA);
         }
         else

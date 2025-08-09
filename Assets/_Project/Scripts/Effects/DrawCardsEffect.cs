@@ -9,7 +9,7 @@ public class DrawCardsEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        DrawCardsGA drawCardsGA = new(drawAmount);
+        DrawCardsGA drawCardsGA = new(drawAmount, characterView);
         return drawCardsGA;
     }
 }

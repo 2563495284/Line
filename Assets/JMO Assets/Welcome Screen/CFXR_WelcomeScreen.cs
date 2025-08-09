@@ -9,6 +9,9 @@ namespace CartoonFX
     {
         static CFXR_WelcomeScreen()
         {
+            // 禁用WelcomeScreen以避免空引用异常
+            return;
+
             EditorApplication.delayCall += () =>
             {
                 if (SessionState.GetBool("CFXR_WelcomeScreen_Shown", false))
@@ -42,18 +45,36 @@ namespace CartoonFX
 
             // UXML
             var uxmlDocument = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetDatabase.GUIDToAssetPath("bfd03f272fe010b4ba558a3bc456ffeb"));
-            root.Add(uxmlDocument.Instantiate());
+            if (uxmlDocument != null)
+            {
+                root.Add(uxmlDocument.Instantiate());
+            }
+
             // USS
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath("f8b971f10a610844f968f582415df874"));
-            root.styleSheets.Add(styleSheet);
+            if (styleSheet != null)
+            {
+                root.styleSheets.Add(styleSheet);
+            }
 
             // Background image
-            root.style.backgroundImage = new StyleBackground(AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("fed1b64fd853f994c8d504720a0a6d44")));
-            root.style.unityBackgroundScaleMode = ScaleMode.ScaleAndCrop;
+            var backgroundTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("fed1b64fd853f994c8d504720a0a6d44"));
+            if (backgroundTexture != null)
+            {
+                root.style.backgroundImage = new StyleBackground(backgroundTexture);
+                root.style.unityBackgroundScaleMode = ScaleMode.ScaleAndCrop;
+            }
 
             // Logo image
             var titleImage = root.Q<Image>("img_title");
-            titleImage.image = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a665b2e53088caa4c89dd09f9c889f62"));
+            if (titleImage != null)
+            {
+                var logoTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a665b2e53088caa4c89dd09f9c889f62"));
+                if (logoTexture != null)
+                {
+                    titleImage.image = logoTexture;
+                }
+            }
 
             // Buttons
             root.Q<Label>("btn_cfxr1").AddManipulator(new Clickable(evt => { Application.OpenURL("https://assetstore.unity.com/packages/slug/4010"); }));
