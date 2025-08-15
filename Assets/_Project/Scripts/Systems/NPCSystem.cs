@@ -36,6 +36,17 @@ public class NPCSystem : Singleton<NPCSystem>
 
         // 启动NPC自动出牌
         StartNPCAutoPlay();
+
+        StartCoroutine(DelayedFirstPlay());
+    }
+
+    /// <summary>
+    /// 延迟执行首次NPC出牌（可选方法）
+    /// </summary>
+    private IEnumerator DelayedFirstPlay()
+    {
+        yield return new WaitForSeconds(1f); // 等待1秒确保初始化完成
+        PlayNextNPCCard();
     }
 
 
@@ -60,7 +71,6 @@ public class NPCSystem : Singleton<NPCSystem>
         npcPlayTimer.SetCountdown(true); // 倒计时
         npcPlayTimer.SetLoop(true); // 循环
         npcPlayTimer.OnTimerComplete += PlayNextNPCCard;
-
         npcPlayTimer.StartTimer();
         Debug.Log("NPC自动出牌已启动");
     }
@@ -116,7 +126,7 @@ public class NPCSystem : Singleton<NPCSystem>
         // 找到有手牌的NPC
         npcBoardView.NPCViews.ForEach(npc =>
         {
-            Debug.Log($"NPC {npc.name} 手牌数量: {npc.hand.Count}");
+            Debug.Log($"NPC {npc.name} 策略: {npc.StrategyType} 手牌数量: {npc.hand.Count}");
 
             if (npc.hand.Count > 0)
             {
@@ -132,5 +142,6 @@ public class NPCSystem : Singleton<NPCSystem>
                 ActionSystem.Instance.Perform(drawCardsGA);
             }
         });
+
     }
 }

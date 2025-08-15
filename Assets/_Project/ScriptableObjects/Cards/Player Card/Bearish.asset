@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
+  m_Name: Bearish
+  m_EditorClassIdentifier: 
+  <Image>k__BackingField: {fileID: 0}
+  <Title>k__BackingField: "\u770B\u8DCC"
+  <Description>k__BackingField: "\u4E94\u4E2A\u4EA4\u6613\u65E5\u540E\uFF0C\u77F3\u6CB9\u4EF7\u683C\u5982\u679C\u4E0B\u8DCC\u83B7\u5F97100\u80A1\uFF0C\u5982\u679C\u4E0A\u6DA8\u5219\u626310000\u91D1\u5E01"
+  <ManualTargetEffect>k__BackingField:
+    rid: -2
+  <OtherEffects>k__BackingField:
+  - <TargetMode>k__BackingField:
+      rid: 9019117161397092431
+    <Effect>k__BackingField:
+      rid: 9019117161397092432
+  <tradeStockAmount>k__BackingField: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 9019117161397092431
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 9019117161397092432
+      type: {class: PredictEffect, ns: , asm: Assembly-CSharp}
+      data:
+        predictionType: 1
+        rewardMoneyAmount: 0
+        rewardStockAmount: 100
+        penaltyMoneyAmount: 10000
+        penaltyStockAmount: 0
+        delayRounds: 5

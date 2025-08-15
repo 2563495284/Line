@@ -47,7 +47,7 @@ public class CardSystem : Singleton<CardSystem>
         CharacterView characterView = drawCardsGA.CharacterView;
 
         int handCapacity = characterView.MaxHandSize - characterView.hand.Count;
-        if (handCapacity <= 0)
+        if (handCapacity <= 0 && characterView.CharacterType == ECharacterType.Player)
         {
             TipsSystem.Instance.ShowError("手牌已满！");
             yield break;
@@ -73,7 +73,7 @@ public class CardSystem : Singleton<CardSystem>
                 yield return characterView.DrawCard();
             }
         }
-        if (handFull)
+        if (handFull && characterView.CharacterType == ECharacterType.Player)
         {
             TipsSystem.Instance.ShowInfo("手牌已满!");
         }

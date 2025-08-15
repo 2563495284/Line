@@ -19,6 +19,8 @@ public class NewsUI : MonoBehaviour
     [SerializeField] private Color tradeColor = new Color(1f, 0.8f, 0.2f, 0.9f);
     [SerializeField] private Color positiveColor = new Color(0.2f, 0.8f, 0.2f, 0.9f);
     [SerializeField] private Color negativeColor = new Color(1f, 0.2f, 0.2f, 0.9f);
+    [SerializeField] private Color predictionColor = new Color(0.2f, 0.8f, 0.2f, 0.9f);
+
 
     private RectTransform rectTransform;
     private Vector3 targetPosition;
@@ -158,6 +160,9 @@ public class NewsUI : MonoBehaviour
             case NewsType.Negative:
                 return negativeColor;
             case NewsType.Info:
+                return infoColor;
+            case NewsType.Prediction:
+                return predictionColor;
             default:
                 return infoColor;
         }

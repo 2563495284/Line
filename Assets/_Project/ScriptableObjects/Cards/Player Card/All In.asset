@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
+  m_Name: All In
+  m_EditorClassIdentifier: 
+  <Image>k__BackingField: {fileID: 0}
+  <Title>k__BackingField: "\u68AD\u54C8"
+  <Description>k__BackingField: "\u8D44\u4EA7\u5168\u90E8\u4E70\u5165\u80A1\u7968\uFF01"
+  <ManualTargetEffect>k__BackingField:
+    rid: -2
+  <OtherEffects>k__BackingField:
+  - <TargetMode>k__BackingField:
+      rid: 9019117161397093331
+    <Effect>k__BackingField:
+      rid: 9019117161397093332
+  <tradeStockAmount>k__BackingField: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 9019117161397093331
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 9019117161397093332
+      type: {class: TradeAllStockEffect, ns: , asm: Assembly-CSharp}
+      data:
+        tradeAllStockType: 0

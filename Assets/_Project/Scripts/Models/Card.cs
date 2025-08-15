@@ -13,7 +13,6 @@ public class Card
     public List<AutoTargetEffect> OtherEffects { get; private set; }
     public Sprite Image { get; private set; }
 
-    public int BuyStockAmount { get; private set; }
 
     /// <summary>
     /// Initialization of a new generic Card based on its ScriptableObject
@@ -27,6 +26,5 @@ public class Card
         Description = data.Description;
         ManualTargetEffect = data.ManualTargetEffect;
         OtherEffects = data.OtherEffects;
-        BuyStockAmount = data.buyStockAmount;
     }
 }

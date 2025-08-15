@@ -640,7 +640,15 @@ MonoBehaviour:
   newsSpacing: 10
   fadeInDuration: 0.5
   fadeOutDuration: 0.3
-  displayDuration: 8
+  displayDuration:
+    keys: 000000000100000002000000030000000400000005000000
+    values:
+    - 2
+    - 2
+    - 2
+    - 2
+    - 2
+    - 6
   slideDistance: 100
 --- !u!1 &341310950
 GameObject:
@@ -1383,6 +1391,70 @@ Transform:
   m_Children: []
   m_Father: {fileID: 661840853}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1414621013
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1414621014}
+  - component: {fileID: 1414621015}
+  m_Layer: 0
+  m_Name: Market System
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1414621014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1414621013}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 425250502071212212}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1414621015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1414621013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e624b07dcc6494ade93bce6d5316cbd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullCards:
+  - {fileID: 11400000, guid: b7188ffe47ccd4389be64b4a59b361c3, type: 2}
+  bearCards:
+  - {fileID: 11400000, guid: b95a3d17c3ed44fc7b84dc50c8d3c8f4, type: 2}
+  neutralCards: []
+  eventInterval: 10
+  baseEventChance: 0.7
+  bullProbabilityCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  bearProbabilityCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  neutralBaseWeight: 0.3
 --- !u!1 &1500822027
 GameObject:
   m_ObjectHideFlags: 0
@@ -1773,6 +1845,7 @@ Transform:
   - {fileID: 1500822028}
   - {fileID: 1624108369}
   - {fileID: 329612678}
+  - {fileID: 1414621014}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &504558001831721708

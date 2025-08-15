@@ -19,6 +19,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 18ef49aa4925a41a78287dc6be3f505d, type: 2}
   - {fileID: 11400000, guid: 18ef49aa4925a41a78287dc6be3f505d, type: 2}
   - {fileID: 11400000, guid: d2e1d744d56f145ff81e4c380490dc3a, type: 2}
+  - {fileID: 11400000, guid: b2c17102745a34dc78ec42f9d6095f4e, type: 2}
+  - {fileID: 11400000, guid: af54bd0c663324767aa86411bd99f8b7, type: 2}
+  - {fileID: 11400000, guid: 77aa8e8dcdba149f98bad08642f72559, type: 2}
   <Image>k__BackingField: {fileID: 21300000, guid: e9c5533276fe3ba4b843f407d7f70b83, type: 3}
   <maxHandSize>k__BackingField: 3
   <initialDrawCount>k__BackingField: 3

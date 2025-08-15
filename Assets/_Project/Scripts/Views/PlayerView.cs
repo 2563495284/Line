@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Splines;
+using UnityEngine.UI;
 
 public class PlayerView : CharacterView
 {
@@ -14,6 +15,11 @@ public class PlayerView : CharacterView
 
     [SerializeField] private Transform drawPilePoint;
     [SerializeField] private Transform discardPilePoint;
+
+    public Button drawCardButton;
+
+    public float drawCardCostMoney = -100f;
+    public int drawCardCount = 2;
 
     private float doTweenScaleDuration;
     private float doTweenMoveDuration;
@@ -25,6 +31,14 @@ public class PlayerView : CharacterView
     private void Awake()
     {
         updateCardPositionTime = new WaitForSeconds(doTweenUpdatePositionDuration);
+    }
+    private void Start()
+    {
+        drawCardButton.onClick.AddListener(OnDrawCardButtonClick);
+    }
+    void OnDestroy()
+    {
+        drawCardButton.onClick.RemoveListener(OnDrawCardButtonClick);
     }
     public void Setup(PlayerData playerData)
     {
@@ -38,7 +52,7 @@ public class PlayerView : CharacterView
     {
         if (cards.Count == 0) yield break;
 
-        float cardSpacing = 1f / MaxHandSize;
+        float cardSpacing = 1f / CurrentHandSize;
         float firstCardPosition = 0.5f - (cards.Count - 1) * cardSpacing * 0.5f;
         Spline spline = splineContainer.Spline;
 
@@ -85,4 +99,18 @@ public class PlayerView : CharacterView
 
         yield return StartCoroutine(UpdateCardPositions(doTweenUpdatePositionDuration));
     }
+
+    public void OnDrawCardButtonClick()
+    {
+        if (StockSystem.Instance.CurrentMoney < drawCardCostMoney)
+        {
+            TipsSystem.Instance.ShowError("资金不足！");
+            return;
+        }
+        DrawCardsGA drawCardsGA = new(drawCardCount, this);
+        ActionSystem.Instance.Perform(drawCardsGA);
+        ChangeMoneyGA changeMoneyGA = new(drawCardCostMoney);
+        ActionSystem.Instance.Perform(changeMoneyGA);
+    }
+
 }

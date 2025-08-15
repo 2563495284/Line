@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
+  m_Name: Going long
+  m_EditorClassIdentifier: 
+  <Image>k__BackingField: {fileID: 0}
+  <Title>k__BackingField: "\u505A\u591A"
+  <Description>k__BackingField: "\u4E70\u516550\u80A1\u3001\u62AC\u9AD8\u4EF7\u683C1%"
+  <ManualTargetEffect>k__BackingField:
+    rid: -2
+  <OtherEffects>k__BackingField:
+  - <TargetMode>k__BackingField:
+      rid: 9019117163896373327
+    <Effect>k__BackingField:
+      rid: 9019117163896373328
+  - <TargetMode>k__BackingField:
+      rid: 9019117163896373329
+    <Effect>k__BackingField:
+      rid: 9019117163896373331
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 9019117163896373327
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 9019117163896373328
+      type: {class: ChangeStockPriceEffect, ns: , asm: Assembly-CSharp}
+      data:
+        changePriceDictionary:
+          keys: 00000000
+          values:
+          - 0
+        changePersentDictionary:
+          keys: 00000000
+          values:
+          - 1
+    - rid: 9019117163896373329
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 9019117163896373331
+      type: {class: TradeStockEffect, ns: , asm: Assembly-CSharp}
+      data:
+        tradeStockAmount: 50

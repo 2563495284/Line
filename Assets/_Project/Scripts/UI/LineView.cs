@@ -18,6 +18,7 @@ public class LineView : MonoBehaviour
     public float pointSize = 0.2f;
     public Color pointColor = Color.red;
     public bool showPriceLabels = true;
+    public int maxPoints = 40; // 最大显示点数
 
     [Header("背景设置")]
     public Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.8f);
@@ -141,7 +142,7 @@ public class LineView : MonoBehaviour
         Point point = pointObj.GetComponent<Point>();
 
         // 判断是否默认显示价格标签：每五个显示一个，其他悬停显示
-        bool isDefaultVisible = (index % 5 == 0) || (index == prices.Count - 1);
+        bool isDefaultVisible = (index == prices.Count - 1) || index == 0;
         point.RefreshPriceLabel(price, index, isDefaultVisible);
 
         point.name = $"Point_{index}";
@@ -182,12 +183,26 @@ public class LineView : MonoBehaviour
             return;
         }
 
+        // 如果数据超过最大点数，只保留最新的maxPoints个点
+        if (validPrices.Count > maxPoints)
+        {
+            int startIndex = validPrices.Count - maxPoints;
+            validPrices = validPrices.GetRange(startIndex, maxPoints);
+        }
+
         prices = validPrices;
         UpdateChart();
     }
     public void SetNewPrice(float newPrice)
     {
         prices.Add(newPrice);
+
+        // 如果超过最大点数，移除最早的点
+        if (prices.Count > maxPoints)
+        {
+            prices.RemoveAt(0);
+        }
+
         UpdateChart();
     }
 

@@ -99,11 +99,6 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             return false;
         }
-        if (!StockSystem.Instance.HasEnoughMoney(Card.BuyStockAmount))
-        {
-            TipsSystem.Instance.ShowError("资金不足！");
-            return false;
-        }
         return true;
     }
 

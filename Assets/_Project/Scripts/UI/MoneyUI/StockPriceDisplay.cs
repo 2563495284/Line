@@ -33,7 +33,7 @@ public class StockPriceDisplay : MonoBehaviour
     {
         if (priceText != null)
         {
-            priceText.text = $"股票价格: {0.00.ToString(priceFormat)}";
+            priceText.text = $"石油价格: {0.00.ToString(priceFormat)}";
         }
 
         if (changeText != null)
@@ -60,7 +60,7 @@ public class StockPriceDisplay : MonoBehaviour
     {
         if (priceText != null)
         {
-            priceText.text = $"股票价格: {currentPrice.ToString(priceFormat)}";
+            priceText.text = $"石油价格: {currentPrice.ToString(priceFormat)}";
         }
     }
 

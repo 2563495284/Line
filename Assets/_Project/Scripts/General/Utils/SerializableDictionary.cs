@@ -21,6 +21,12 @@ public class SerializableDictionary<TKey, TValue>
         return dictionary;
     }
 
+    public TValue this[TKey key]
+    {
+        get => ToDictionary()[key];
+        set => Add(key, value);
+    }
+
     public void FromDictionary(Dictionary<TKey, TValue> dictionary)
     {
         keys.Clear();

@@ -20,6 +20,8 @@ public abstract class CharacterView : MonoBehaviour
     public int MaxHandSize = 3;
     public int InitialDrawCount = 3;
 
+    protected int CurrentHandSize { get { return hand.Count; } }
+
     public ECharacterType CharacterType { get; private set; }
 
     public ECharacterStrategyType StrategyType { get; private set; }
@@ -93,5 +95,6 @@ public abstract class CharacterView : MonoBehaviour
     public virtual void ChangeStrategy(ECharacterStrategyType strategyType)
     {
         StrategyType = strategyType;
+        Debug.Log($"NPC {name} 策略改变为 {strategyType}");
     }
 }

@@ -17,7 +17,8 @@ public class NewsSystem : Singleton<NewsSystem>
     [Header("动画设置")]
     [SerializeField] private float fadeInDuration = 0.5f;
     [SerializeField] private float fadeOutDuration = 0.3f;
-    [SerializeField] private float displayDuration = 8f; // 新闻显示时长
+    [SerializeField]
+    private SerializableDictionary<NewsType, float> displayDuration;
     [SerializeField] private float slideDistance = 100f; // 滑入距离
 
     private List<NewsUI> activeNews = new List<NewsUI>();
@@ -47,7 +48,7 @@ public class NewsSystem : Singleton<NewsSystem>
     /// <param name="duration">显示时长</param>
     public void BroadcastNews(string title, string content, NewsType newsType = NewsType.Info, float duration = -1)
     {
-        if (duration < 0) duration = displayDuration;
+        if (duration < 0) duration = displayDuration[newsType];
 
         // 检查是否需要移除旧新闻
         if (activeNews.Count >= maxNewsOnScreen)
@@ -69,6 +70,27 @@ public class NewsSystem : Singleton<NewsSystem>
         newsUI.ShowNews(title, content, newsType, duration, fadeInDuration, fadeOutDuration, slideDistance);
 
         Debug.Log($"新闻播报: {title} - {content} (当前新闻数量: {activeNews.Count})");
+    }
+    /// <summary>
+    /// 播报市场事件新闻
+    /// </summary>
+    /// <param name="eventType">事件类型</param>
+    /// <param name="eventTitle">事件标题（可选，为空时使用默认标题）</param>
+    /// <param name="customMessage">自定义消息（可选，为空时使用随机消息）</param>
+    /// <param name="priceImpact">价格影响（可选）</param>
+    public void BroadcastMarketEvent(EEventCardType eventType)
+    {
+        // 确定新闻标题
+        string title = "新闻";
+
+        // 获取消息内容
+        string content = OilMarketMessages.GetRandomMessage(eventType);
+
+
+        // 播报新闻
+        BroadcastNews(title, content, NewsType.MarketEvent, displayDuration[NewsType.MarketEvent]);
+
+        Debug.Log($"市场事件播报: {eventType} - {title}");
     }
 
     /// <summary>
@@ -98,12 +120,12 @@ public class NewsSystem : Singleton<NewsSystem>
     /// <param name="reason">变化原因</param>
     public void BroadcastStockPriceChange(float oldPrice, float newPrice, string reason = "")
     {
-        string title = "股票价格变化";
         string changeType = newPrice > oldPrice ? "上涨" : "下跌";
+        string title = $"石油价格{changeType}";
         float change = Mathf.Abs(newPrice - oldPrice);
         float changePercent = (change / oldPrice) * 100f;
 
-        string content = $"价格{changeType}: {oldPrice:F2} → {newPrice:F2} ({changePercent:F1}%)";
+        string content = $"{oldPrice:F2} → {newPrice:F2} ({changePercent:F1}%)";
 
         // if (!string.IsNullOrEmpty(reason))
         // {
@@ -127,6 +149,17 @@ public class NewsSystem : Singleton<NewsSystem>
         string content = $"{playerName} {action}了 {amount} 股股票\n价格: {price:F2}";
 
         BroadcastNews(title, content, NewsType.Trade);
+    }
+    /// <summary>
+    /// 播报预测新闻
+    /// </summary>
+    /// <param name="playerName">玩家名称</param>
+    /// <param name="action">交易动作</param>
+    /// <param name="amount">数量</param>
+    /// <param name="price">价格</param>
+    public void BroadcastPrediction(string title, string content)
+    {
+        BroadcastNews(title, content, NewsType.Prediction);
     }
 
     /// <summary>
@@ -262,5 +295,7 @@ public enum NewsType
     CardPlay,   // 出牌
     Trade,      // 交易
     Positive,   // 正面
-    Negative    // 负面
+    Negative,    // 负面
+    MarketEvent,// 市场事件
+    Prediction, // 预测
 }

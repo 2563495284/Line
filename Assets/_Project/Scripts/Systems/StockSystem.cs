@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -12,9 +14,9 @@ public class StockSystem : Singleton<StockSystem>
 
     [Header("股票设置")]
     [SerializeField] private LineView lineView;
-    [SerializeField] private float initialStockPrice = 100f;
-    [SerializeField] private float minStockPrice = 1f;
-    [SerializeField] private float maxStockPrice = 1000f;
+    [SerializeField] public float initialStockPrice = 100f;
+    [SerializeField] public float minStockPrice = 1f;
+    [SerializeField] public float maxStockPrice = 1000f;
 
     [Header("账户")]
     [SerializeField] public MoneyUI moneyUI;
@@ -22,6 +24,7 @@ public class StockSystem : Singleton<StockSystem>
     [SerializeField] float initialMoney = 10000;
 
     private float currentMoney;
+    public float CurrentMoney => currentMoney;
     private int stockCount;
 
     //
@@ -50,46 +53,53 @@ public class StockSystem : Singleton<StockSystem>
         currentMoney = initialMoney;
         moneyUI.UpdateMoneyText(currentMoney);
         moneyUI.UpdateStockText(stockCount);
-        moneyUI.UpdateAllValuesText(stockCount * nextStockPrice);
+        moneyUI.UpdateAllValuesText(nextStockPrice);
         stockPriceDisplay.UpdatePrice(nextStockPrice);
     }
     private void OnEnable()
     {
-        ActionSystem.AttachPerformer<BuyStockGA>(BuyStockPerformer);
-        ActionSystem.AttachPerformer<SellStockGA>(SellStockPerformer);
+        ActionSystem.AttachPerformer<TradeStockGA>(TradeStockPerformer);
         ActionSystem.AttachPerformer<ChangeStockPriceGA>(ChangeStockPricePerformer);
+        ActionSystem.AttachPerformer<ChangeMoneyGA>(ChangeMoneyPerformer);
+        ActionSystem.AttachPerformer<ChangeStockGA>(ChangeStockPerformer);
+        ActionSystem.AttachPerformer<TradeAllStockGA>(TradeAllStockPerformer);
     }
 
     private void OnDisable()
     {
-        ActionSystem.DetachPerformer<BuyStockGA>();
-        ActionSystem.DetachPerformer<SellStockGA>();
+        ActionSystem.DetachPerformer<TradeStockGA>();
         ActionSystem.DetachPerformer<ChangeStockPriceGA>();
-
+        ActionSystem.DetachPerformer<ChangeMoneyGA>();
+        ActionSystem.DetachPerformer<ChangeStockGA>();
+        ActionSystem.DetachPerformer<TradeAllStockGA>();
         // 停止价格刷新协程
         StopPriceRefreshCoroutine();
     }
 
     #region Performers
-    private IEnumerator BuyStockPerformer(BuyStockGA action)
+    private IEnumerator TradeStockPerformer(TradeStockGA action)
     {
-        currentMoney -= action.Amount * CurrentStockPrice;
-        stockCount += action.Amount;
-        moneyUI.UpdateMoneyText(currentMoney);
-        moneyUI.UpdateStockText(stockCount);
-        moneyUI.UpdateAllValuesText(CurrentStockPrice);
+        if (action.Amount > 0)
+        {
+            int buyStockCount = math.min(action.Amount, (int)math.floor(currentMoney / CurrentStockPrice));
+            ChangeStockGA changeStockGA = new ChangeStockGA(buyStockCount);
+            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-buyStockCount * CurrentStockPrice);
+            ActionSystem.Instance.Perform(changeStockGA);
+            ActionSystem.Instance.Perform(changeMoneyGA);
+        }
+        else
+        {
+            int sellStockCount = -math.min(-action.Amount, stockCount);
+            ChangeStockGA changeStockGA = new ChangeStockGA(sellStockCount);
+            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-sellStockCount * CurrentStockPrice);
+            ActionSystem.Instance.Perform(changeStockGA);
+            ActionSystem.Instance.Perform(changeMoneyGA);
+        }
+
+
         yield return null;
     }
 
-    private IEnumerator SellStockPerformer(SellStockGA action)
-    {
-        currentMoney += action.Amount * CurrentStockPrice;
-        stockCount -= action.Amount;
-        moneyUI.UpdateMoneyText(currentMoney);
-        moneyUI.UpdateStockText(stockCount);
-        moneyUI.UpdateAllValuesText(CurrentStockPrice);
-        yield return null;
-    }
     /// <summary>
     /// 处理股票价格上涨
     /// </summary>
@@ -106,6 +116,16 @@ public class StockSystem : Singleton<StockSystem>
         float priceIncrease = changeStockPrice;
         priceIncrease += Mathf.Round(nextStockPrice * changeStockPersentPrice) / 100f;
 
+        // 应用杠杆倍数
+        if (BuffSystem.Instance != null && BuffSystem.Instance.HasLeverageBuff)
+        {
+            float originalIncrease = priceIncrease;
+            priceIncrease = BuffSystem.Instance.ApplyLeverageToStockChange(priceIncrease);
+
+            Debug.Log($"杠杆效果: 原始变化 {originalIncrease:F2} -> 杠杆后 {priceIncrease:F2} " +
+                     $"(倍数: {BuffSystem.Instance.CurrentLeverageMultiplier:F1}x)");
+        }
+
         nextStockPrice = Mathf.Round((nextStockPrice + priceIncrease) * 100f) / 100f;
 
         // 限制价格范围并保留两位小数
@@ -114,6 +134,60 @@ public class StockSystem : Singleton<StockSystem>
         // 更新价格历史
         UpdatePriceHistory();
         Debug.Log($"NPC {action.characterView.name} 投资策略: {characterStrategyType} 价格: {oldPrice:F2} -> {nextStockPrice:F2} ({priceIncrease:F2})");
+        yield return null;
+    }
+
+    /// <summary>
+    /// 处理金币增减
+    /// </summary>
+    private IEnumerator ChangeMoneyPerformer(ChangeMoneyGA action)
+    {
+        currentMoney += action.Amount;
+        moneyUI.UpdateMoneyText(currentMoney);
+        moneyUI.UpdateAllValuesText(CurrentStockPrice);
+
+        Debug.Log($"金币变化: {(action.Amount > 0 ? "+" : "")}{action.Amount:F2} | 当前金币: {currentMoney:F2}");
+        yield return null;
+    }
+
+    private IEnumerator ChangeStockPerformer(ChangeStockGA action)
+    {
+        stockCount = math.max(0, stockCount + action.Amount);
+        moneyUI.UpdateStockText(stockCount);
+        moneyUI.UpdateAllValuesText(CurrentStockPrice);
+        Debug.Log($"股票变化: {(action.Amount > 0 ? "+" : "")}{action.Amount:F2} | 当前股票: {stockCount}");
+        yield return null;
+    }
+    /// <summary>
+    /// 梭哈/跑路
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    private IEnumerator TradeAllStockPerformer(TradeAllStockGA action)
+    {
+        switch (action.TradeAllStockType)
+        {
+            case ETradeAllStockType.Buy:
+                int couldBuyStockCount = (int)math.floor(currentMoney / CurrentStockPrice);
+                if (couldBuyStockCount > 0)
+                {
+                    ChangeStockGA changeStockGA = new ChangeStockGA(couldBuyStockCount);
+                    ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-couldBuyStockCount * CurrentStockPrice);
+                    ActionSystem.Instance.Perform(changeStockGA);
+                    ActionSystem.Instance.Perform(changeMoneyGA);
+                }
+                break;
+            case ETradeAllStockType.Sell:
+                int couldSellStockCount = stockCount;
+                if (couldSellStockCount > 0)
+                {
+                    ChangeStockGA changeStockGA = new ChangeStockGA(-couldSellStockCount);
+                    ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(couldSellStockCount * CurrentStockPrice);
+                    ActionSystem.Instance.Perform(changeStockGA);
+                    ActionSystem.Instance.Perform(changeMoneyGA);
+                }
+                break;
+        }
         yield return null;
     }
     #endregion
@@ -138,7 +212,7 @@ public class StockSystem : Singleton<StockSystem>
     /// </summary>
     private void NotifyPriceChange(float oldPrice, float newPrice)
     {
-        moneyUI.UpdateAllValuesText(stockCount * newPrice);
+        moneyUI.UpdateAllValuesText(newPrice);
         stockPriceDisplay.UpdatePrice(newPrice);
     }
 
@@ -188,7 +262,13 @@ public class StockSystem : Singleton<StockSystem>
                 Debug.Log($"价格刷新到UI: {nextStockPrice:F2}");
 
                 // 通知其他系统
+                PredictionSystem.Instance.UpdatePredictionCountdown();
+
+                // 更新Buff回合计数
+                BuffSystem.Instance.UpdateBuffRounds();
+
                 NotifyPriceChange(oldPrice, nextStockPrice);
+
             }
         }
     }
@@ -196,13 +276,6 @@ public class StockSystem : Singleton<StockSystem>
     #endregion
 
     #region Public Methods
-    public bool HasEnoughMoney(int buyStockAmount)
-    {
-        if (buyStockAmount <= 0)
-        {
-            return true;
-        }
-        return currentMoney >= buyStockAmount * CurrentStockPrice;
-    }
+
     #endregion
 }
