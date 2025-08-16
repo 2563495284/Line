@@ -16,7 +16,7 @@ public class PlayerView : CharacterView
     [SerializeField] private Transform drawPilePoint;
     [SerializeField] private Transform discardPilePoint;
 
-    public Button drawCardButton;
+    public Button nextRoundButton;
 
     public float drawCardCostMoney = -100f;
     public int drawCardCount = 2;
@@ -34,11 +34,11 @@ public class PlayerView : CharacterView
     }
     private void Start()
     {
-        drawCardButton.onClick.AddListener(OnDrawCardButtonClick);
+        nextRoundButton.onClick.AddListener(OnNextRoundButtonClick);
     }
     void OnDestroy()
     {
-        drawCardButton.onClick.RemoveListener(OnDrawCardButtonClick);
+        nextRoundButton.onClick.RemoveListener(OnNextRoundButtonClick);
     }
     public void Setup(PlayerData playerData)
     {
@@ -98,6 +98,10 @@ public class PlayerView : CharacterView
         cards.Add(cardView);
 
         yield return StartCoroutine(UpdateCardPositions(doTweenUpdatePositionDuration));
+    }
+    public void OnNextRoundButtonClick()
+    {
+        PlayerAttributeSystem.Instance.StartNewTurn();
     }
 
     public void OnDrawCardButtonClick()
