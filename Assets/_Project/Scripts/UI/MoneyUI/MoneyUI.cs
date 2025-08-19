@@ -8,7 +8,7 @@ public class MoneyUI : MonoBehaviour
 {
     [SerializeField] private MoneyDisplay moneyDisplay;
 
-    [SerializeField] private StockDisplay stockDisplay;
+    [SerializeField] private List<StockDisplay> stockDisplays;
 
     [SerializeField] private ValuesDisplay valuesDisplay;
 
@@ -18,14 +18,19 @@ public class MoneyUI : MonoBehaviour
         moneyDisplay.UpdateMoney(currentMoney);
     }
 
-    public void UpdateStockText(int currentStock)
+    public void UpdateStockText(EStockType stockType, int currentStock)
     {
-        stockDisplay.UpdateStock(currentStock);
+        foreach (var stockDisplay in stockDisplays)
+        {
+            if (stockDisplay.stockType == stockType)
+            {
+                stockDisplay.UpdateStock(currentStock);
+            }
+        }
     }
 
-    public void UpdateAllValuesText(float stockPrice)
+    public void UpdateAllValuesText()
     {
-        valuesDisplay.UpdateValues(moneyDisplay.CurrentMoney + stockDisplay.CurrentStock * stockPrice);
+        valuesDisplay.UpdateValues();
     }
-
 }

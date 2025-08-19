@@ -52,13 +52,12 @@ public class StockSystem : Singleton<StockSystem>
 
         currentMoney = initialMoney;
         moneyUI.UpdateMoneyText(currentMoney);
-        moneyUI.UpdateStockText(stockCount);
-        moneyUI.UpdateAllValuesText(nextStockPrice);
+        // moneyUI.UpdateStockText(stockCount);
+        // moneyUI.UpdateAllValuesText(nextStockPrice);
         stockPriceDisplay.UpdatePrice(nextStockPrice);
     }
     private void OnEnable()
     {
-        ActionSystem.AttachPerformer<TradeStockGA>(TradeStockPerformer);
         ActionSystem.AttachPerformer<ChangeMoneyGA>(ChangeMoneyPerformer);
         ActionSystem.AttachPerformer<ChangeStockGA>(ChangeStockPerformer);
         ActionSystem.AttachPerformer<TradeAllStockGA>(TradeAllStockPerformer);
@@ -66,7 +65,6 @@ public class StockSystem : Singleton<StockSystem>
 
     private void OnDisable()
     {
-        ActionSystem.DetachPerformer<TradeStockGA>();
         ActionSystem.DetachPerformer<ChangeMoneyGA>();
         ActionSystem.DetachPerformer<ChangeStockGA>();
         ActionSystem.DetachPerformer<TradeAllStockGA>();
@@ -75,28 +73,28 @@ public class StockSystem : Singleton<StockSystem>
     }
 
     #region Performers
-    private IEnumerator TradeStockPerformer(TradeStockGA action)
-    {
-        if (action.TradeAmount > 0)
-        {
-            int buyStockCount = math.min(action.TradeAmount, (int)math.floor(currentMoney / CurrentStockPrice));
-            ChangeStockGA changeStockGA = new ChangeStockGA(buyStockCount, action.StockType);
-            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-buyStockCount * CurrentStockPrice);
-            ActionSystem.Instance.Perform(changeStockGA);
-            ActionSystem.Instance.Perform(changeMoneyGA);
-        }
-        else
-        {
-            int sellStockCount = -math.min(-action.TradeAmount, stockCount);
-            ChangeStockGA changeStockGA = new ChangeStockGA(sellStockCount, action.StockType);
-            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-sellStockCount * CurrentStockPrice);
-            ActionSystem.Instance.Perform(changeStockGA);
-            ActionSystem.Instance.Perform(changeMoneyGA);
-        }
+    // private IEnumerator TradeStockPerformer(TradeStockGA action)
+    // {
+    //     if (action.TradeAmount > 0)
+    //     {
+    //         int buyStockCount = math.min(action.TradeAmount, (int)math.floor(currentMoney / CurrentStockPrice));
+    //         ChangeStockGA changeStockGA = new ChangeStockGA(buyStockCount, action.StockType);
+    //         ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-buyStockCount * CurrentStockPrice);
+    //         ActionSystem.Instance.Perform(changeStockGA);
+    //         ActionSystem.Instance.Perform(changeMoneyGA);
+    //     }
+    //     else
+    //     {
+    //         int sellStockCount = -math.min(-action.TradeAmount, stockCount);
+    //         ChangeStockGA changeStockGA = new ChangeStockGA(sellStockCount, action.StockType);
+    //         ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-sellStockCount * CurrentStockPrice);
+    //         ActionSystem.Instance.Perform(changeStockGA);
+    //         ActionSystem.Instance.Perform(changeMoneyGA);
+    //     }
 
 
-        yield return null;
-    }
+    //     yield return null;
+    // }
 
     /// <summary>
     /// 处理金币增减
@@ -105,7 +103,7 @@ public class StockSystem : Singleton<StockSystem>
     {
         currentMoney += action.Amount;
         moneyUI.UpdateMoneyText(currentMoney);
-        moneyUI.UpdateAllValuesText(CurrentStockPrice);
+        // moneyUI.UpdateAllValuesText(CurrentStockPrice);
 
         Debug.Log($"金币变化: {(action.Amount > 0 ? "+" : "")}{action.Amount:F2} | 当前金币: {currentMoney:F2}");
         yield return null;
@@ -114,8 +112,8 @@ public class StockSystem : Singleton<StockSystem>
     private IEnumerator ChangeStockPerformer(ChangeStockGA action)
     {
         stockCount = math.max(0, stockCount + action.Amount);
-        moneyUI.UpdateStockText(stockCount);
-        moneyUI.UpdateAllValuesText(CurrentStockPrice);
+        // moneyUI.UpdateStockText(stockCount);
+        // moneyUI.UpdateAllValuesText(CurrentStockPrice);
         Debug.Log($"股票变化: {(action.Amount > 0 ? "+" : "")}{action.Amount:F2} | 当前股票: {stockCount}");
         yield return null;
     }
@@ -173,7 +171,7 @@ public class StockSystem : Singleton<StockSystem>
     /// </summary>
     private void NotifyPriceChange(float oldPrice, float newPrice)
     {
-        moneyUI.UpdateAllValuesText(newPrice);
+        // moneyUI.UpdateAllValuesText(newPrice);
         stockPriceDisplay.UpdatePrice(newPrice);
     }
 

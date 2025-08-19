@@ -49,10 +49,10 @@ public class ValuesDisplay : MonoBehaviour
         }
     }
 
-    public void UpdateValues(float newValues)
+    public void UpdateValues()
     {
         previousValues = currentValues;
-        currentValues = newValues;
+        currentValues = MultiStockSystem.Instance.GetTotalAssetValue();
 
         if (enableCountAnimation)
         {

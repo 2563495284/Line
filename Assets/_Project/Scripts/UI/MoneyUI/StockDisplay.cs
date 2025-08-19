@@ -5,6 +5,7 @@ using TMPro;
 
 public class StockDisplay : MonoBehaviour
 {
+    public EStockType stockType;
     [Header("UI组件")]
     public TextMeshProUGUI stockText;
     public TextMeshProUGUI changeText;
@@ -39,7 +40,7 @@ public class StockDisplay : MonoBehaviour
     {
         if (stockText != null)
         {
-            stockText.text = $"石油: {0.ToString(stockFormat)}";
+            stockText.text = $"{stockType.ToString()}: {0.ToString(stockFormat)}";
         }
 
         if (changeText != null)

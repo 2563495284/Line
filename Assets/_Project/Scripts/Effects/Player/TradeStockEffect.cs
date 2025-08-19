@@ -14,7 +14,6 @@ public class TradeStockEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        TradeStockGA tradeGA = new TradeStockGA(tradeAmount, targetLineView.StockType);
-        return tradeGA;
+        return new TradeSpecificStockGA(targetLineView.StockType, tradeAmount);
     }
 }
