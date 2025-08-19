@@ -180,18 +180,5 @@ public class PlayerAttributeDisplay : MonoBehaviour
     {
         UpdateAllDisplays();
     }
-
-    /// <summary>
-    /// 开始新回合
-    /// </summary>
-    [ContextMenu("开始新回合")]
-    public void StartNewTurn()
-    {
-        if (PlayerAttributeSystem.Instance != null)
-        {
-            PlayerAttributeSystem.Instance.StartNewTurn();
-        }
-    }
-
     #endregion
 }

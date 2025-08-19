@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class TradeStockGA : GameAction
 {
-    public int Amount { get; set; }
+    public int TradeAmount { get; set; }
 
-    public TradeStockGA(int amount)
+    public EStockType StockType { get; set; }
+
+    public TradeStockGA(int tradeAmount, EStockType stockType)
     {
-        Amount = amount;
+        TradeAmount = tradeAmount;
+        StockType = stockType;
     }
 }

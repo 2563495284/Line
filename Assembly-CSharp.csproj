@@ -83,10 +83,10 @@
     <Compile Include="Assets/_Project/Scripts/UI/NewsUI.cs" />
     <Compile Include="Assets/Scripts/Point.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/ChangeStockEffect.cs" />
-    <Compile Include="Assets/_Project/Scripts/Game Actions/UseEnergyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PlayerAttributeData.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeMoneyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PlayerData.cs" />
+    <Compile Include="Assets/_Project/Scripts/Effects/Player/ChangeManaEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/CardView.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/PredictEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/MultiStockUI/MultiStockDisplay.cs" />
@@ -118,7 +118,6 @@
     <Compile Include="Assets/_Project/TutorialInfo/Scripts/Readme.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/BuffSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/MultiStockSystem.cs" />
-    <Compile Include="Assets/_Project/Scripts/Documentation/MultiStockAndAttributeGuide.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/CardViewHoverSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/UpgradeAttributeGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/TipsSystem.cs" />
@@ -130,6 +129,7 @@
     <Compile Include="Assets/SREditor/Package/Scripts/SRHiddenAttribute.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/MoneyUI/ValuesDisplay.cs" />
     <Compile Include="Assets/_Project/Scripts/Models/Effect.cs" />
+    <Compile Include="Assets/_Project/Scripts/Game Actions/NextRoundTurnGA.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/BuffUI/BuffUIManager.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/CardSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/PlayerAttributeUI/PlayerAttributeDisplay.cs" />
@@ -138,7 +138,9 @@
     <Compile Include="Assets/SREditor/Package/Scripts/SRNameAttribute.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Singleton.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/NPCBoardView.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/TripleKLineDisplay.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeStockPriceGA.cs" />
+    <Compile Include="Assets/_Project/Scripts/Creators/TripleKLineCreator.cs" />
     <Compile Include="Assets/_Project/Scripts/Creators/NPCViewCreator.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/MoneyUI/StockPriceDisplay.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Utils/SerializableDictionary.cs" />
@@ -155,6 +157,7 @@
     <Compile Include="Assets/_Project/Scripts/Effects/Player/TradeAllStockEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/PlayerAttributeSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/CardData.cs" />
+    <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeManaGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/CharacterData.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/NPC/ChangeStrategyEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/MatchSetupSystem.cs" />
@@ -165,8 +168,6 @@
     <Compile Include="Assets/_Project/Scripts/Models/TargetMode.cs" />
     <Compile Include="Assets/Scripts/FontTest.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/DrawCardsEffect.cs" />
-    <Compile Include="Assets/_Project/Scripts/Examples/MultiStockAndAttributeExample.cs" />
-    <Compile Include="Assets/_Project/Scripts/Effects/Player/UseEnergyEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/ChangeStockPriceEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/PlayerAttributeUI/AttributeDisplayItem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/PlayCardGA.cs" />

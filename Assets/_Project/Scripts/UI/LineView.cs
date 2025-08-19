@@ -5,35 +5,154 @@ using TMPro;
 public class LineView : MonoBehaviour
 {
     [Header("图表设置")]
-    public float chartWidth = 10f;
-    public float chartHeight = 6f;
-    public float padding = 0.2f;
+    public float chartWidth = 8f;  // 适合三分屏显示
+    public float chartHeight = 5f; // 保持16:10比例
+    public float padding = 0.3f;  // 减少内边距以充分利用空间
 
     [Header("线条设置")]
-    public float lineWidth = 0.1f;
+    public float lineWidth = 0.08f;  // 略细的线条，适合较小显示
     public Color lineColor = Color.blue;
 
     [Header("点设置")]
     public GameObject pointPrefab;
-    public float pointSize = 0.2f;
+    public float pointSize = 1f;  // 较小的点，避免拥挤
     public Color pointColor = Color.red;
     public bool showPriceLabels = true;
-    public int maxPoints = 40; // 最大显示点数
+    public int maxPoints = 30; // 减少点数，适合较窄的显示区域
 
     [Header("背景设置")]
     public Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.8f);
     public GameObject background;
+
+    [Header("股票信息显示")]
+    [SerializeField] private TextMeshPro titleText;
+    [SerializeField] private TextMeshPro currentPriceText;
+    [SerializeField] private TextMeshPro changePercentText;
+    [SerializeField] private Color positiveColor = Color.green;
+    [SerializeField] private Color negativeColor = Color.red;
+    [SerializeField] private Color neutralColor = Color.white;
 
     // 私有变量
     public LineRenderer kLineRenderer;
     private List<GameObject> points = new List<GameObject>();
     private List<float> prices = new List<float>();
 
+    // 股票信息
+    private EStockType stockType;
+    public EStockType StockType => stockType;
+    private string stockName;
+    private Color themeColor;
+
     public float ViewPrice => prices.Count > 0 ? prices[prices.Count - 1] : 0;
 
     void Start()
     {
         InitialBackground();
+        InitializeStockDisplay();
+        // OptimizeForScreenResolution();
+    }
+
+    /// <summary>
+    /// 根据屏幕分辨率优化显示参数
+    /// </summary>
+    private void OptimizeForScreenResolution()
+    {
+        float screenWidth = Screen.width;
+        float screenHeight = Screen.height;
+
+        // 针对1920x1080屏幕的特殊优化
+        if (screenWidth == 1920 && screenHeight == 1080)
+        {
+            // 三分屏布局优化
+            chartWidth = 7.5f;   // 适合三等分布局
+            chartHeight = 4.5f;  // 保持合理比例
+            padding = 0.1f;      // 最小化边距
+            pointSize = 0.12f;   // 更小的点
+            maxPoints = 25;      // 减少点数避免拥挤
+
+            if (showDebugInfo)
+            {
+                Debug.Log($"LineView已针对{screenWidth}x{screenHeight}分辨率优化");
+            }
+        }
+        // 针对其他常见分辨率的优化
+        else if (screenWidth >= 1600)
+        {
+            // 高分辨率屏幕
+            chartWidth = 8f;
+            chartHeight = 5f;
+            maxPoints = 35;
+        }
+        else if (screenWidth >= 1366)
+        {
+            // 标准笔记本分辨率
+            chartWidth = 6f;
+            chartHeight = 4f;
+            maxPoints = 20;
+        }
+
+        // 应用LineRenderer的宽度设置
+        if (kLineRenderer != null)
+        {
+            kLineRenderer.startWidth = lineWidth;
+            kLineRenderer.endWidth = lineWidth;
+        }
+    }
+
+    [Header("调试设置")]
+    [SerializeField] private bool showDebugInfo = false;
+
+    /// <summary>
+    /// 初始化股票信息显示
+    /// </summary>
+    private void InitializeStockDisplay()
+    {
+        if (titleText != null)
+        {
+            titleText.text = stockName ?? "股票";
+        }
+
+        // 设置主题颜色
+        if (kLineRenderer != null)
+        {
+            Color targetColor = themeColor != Color.clear ? themeColor : lineColor;
+            kLineRenderer.startColor = targetColor;
+            kLineRenderer.endColor = targetColor;
+        }
+    }
+
+    /// <summary>
+    /// 设置股票信息
+    /// </summary>
+    public void SetStockInfo(EStockType type, string name, Color color)
+    {
+        stockType = type;
+        stockName = name;
+        themeColor = color;
+
+        InitializeStockDisplay();
+    }
+
+    /// <summary>
+    /// 更新当前价格显示
+    /// </summary>
+    public void UpdateCurrentPrice(float currentPrice, float changePercent)
+    {
+        if (currentPriceText != null)
+        {
+            currentPriceText.text = $"¥{currentPrice:F2}";
+        }
+
+        if (changePercentText != null)
+        {
+            string changeSymbol = changePercent > 0 ? "+" : "";
+            changePercentText.text = $"{changeSymbol}{changePercent:F1}%";
+
+            // 设置颜色
+            Color textColor = changePercent > 0 ? positiveColor :
+                             changePercent < 0 ? negativeColor : neutralColor;
+            changePercentText.color = textColor;
+        }
     }
 
     void InitialBackground()

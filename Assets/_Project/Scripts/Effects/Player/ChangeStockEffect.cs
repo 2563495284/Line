@@ -9,7 +9,7 @@ public class ChangeStockEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        ChangeStockGA changeStockGA = new(changeStockAmount);
+        ChangeStockGA changeStockGA = new(changeStockAmount, targetLineView.StockType);
         return changeStockGA;
     }
 }

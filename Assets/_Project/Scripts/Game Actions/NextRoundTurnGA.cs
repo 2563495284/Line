@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DiscardAllCardsGA : GameAction
+public class NextRoundTurnGA : GameAction
 {
-
-    public DiscardAllCardsGA()
+    public NextRoundTurnGA()
     {
     }
 }

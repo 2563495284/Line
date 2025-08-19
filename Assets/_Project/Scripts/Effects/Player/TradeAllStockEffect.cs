@@ -7,7 +7,7 @@ public class TradeAllStockEffect : Effect
     [SerializeField] private ETradeAllStockType tradeAllStockType;
     public override GameAction GetGameAction()
     {
-        TradeAllStockGA tradeAllStockGA = new(tradeAllStockType);
+        TradeAllStockGA tradeAllStockGA = new(tradeAllStockType, targetLineView.StockType);
         return tradeAllStockGA;
     }
 }

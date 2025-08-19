@@ -11,15 +11,16 @@ public class MatchSetupSystem : MonoBehaviour
 
     private void Start()
     {
+        MultiStockSystem.Instance.InitializeStockMarkets();
 
         NPCSystem.Instance.Setup(npcDataList);
 
-        CardSystem.Instance.Setup(playerData);
+        PlayerAttributeSystem.Instance.Setup(playerData);
 
         PerkSystem.Instance.AddPerk(new Perk(perkData));
 
 
-        DrawCardsGA drawCardsGA = new(playerData.initialDrawCount, CardSystem.Instance.playerView);
+        DrawCardsGA drawCardsGA = new(playerData.initialDrawCount, PlayerAttributeSystem.Instance.playerView);
 
         ActionSystem.Instance.Perform(drawCardsGA);
     }

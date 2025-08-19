@@ -12,12 +12,9 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     [Header("股市配置")]
     [SerializeField] private List<SingleStockMarketData> stockMarkets = new List<SingleStockMarketData>();
 
-    [Header("价格刷新设置")]
-    [SerializeField] private float priceRefreshInterval = 3f;
-    [SerializeField] private Timer priceRefreshTimer;
-
     [Header("UI引用")]
     [SerializeField] private MoneyUI moneyUI;
+    [SerializeField] private TripleKLineDisplay tripleKLineDisplay;
 
     [Header("调试")]
     [SerializeField] private bool showDebugInfo = true;
@@ -26,35 +23,26 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     private float currentMoney = 10000f;
 
     // 事件
-    public event Action<EStockType, float, float> OnStockPriceChanged;
     public event Action<EStockType, int, bool> OnStockTraded; // 股票类型，数量，是否买入
-
-    protected override void Awake()
-    {
-        base.Awake();
-        InitializeStockMarkets();
-    }
-
-    private void Start()
-    {
-        StartPriceRefreshTimer();
-        UpdateUI();
-    }
-
     private void OnEnable()
     {
+        ActionSystem.AttachPerformer<ChangeStockPriceGA>(ChangeStockPricePerformer);
         ActionSystem.AttachPerformer<TradeSpecificStockGA>(TradeSpecificStockPerformer);
         ActionSystem.AttachPerformer<ChangeMoneyGA>(ChangeMoneyPerformer);
         ActionSystem.AttachPerformer<UseStockMaterialGA>(UseStockMaterialPerformer);
+
+        ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
+
     }
 
     private void OnDisable()
     {
+        ActionSystem.DetachPerformer<ChangeStockPriceGA>();
         ActionSystem.DetachPerformer<TradeSpecificStockGA>();
         ActionSystem.DetachPerformer<ChangeMoneyGA>();
         ActionSystem.DetachPerformer<UseStockMaterialGA>();
 
-        StopPriceRefreshTimer();
+        ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
     }
 
     #region Initialization
@@ -62,7 +50,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     /// <summary>
     /// 初始化股市
     /// </summary>
-    private void InitializeStockMarkets()
+    public void InitializeStockMarkets()
     {
         if (stockMarkets.Count == 0)
         {
@@ -81,39 +69,13 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
                 market.priceHistory.Add(market.currentPrice);
             }
         }
+        UpdateUI();
+        UpdateKLineDisplays();
     }
 
     #endregion
 
     #region Price Management
-
-    /// <summary>
-    /// 启动价格刷新定时器
-    /// </summary>
-    private void StartPriceRefreshTimer()
-    {
-        if (priceRefreshTimer == null)
-        {
-            priceRefreshTimer = gameObject.AddComponent<Timer>();
-        }
-
-        priceRefreshTimer.SetDuration(priceRefreshInterval);
-        priceRefreshTimer.SetCountdown(true);
-        priceRefreshTimer.SetLoop(true);
-        priceRefreshTimer.OnTimerComplete += RefreshAllStockPrices;
-        priceRefreshTimer.StartTimer();
-    }
-
-    /// <summary>
-    /// 停止价格刷新定时器
-    /// </summary>
-    private void StopPriceRefreshTimer()
-    {
-        if (priceRefreshTimer != null)
-        {
-            priceRefreshTimer.StopTimer();
-        }
-    }
 
     /// <summary>
     /// 刷新所有股票价格
@@ -122,10 +84,11 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     {
         foreach (var market in stockMarkets)
         {
-            RefreshStockPrice(market);
+            market.MarkPrice();
         }
 
         UpdateUI();
+        UpdateKLineDisplays();
 
         if (showDebugInfo)
         {
@@ -133,42 +96,43 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         }
     }
 
-    /// <summary>
-    /// 刷新单个股票价格
-    /// </summary>
-    private void RefreshStockPrice(SingleStockMarketData market)
-    {
-        float oldPrice = market.currentPrice;
-
-        // 基础随机波动
-        float randomChange = UnityEngine.Random.Range(-5f, 5f);
-
-        // 应用波动性
-        randomChange *= market.currentVolatility;
-
-        // 应用玩家魅力属性影响
-        if (PlayerAttributeSystem.Instance != null)
-        {
-            float charismaBonus = PlayerAttributeSystem.Instance.GetAttributeValue(EPlayerAttributeType.Charisma);
-            randomChange *= (1f + charismaBonus / 100f);
-        }
-
-        float newPrice = oldPrice + randomChange;
-        market.UpdatePrice(newPrice);
-
-        // 触发价格变化事件
-        OnStockPriceChanged?.Invoke(market.stockType, oldPrice, market.currentPrice);
-
-        if (showDebugInfo)
-        {
-            Debug.Log($"{market.stockName} 价格: {oldPrice:F2} -> {market.currentPrice:F2} ({randomChange:+F2;-F2})");
-        }
-    }
-
     #endregion
 
     #region GameAction Performers
 
+    /// <summary>
+    /// 处理股票价格上涨
+    /// </summary>
+    private IEnumerator ChangeStockPricePerformer(ChangeStockPriceGA action)
+    {
+        var market = GetStockMarket(action.stockType);
+        if (market == null)
+        {
+            Debug.LogError($"未找到股票类型: {action.stockType}");
+            yield break;
+        }
+
+        float tempPrice = market.tempPrice;
+        ECharacterStrategyType characterStrategyType = action.characterView.StrategyType;
+        int index = (int)characterStrategyType;
+        float changeStockPrice = 0;
+        float changeStockPersentPrice = 0;
+        action.ChangePriceDictionary.TryGetValue(characterStrategyType, out changeStockPrice);
+        action.ChangePricePersentDictionary.TryGetValue(characterStrategyType, out changeStockPersentPrice);
+        // 计算新的价格
+        float priceIncrease = changeStockPrice;
+        priceIncrease += Mathf.Round(tempPrice * changeStockPersentPrice) / 100f;
+
+        tempPrice = Mathf.Round((tempPrice + priceIncrease) * 100f) / 100f;
+
+        // 限制价格范围并保留两位小数
+        tempPrice = Mathf.Round(Mathf.Clamp(tempPrice, market.minPrice, market.maxPrice) * 100f) / 100f;
+
+        // 更新价格历史
+        market.UpdatePrice(tempPrice);
+        Debug.Log($"NPC {action.characterView.name} 投资策略: {characterStrategyType} 价格: {tempPrice:F2} -> {tempPrice:F2} ({priceIncrease:F2})");
+        yield return null;
+    }
     /// <summary>
     /// 处理特定股票交易
     /// </summary>
@@ -261,6 +225,10 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
 
         yield return null;
     }
+    private void NextRoundTurnPostReaction(NextRoundTurnGA action)
+    {
+        RefreshAllStockPrices();
+    }
 
     #endregion
 
@@ -351,6 +319,17 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         }
     }
 
+    /// <summary>
+    /// 更新K线显示
+    /// </summary>
+    private void UpdateKLineDisplays()
+    {
+        if (tripleKLineDisplay != null)
+        {
+            tripleKLineDisplay.UpdateAllKLines();
+        }
+    }
+
     #endregion
 
     #region Debug Methods
@@ -372,36 +351,5 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
                      $"变化{market.GetPriceChangePercent():+F1;-F1}%");
         }
     }
-
-    /// <summary>
-    /// 测试买入股票
-    /// </summary>
-    [ContextMenu("测试买入石油")]
-    public void TestBuyOil()
-    {
-        var tradeGA = new TradeSpecificStockGA(EStockType.Oil, 10);
-        ActionSystem.Instance.Perform(tradeGA);
-    }
-
-    /// <summary>
-    /// 测试卖出股票
-    /// </summary>
-    [ContextMenu("测试卖出石油")]
-    public void TestSellOil()
-    {
-        var tradeGA = new TradeSpecificStockGA(EStockType.Oil, -5);
-        ActionSystem.Instance.Perform(tradeGA);
-    }
-
-    /// <summary>
-    /// 测试使用材料
-    /// </summary>
-    [ContextMenu("测试使用石油材料")]
-    public void TestUseOilMaterial()
-    {
-        var useGA = new UseStockMaterialGA(EStockType.Oil, 2);
-        ActionSystem.Instance.Perform(useGA);
-    }
-
     #endregion
 }

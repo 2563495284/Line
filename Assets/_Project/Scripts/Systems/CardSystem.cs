@@ -7,31 +7,20 @@ using UnityEngine;
 
 public class CardSystem : Singleton<CardSystem>
 {
-    [SerializeField] public PlayerView playerView;
 
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<ChangeStrategyGA>(ChangeStrategyPerformer);
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
-        ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
-        // ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
-        // ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+
     }
 
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<ChangeStrategyGA>();
         ActionSystem.DetachPerformer<DrawCardsGA>();
-        ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
-        // ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
-        // ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
-    }
-
-    public void Setup(PlayerData playerData)
-    {
-        playerView.Setup(playerData);
     }
 
     #region Performers
@@ -79,18 +68,6 @@ public class CardSystem : Singleton<CardSystem>
         }
     }
 
-    private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
-    {
-        CharacterView characterView = discardAllCardsGA.CharacterView;
-        foreach (Card card in characterView.hand)
-        {
-            yield return characterView.RemoveCard(card);
-
-        }
-
-        characterView.hand.Clear();
-    }
-
     private IEnumerator PlayCardPerformer(PlayCardGA playCardGA)
     {
         CharacterView characterView = playCardGA.CharacterView;
@@ -102,19 +79,5 @@ public class CardSystem : Singleton<CardSystem>
 
         Debug.Log($"玩家 {characterView.name} 出牌: {playCardGA.Card.Title}");
     }
-    #endregion
-
-    #region Reactions
-    // private void EnemyTurnPreReaction(EnemyTurnGA enemyTurnGA)
-    // {
-    //     DiscardAllCardsGA discardAllCardsGA = new();
-    //     ActionSystem.Instance.AddReaction(discardAllCardsGA);
-    // }
-
-    // private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGA)
-    // {
-    //     DrawCardsGA drawCardsGA = new(enemyDrawCardsAmount);
-    //     ActionSystem.Instance.AddReaction(drawCardsGA);
-    // }
     #endregion
 }

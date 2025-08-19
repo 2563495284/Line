@@ -59,7 +59,6 @@ public class StockSystem : Singleton<StockSystem>
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<TradeStockGA>(TradeStockPerformer);
-        ActionSystem.AttachPerformer<ChangeStockPriceGA>(ChangeStockPricePerformer);
         ActionSystem.AttachPerformer<ChangeMoneyGA>(ChangeMoneyPerformer);
         ActionSystem.AttachPerformer<ChangeStockGA>(ChangeStockPerformer);
         ActionSystem.AttachPerformer<TradeAllStockGA>(TradeAllStockPerformer);
@@ -68,7 +67,6 @@ public class StockSystem : Singleton<StockSystem>
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<TradeStockGA>();
-        ActionSystem.DetachPerformer<ChangeStockPriceGA>();
         ActionSystem.DetachPerformer<ChangeMoneyGA>();
         ActionSystem.DetachPerformer<ChangeStockGA>();
         ActionSystem.DetachPerformer<TradeAllStockGA>();
@@ -79,61 +77,24 @@ public class StockSystem : Singleton<StockSystem>
     #region Performers
     private IEnumerator TradeStockPerformer(TradeStockGA action)
     {
-        if (action.Amount > 0)
+        if (action.TradeAmount > 0)
         {
-            int buyStockCount = math.min(action.Amount, (int)math.floor(currentMoney / CurrentStockPrice));
-            ChangeStockGA changeStockGA = new ChangeStockGA(buyStockCount);
+            int buyStockCount = math.min(action.TradeAmount, (int)math.floor(currentMoney / CurrentStockPrice));
+            ChangeStockGA changeStockGA = new ChangeStockGA(buyStockCount, action.StockType);
             ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-buyStockCount * CurrentStockPrice);
             ActionSystem.Instance.Perform(changeStockGA);
             ActionSystem.Instance.Perform(changeMoneyGA);
         }
         else
         {
-            int sellStockCount = -math.min(-action.Amount, stockCount);
-            ChangeStockGA changeStockGA = new ChangeStockGA(sellStockCount);
+            int sellStockCount = -math.min(-action.TradeAmount, stockCount);
+            ChangeStockGA changeStockGA = new ChangeStockGA(sellStockCount, action.StockType);
             ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-sellStockCount * CurrentStockPrice);
             ActionSystem.Instance.Perform(changeStockGA);
             ActionSystem.Instance.Perform(changeMoneyGA);
         }
 
 
-        yield return null;
-    }
-
-    /// <summary>
-    /// 处理股票价格上涨
-    /// </summary>
-    private IEnumerator ChangeStockPricePerformer(ChangeStockPriceGA action)
-    {
-        float oldPrice = nextStockPrice;
-        ECharacterStrategyType characterStrategyType = action.characterView.StrategyType;
-        int index = (int)characterStrategyType;
-        float changeStockPrice = 0;
-        float changeStockPersentPrice = 0;
-        action.ChangePriceDictionary.TryGetValue(characterStrategyType, out changeStockPrice);
-        action.ChangePricePersentDictionary.TryGetValue(characterStrategyType, out changeStockPersentPrice);
-        // 计算新的价格
-        float priceIncrease = changeStockPrice;
-        priceIncrease += Mathf.Round(nextStockPrice * changeStockPersentPrice) / 100f;
-
-        // 应用杠杆倍数
-        if (BuffSystem.Instance != null && BuffSystem.Instance.HasLeverageBuff)
-        {
-            float originalIncrease = priceIncrease;
-            priceIncrease = BuffSystem.Instance.ApplyLeverageToStockChange(priceIncrease);
-
-            Debug.Log($"杠杆效果: 原始变化 {originalIncrease:F2} -> 杠杆后 {priceIncrease:F2} " +
-                     $"(倍数: {BuffSystem.Instance.CurrentLeverageMultiplier:F1}x)");
-        }
-
-        nextStockPrice = Mathf.Round((nextStockPrice + priceIncrease) * 100f) / 100f;
-
-        // 限制价格范围并保留两位小数
-        nextStockPrice = Mathf.Round(Mathf.Clamp(nextStockPrice, minStockPrice, maxStockPrice) * 100f) / 100f;
-
-        // 更新价格历史
-        UpdatePriceHistory();
-        Debug.Log($"NPC {action.characterView.name} 投资策略: {characterStrategyType} 价格: {oldPrice:F2} -> {nextStockPrice:F2} ({priceIncrease:F2})");
         yield return null;
     }
 
@@ -171,7 +132,7 @@ public class StockSystem : Singleton<StockSystem>
                 int couldBuyStockCount = (int)math.floor(currentMoney / CurrentStockPrice);
                 if (couldBuyStockCount > 0)
                 {
-                    ChangeStockGA changeStockGA = new ChangeStockGA(couldBuyStockCount);
+                    ChangeStockGA changeStockGA = new ChangeStockGA(couldBuyStockCount, action.StockType);
                     ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-couldBuyStockCount * CurrentStockPrice);
                     ActionSystem.Instance.Perform(changeStockGA);
                     ActionSystem.Instance.Perform(changeMoneyGA);
@@ -181,7 +142,7 @@ public class StockSystem : Singleton<StockSystem>
                 int couldSellStockCount = stockCount;
                 if (couldSellStockCount > 0)
                 {
-                    ChangeStockGA changeStockGA = new ChangeStockGA(-couldSellStockCount);
+                    ChangeStockGA changeStockGA = new ChangeStockGA(-couldSellStockCount, action.StockType);
                     ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(couldSellStockCount * CurrentStockPrice);
                     ActionSystem.Instance.Perform(changeStockGA);
                     ActionSystem.Instance.Perform(changeMoneyGA);

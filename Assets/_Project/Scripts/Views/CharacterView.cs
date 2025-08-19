@@ -59,7 +59,7 @@ public abstract class CharacterView : MonoBehaviour
         Card card = drawPile.Draw();
         if (card == null)
         {
-            TipsSystem.Instance.ShowError("抽卡失败，牌堆为空！");
+            Camera.main.transform.DOShakePosition(0.5f, 0.1f, 10, 90, false, true);
             yield break;
         }
 
@@ -78,7 +78,7 @@ public abstract class CharacterView : MonoBehaviour
     {
         if (playCardGA.Card.ManualTargetEffect != null)
         {
-            PerformEffectGA performEffectGA = new(playCardGA.Card.ManualTargetEffect, this);
+            PerformEffectGA performEffectGA = new(playCardGA.Card.ManualTargetEffect, this, playCardGA.LineViewTarget);
             ActionSystem.Instance.AddReaction(performEffectGA);
         }
     }

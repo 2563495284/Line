@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ManualTargetingSystem : Singleton<ManualTargetingSystem>
@@ -14,17 +15,17 @@ public class ManualTargetingSystem : Singleton<ManualTargetingSystem>
         arrowView.SetupArrow(startPosition);
     }
 
-    // public EnemyView EndTargeting(Vector3 endPosition)
-    // {
-    //     arrowView.gameObject.SetActive(false);
+    public LineView EndTargeting(Vector3 endPosition)
+    {
+        arrowView.gameObject.SetActive(false);
+        RaycastHit[] hits = Physics.RaycastAll(endPosition, Vector3.forward, 10f, targetLayerMask);
+        if (hits.Any(hit => hit.collider != null
+            && hit.transform.TryGetComponent(out LineView lineView)))
+        {
+            return hits.First(hit => hit.collider != null
+            && hit.transform.TryGetComponent(out LineView lineView)).transform.GetComponent<LineView>();
+        }
 
-    //     if (Physics.Raycast(endPosition, Vector3.forward, out RaycastHit hit, 10f, targetLayerMask)
-    //         && hit.collider != null
-    //         && hit.transform.TryGetComponent(out EnemyView enemyView))
-    //     {
-    //         return enemyView;
-    //     }
-
-    //     return null;
-    // }
+        return null;
+    }
 }

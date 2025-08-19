@@ -101,20 +101,8 @@ public class PlayerView : CharacterView
     }
     public void OnNextRoundButtonClick()
     {
-        PlayerAttributeSystem.Instance.StartNewTurn();
-    }
-
-    public void OnDrawCardButtonClick()
-    {
-        if (StockSystem.Instance.CurrentMoney < drawCardCostMoney)
-        {
-            TipsSystem.Instance.ShowError("资金不足！");
-            return;
-        }
-        DrawCardsGA drawCardsGA = new(drawCardCount, this);
-        ActionSystem.Instance.Perform(drawCardsGA);
-        ChangeMoneyGA changeMoneyGA = new(drawCardCostMoney);
-        ActionSystem.Instance.Perform(changeMoneyGA);
+        NextRoundTurnGA nextRoundTurnGA = new();
+        ActionSystem.Instance.Perform(nextRoundTurnGA);
     }
 
 }

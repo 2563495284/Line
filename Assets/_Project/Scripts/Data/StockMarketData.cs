@@ -26,6 +26,7 @@ public class SingleStockMarketData
 
     [Header("价格信息")]
     public float currentPrice;
+    public float tempPrice;
     public float initialPrice = 100f;
     public float minPrice = 1f;
     public float maxPrice = 1000f;
@@ -47,6 +48,7 @@ public class SingleStockMarketData
         stockType = type;
         SetupStockInfo();
         currentPrice = initialPrice;
+        tempPrice = initialPrice;
         priceHistory.Add(currentPrice);
         UpdateTotalValue();
     }
@@ -79,13 +81,16 @@ public class SingleStockMarketData
         }
         currentVolatility = baseVolatility;
     }
-
+    public void UpdatePrice(float price)
+    {
+        tempPrice = Mathf.Clamp(price, minPrice, maxPrice);
+    }
     /// <summary>
     /// 更新价格
     /// </summary>
-    public void UpdatePrice(float newPrice)
+    public void MarkPrice()
     {
-        currentPrice = Mathf.Clamp(newPrice, minPrice, maxPrice);
+        currentPrice = tempPrice;
 
         // 更新历史记录
         priceHistory.Add(currentPrice);

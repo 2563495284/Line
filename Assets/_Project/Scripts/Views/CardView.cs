@@ -73,9 +73,9 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         if (Card.ManualTargetEffect != null)
         {
-            // EnemyView target = ManualTargetingSystem.Instance.EndTargeting(MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue));
-            // PlayCardGA playCardGA = new(Card, target);
-            // ActionSystem.Instance.Perform(playCardGA);
+            LineView target = ManualTargetingSystem.Instance.EndTargeting(MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue));
+            PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Instance.playerView, target);
+            ActionSystem.Instance.Perform(playCardGA);
         }
         else
         {
@@ -106,7 +106,7 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (CanPlayCard())
         {
-            PlayCardGA playCardGA = new(Card, CardSystem.Instance.playerView);
+            PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Instance.playerView);
             ActionSystem.Instance.Perform(playCardGA);
         }
         else

@@ -35,19 +35,19 @@ public class PredictionSystem : Singleton<PredictionSystem>
     /// </summary>
     private IEnumerator PredictionPerformer(PredictionGA predictionGA)
     {
-        float currentPrice = StockSystem.Instance.CurrentStockPrice;
+        // float currentPrice = StockSystem.Instance.CurrentStockPrice;
 
-        PredictionData newPrediction = new PredictionData(
-            predictionGA.PredictionType,
-            currentPrice,
-            predictionGA.RewardMoneyAmount,
-            predictionGA.RewardStockAmount,
-            predictionGA.PenaltyMoneyAmount,
-            predictionGA.PenaltyStockAmount,
-            predictionGA.DelayRounds
-        );
+        // PredictionData newPrediction = new PredictionData(
+        //     predictionGA.PredictionType,
+        //     currentPrice,
+        //     predictionGA.RewardMoneyAmount,
+        //     predictionGA.RewardStockAmount,
+        //     predictionGA.PenaltyMoneyAmount,
+        //     predictionGA.PenaltyStockAmount,
+        //     predictionGA.DelayRounds
+        // );
 
-        activePredictions.Add(newPrediction);
+        // activePredictions.Add(newPrediction);
         yield return null;
     }
 
@@ -99,42 +99,42 @@ public class PredictionSystem : Singleton<PredictionSystem>
     /// </summary>
     private void ResolvePrediction(PredictionData prediction)
     {
-        if (prediction.isResolved) return;
+        // if (prediction.isResolved) return;
 
-        float currentPrice = StockSystem.Instance.CurrentStockPrice;
-        bool wasCorrect = prediction.CheckPrediction(currentPrice);
+        // float currentPrice = StockSystem.Instance.CurrentStockPrice;
+        // bool wasCorrect = prediction.CheckPrediction(currentPrice);
 
-        prediction.isResolved = true;
-        prediction.wasCorrect = wasCorrect;
+        // prediction.isResolved = true;
+        // prediction.wasCorrect = wasCorrect;
 
-        // 计算奖励或惩罚
-        float moneyChange = wasCorrect ? prediction.rewardMoneyAmount : -prediction.penaltyMoneyAmount;
-        int stockChange = wasCorrect ? prediction.rewardStockAmount : -prediction.penaltyStockAmount;
-        // 执行金币变化
-        if (moneyChange != 0)
-        {
-            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(moneyChange);
-            ActionSystem.Instance.Perform(changeMoneyGA);
-        }
+        // // 计算奖励或惩罚
+        // float moneyChange = wasCorrect ? prediction.rewardMoneyAmount : -prediction.penaltyMoneyAmount;
+        // int stockChange = wasCorrect ? prediction.rewardStockAmount : -prediction.penaltyStockAmount;
+        // // 执行金币变化
+        // if (moneyChange != 0)
+        // {
+        //     ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(moneyChange);
+        //     ActionSystem.Instance.Perform(changeMoneyGA);
+        // }
 
-        // 执行股票变化
-        if (stockChange != 0)
-        {
-            ChangeStockGA changeStockGA = new ChangeStockGA(stockChange);
-            ActionSystem.Instance.Perform(changeStockGA);
-        }
+        // // 执行股票变化
+        // if (stockChange != 0)
+        // {
+        //     ChangeStockGA changeStockGA = new ChangeStockGA(stockChange);
+        //     ActionSystem.Instance.Perform(changeStockGA);
+        // }
 
-        string result = wasCorrect ? "正确" : "错误";
-        string direction = prediction.predictionType == EPredictionType.Rise ? "上涨" : "下跌";
-        string moneyAction = wasCorrect ? "获得" : "失去";
-        string stockAction = wasCorrect ? "获得" : "失去";
+        // string result = wasCorrect ? "正确" : "错误";
+        // string direction = prediction.predictionType == EPredictionType.Rise ? "上涨" : "下跌";
+        // string moneyAction = wasCorrect ? "获得" : "失去";
+        // string stockAction = wasCorrect ? "获得" : "失去";
 
-        NewsSystem.Instance.BroadcastPrediction(
-            $"预测{direction} - {result}!",
-            $"初始价格: {prediction.initialPrice:F2} -> 当前价格: {currentPrice:F2} | " +
-            (moneyChange == 0 ? "" : $"{moneyAction} {Mathf.Abs(moneyChange):F2} 金币 | ") +
-            (stockChange == 0 ? "" : $"{stockAction} {Mathf.Abs(stockChange):F2} 股票")
-        );
+        // NewsSystem.Instance.BroadcastPrediction(
+        //     $"预测{direction} - {result}!",
+        //     $"初始价格: {prediction.initialPrice:F2} -> 当前价格: {currentPrice:F2} | " +
+        //     (moneyChange == 0 ? "" : $"{moneyAction} {Mathf.Abs(moneyChange):F2} 金币 | ") +
+        //     (stockChange == 0 ? "" : $"{stockAction} {Mathf.Abs(stockChange):F2} 股票")
+        // );
     }
 
     /// <summary>

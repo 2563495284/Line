@@ -7,9 +7,16 @@ public class PerformEffectGA : GameAction
 {
     public Effect Effect { get; set; }
 
+    public PerformEffectGA(Effect effect, CharacterView characterView, LineView targetLineView)
+    {
+        Effect = effect;
+        Effect.SetCharacterView(characterView);
+        Effect.SetTargetLineView(targetLineView);
+    }
     public PerformEffectGA(Effect effect, CharacterView characterView)
     {
         Effect = effect;
         Effect.SetCharacterView(characterView);
     }
+
 }

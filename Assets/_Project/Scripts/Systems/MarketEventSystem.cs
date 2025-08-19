@@ -141,22 +141,22 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
     /// </summary>
     private void InitializeEventSystem()
     {
-        // 记录初始股价
-        initialStockPrice = StockSystem.Instance.initialStockPrice;
+        // // 记录初始股价
+        // initialStockPrice = StockSystem.Instance.initialStockPrice;
 
-        // 初始化概率曲线（如果未设置）
-        if (bullProbabilityCurve == null || bullProbabilityCurve.keys.Length == 0)
-        {
-            InitializeDefaultCurves();
-        }
+        // // 初始化概率曲线（如果未设置）
+        // if (bullProbabilityCurve == null || bullProbabilityCurve.keys.Length == 0)
+        // {
+        //     InitializeDefaultCurves();
+        // }
 
-        // 初始化卡牌索引列表
-        InitializeCardIndices();
+        // // 初始化卡牌索引列表
+        // InitializeCardIndices();
 
-        // 启动事件计时器
-        StartEventTimer();
+        // // 启动事件计时器
+        // StartEventTimer();
 
-        Debug.Log($"市场事件系统已初始化，初始股价: {initialStockPrice:F2}");
+        // Debug.Log($"市场事件系统已初始化，初始股价: {initialStockPrice:F2}");
     }
 
     /// <summary>
@@ -287,55 +287,56 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
     /// </summary>
     private EEventCardType SelectEventTypeByStockPrice()
     {
-        float currentPrice = StockSystem.Instance.NextStockPrice;
-        float priceDeviation = (currentPrice - initialStockPrice) / initialStockPrice;
-        float absDeviation = Mathf.Abs(priceDeviation);
+        return EEventCardType.Neutral;
+        // float currentPrice = StockSystem.Instance.NextStockPrice;
+        // float priceDeviation = (currentPrice - initialStockPrice) / initialStockPrice;
+        // float absDeviation = Mathf.Abs(priceDeviation);
 
-        // 根据模式计算所有事件概率
-        float bullWeight, bearWeight, neutralWeight;
-        CalculateEventProbabilities(priceDeviation, absDeviation, out bullWeight, out bearWeight);
+        // // 根据模式计算所有事件概率
+        // float bullWeight, bearWeight, neutralWeight;
+        // CalculateEventProbabilities(priceDeviation, absDeviation, out bullWeight, out bearWeight);
 
-        // 从计算结果中获取中立权重（临时处理，等待方法签名更新）
-        switch (probabilityMode)
-        {
-            case ProbabilityMode.Exponential:
-                CalculateExponentialProbabilities(priceDeviation, absDeviation, out _, out _, out neutralWeight);
-                break;
-            case ProbabilityMode.Stepped:
-                CalculateSteppedProbabilities(priceDeviation, absDeviation, out _, out _, out neutralWeight);
-                break;
-            case ProbabilityMode.Curve:
-                CalculateCurveProbabilities(priceDeviation, out _, out _, out neutralWeight);
-                break;
-            case ProbabilityMode.Linear:
-            default:
-                CalculateLinearProbabilities(priceDeviation, absDeviation, out _, out _, out neutralWeight);
-                break;
-        }
+        // // 从计算结果中获取中立权重（临时处理，等待方法签名更新）
+        // switch (probabilityMode)
+        // {
+        //     case ProbabilityMode.Exponential:
+        //         CalculateExponentialProbabilities(priceDeviation, absDeviation, out _, out _, out neutralWeight);
+        //         break;
+        //     case ProbabilityMode.Stepped:
+        //         CalculateSteppedProbabilities(priceDeviation, absDeviation, out _, out _, out neutralWeight);
+        //         break;
+        //     case ProbabilityMode.Curve:
+        //         CalculateCurveProbabilities(priceDeviation, out _, out _, out neutralWeight);
+        //         break;
+        //     case ProbabilityMode.Linear:
+        //     default:
+        //         CalculateLinearProbabilities(priceDeviation, absDeviation, out _, out _, out neutralWeight);
+        //         break;
+        // }
 
-        // 随机选择
-        float totalWeight = bullWeight + bearWeight + neutralWeight;
-        float randomValue = Random.value * totalWeight;
+        // // 随机选择
+        // float totalWeight = bullWeight + bearWeight + neutralWeight;
+        // float randomValue = Random.value * totalWeight;
 
-        // 调试信息
-        string modeInfo = GetModeDebugInfo(absDeviation, bullWeight, bearWeight, neutralWeight);
-        float deviationPercent = priceDeviation * 100f;
+        // // 调试信息
+        // string modeInfo = GetModeDebugInfo(absDeviation, bullWeight, bearWeight, neutralWeight);
+        // float deviationPercent = priceDeviation * 100f;
 
-        if (randomValue < bullWeight)
-        {
-            Debug.Log($"股价: {currentPrice:F2} (偏离: {deviationPercent:F1}%) {modeInfo}, 选择: 做多事件");
-            return EEventCardType.Bull;
-        }
-        else if (randomValue < bullWeight + bearWeight)
-        {
-            Debug.Log($"股价: {currentPrice:F2} (偏离: {deviationPercent:F1}%) {modeInfo}, 选择: 做空事件");
-            return EEventCardType.Bear;
-        }
-        else
-        {
-            Debug.Log($"股价: {currentPrice:F2} (偏离: {deviationPercent:F1}%) {modeInfo}, 选择: 中立事件");
-            return EEventCardType.Neutral;
-        }
+        // if (randomValue < bullWeight)
+        // {
+        //     Debug.Log($"股价: {currentPrice:F2} (偏离: {deviationPercent:F1}%) {modeInfo}, 选择: 做多事件");
+        //     return EEventCardType.Bull;
+        // }
+        // else if (randomValue < bullWeight + bearWeight)
+        // {
+        //     Debug.Log($"股价: {currentPrice:F2} (偏离: {deviationPercent:F1}%) {modeInfo}, 选择: 做空事件");
+        //     return EEventCardType.Bear;
+        // }
+        // else
+        // {
+        //     Debug.Log($"股价: {currentPrice:F2} (偏离: {deviationPercent:F1}%) {modeInfo}, 选择: 中立事件");
+        //     return EEventCardType.Neutral;
+        // }
     }
 
     /// <summary>
@@ -503,19 +504,20 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
     /// </summary>
     private float GetNormalizedStockPrice()
     {
-        float currentPrice = StockSystem.Instance.NextStockPrice;
+        // float currentPrice = StockSystem.Instance.NextStockPrice;
 
-        // 计算相对于初始价格的偏离百分比
-        float priceDeviation = (currentPrice - initialStockPrice) / initialStockPrice;
+        // // 计算相对于初始价格的偏离百分比
+        // float priceDeviation = (currentPrice - initialStockPrice) / initialStockPrice;
 
-        // 将偏离度映射到0-1范围
-        // -priceDeviationRange(比如-30%) 映射到 0
-        // 0%(初始价格) 映射到 0.5
-        // +priceDeviationRange(比如+30%) 映射到 1
-        float normalizedValue = 0.5f + (priceDeviation / (maxDeviationThreshold * 2));
+        // // 将偏离度映射到0-1范围
+        // // -priceDeviationRange(比如-30%) 映射到 0
+        // // 0%(初始价格) 映射到 0.5
+        // // +priceDeviationRange(比如+30%) 映射到 1
+        // float normalizedValue = 0.5f + (priceDeviation / (maxDeviationThreshold * 2));
 
-        // 确保在0-1范围内
-        return Mathf.Clamp01(normalizedValue);
+        // // 确保在0-1范围内
+        // return Mathf.Clamp01(normalizedValue);
+        return 1f;
     }
 
     /// <summary>

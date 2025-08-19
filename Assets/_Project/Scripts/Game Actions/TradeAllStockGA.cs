@@ -7,9 +7,12 @@ public class TradeAllStockGA : GameAction
 {
     public ETradeAllStockType TradeAllStockType { get; set; }
 
-    public TradeAllStockGA(ETradeAllStockType tradeAllStockType)
+    public EStockType StockType { get; set; }
+
+    public TradeAllStockGA(ETradeAllStockType tradeAllStockType, EStockType stockType)
     {
         TradeAllStockType = tradeAllStockType;
+        StockType = stockType;
     }
 }
 

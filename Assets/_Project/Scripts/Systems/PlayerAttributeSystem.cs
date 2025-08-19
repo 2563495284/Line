@@ -8,6 +8,8 @@ using UnityEngine;
 /// </summary>
 public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 {
+    [SerializeField] public PlayerView playerView;
+
     [Header("属性数据")]
     [SerializeField] private PlayerAttributesData playerAttributes;
 
@@ -25,27 +27,35 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
     // 事件
     public event Action<EPlayerAttributeType, int> OnAttributeUpgraded;
-    public event Action<int> OnEnergyChanged;
-    public event Action<int> OnCardsDrawn;
 
     protected override void Awake()
     {
         base.Awake();
         InitializeAttributes();
     }
+    public void Setup(PlayerData playerData)
+    {
+        playerView.Setup(playerData);
+    }
 
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<UpgradeAttributeGA>(UpgradeAttributePerformer);
-        ActionSystem.AttachPerformer<UseEnergyGA>(UseEnergyPerformer);
+        ActionSystem.AttachPerformer<ChangeManaGA>(ChangeManaPerformer);
         ActionSystem.AttachPerformer<RestoreEnergyGA>(RestoreEnergyPerformer);
+        ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
+        ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
     }
 
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<UpgradeAttributeGA>();
-        ActionSystem.DetachPerformer<UseEnergyGA>();
+        ActionSystem.DetachPerformer<ChangeManaGA>();
         ActionSystem.DetachPerformer<RestoreEnergyGA>();
+        ActionSystem.DetachPerformer<DiscardAllCardsGA>();
+        ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
     }
 
     #region Initialization
@@ -81,7 +91,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
         float availableMoney = MultiStockSystem.Instance.GetCurrentMoney();
         var attribute = playerAttributes.GetAttribute(action.AttributeType);
-        
+
         if (attribute == null)
         {
             Debug.LogError($"未找到属性类型: {action.AttributeType}");
@@ -120,17 +130,27 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
         yield return null;
     }
+    private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
+    {
+        CharacterView characterView = playerView;
+        foreach (Card card in characterView.hand)
+        {
+            yield return characterView.RemoveCard(card);
+
+        }
+
+        characterView.hand.Clear();
+    }
 
     /// <summary>
     /// 处理能量使用
     /// </summary>
-    private IEnumerator UseEnergyPerformer(UseEnergyGA action)
+    private IEnumerator ChangeManaPerformer(ChangeManaGA action)
     {
         if (currentEnergy >= action.Amount)
         {
             currentEnergy -= action.Amount;
-            OnEnergyChanged?.Invoke(currentEnergy);
-            
+
             if (showDebugInfo)
             {
                 Debug.Log($"使用能量: {action.Amount}，剩余: {currentEnergy}");
@@ -151,8 +171,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     {
         int oldEnergy = currentEnergy;
         currentEnergy = Mathf.Min(currentEnergy + action.Amount, maxEnergy);
-        OnEnergyChanged?.Invoke(currentEnergy);
-        
+
         if (showDebugInfo)
         {
             Debug.Log($"恢复能量: {action.Amount}，{oldEnergy} -> {currentEnergy}");
@@ -217,13 +236,19 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
     #endregion
 
-    #region Turn Management
-
-    /// <summary>
-    /// 开始新回合
-    /// </summary>
-    public void StartNewTurn()
+    #region Reactions
+    private void NextRoundTurnPreReaction(NextRoundTurnGA nextRoundTurnGA)
     {
+        DiscardAllCardsGA discardAllCardsGA = new();
+        ActionSystem.Instance.AddReaction(discardAllCardsGA);
+    }
+
+    private void NextRoundTurnPostReaction(NextRoundTurnGA nextRoundTurnGA)
+    {
+        DrawCardsGA drawCardsGA = new(playerView.MaxHandSize, playerView);
+        ActionSystem.Instance.AddReaction(drawCardsGA);
+
+
         // 保存剩余能量（耐心属性）
         int saveableAmount = GetSaveableEnergy();
         int energyToSave = Mathf.Min(currentEnergy, saveableAmount);
@@ -235,29 +260,17 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
         // 摸牌
         int cardsToDraw = GetCardsPerTurn();
-        
+
         // 触发事件
-        OnEnergyChanged?.Invoke(currentEnergy);
-        OnCardsDrawn?.Invoke(cardsToDraw);
+        ActionSystem.Instance.AddReaction(new ChangeManaGA(currentEnergy));
 
         if (showDebugInfo)
         {
             Debug.Log($"新回合开始 - 能量: {currentEnergy} (保存: {savedEnergy}), 摸牌: {cardsToDraw}");
         }
     }
-
-    /// <summary>
-    /// 结束当前回合
-    /// </summary>
-    public void EndCurrentTurn()
-    {
-        if (showDebugInfo)
-        {
-            Debug.Log($"回合结束 - 剩余能量: {currentEnergy}");
-        }
-    }
-
     #endregion
+
 
     #region Public Interface
 
@@ -309,58 +322,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         int cost = attribute.GetNextUpgradeCost();
         float availableMoney = MultiStockSystem.Instance.GetCurrentMoney();
         return cost <= availableMoney;
-    }
-
-    #endregion
-
-    #region Debug Methods
-
-    /// <summary>
-    /// 打印属性状态
-    /// </summary>
-    [ContextMenu("打印属性状态")]
-    public void PrintAttributeStatus()
-    {
-        Debug.Log("=== 玩家属性状态 ===");
-        Debug.Log($"当前能量: {currentEnergy}/{maxEnergy} (保存: {savedEnergy})");
-        Debug.Log($"每回合摸牌: {GetCardsPerTurn()}");
-        Debug.Log($"每回合能量: {GetEnergyPerTurn()}");
-        Debug.Log($"股市影响力: +{GetStockInfluenceBonus() * 100:F1}%");
-        
-        Debug.Log("--- 属性详情 ---");
-        foreach (var attribute in playerAttributes.attributes)
-        {
-            Debug.Log($"{attribute.GetDisplayString()} - {attribute.GetFormattedDescription()}");
-        }
-    }
-
-    /// <summary>
-    /// 测试升级社交属性
-    /// </summary>
-    [ContextMenu("测试升级社交")]
-    public void TestUpgradeSocial()
-    {
-        var upgradeGA = new UpgradeAttributeGA(EPlayerAttributeType.Social);
-        ActionSystem.Instance.Perform(upgradeGA);
-    }
-
-    /// <summary>
-    /// 测试开始新回合
-    /// </summary>
-    [ContextMenu("测试开始新回合")]
-    public void TestStartNewTurn()
-    {
-        StartNewTurn();
-    }
-
-    /// <summary>
-    /// 测试使用能量
-    /// </summary>
-    [ContextMenu("测试使用能量")]
-    public void TestUseEnergy()
-    {
-        var useEnergyGA = new UseEnergyGA(2);
-        ActionSystem.Instance.Perform(useEnergyGA);
     }
 
     #endregion
