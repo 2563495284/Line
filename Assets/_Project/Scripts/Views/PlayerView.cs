@@ -9,6 +9,11 @@ using UnityEngine.UI;
 
 public class PlayerView : CharacterView
 {
+    [SerializeField] private MoneyDisplay moneyDisplay;
+
+    [SerializeField] private List<StockDisplay> stockDisplays;
+
+    [SerializeField] private ValuesDisplay valuesDisplay;
     [SerializeField] private SplineContainer splineContainer;
     [SerializeField] private float doTweenUpdatePositionDuration = 0.15f;
     [SerializeField] private float cardPositionOffset = 0.01f;
@@ -17,9 +22,6 @@ public class PlayerView : CharacterView
     [SerializeField] private Transform discardPilePoint;
 
     public Button nextRoundButton;
-
-    public float drawCardCostMoney = -100f;
-    public int drawCardCount = 2;
 
     private float doTweenScaleDuration;
     private float doTweenMoveDuration;
@@ -103,6 +105,26 @@ public class PlayerView : CharacterView
     {
         NextRoundTurnGA nextRoundTurnGA = new();
         ActionSystem.Instance.Perform(nextRoundTurnGA);
+    }
+    public void UpdateMoneyText(float currentMoney)
+    {
+        moneyDisplay.UpdateMoney(currentMoney);
+    }
+
+    public void UpdateStockText(EStockType stockType, int currentStock)
+    {
+        foreach (var stockDisplay in stockDisplays)
+        {
+            if (stockDisplay.stockType == stockType)
+            {
+                stockDisplay.UpdateStock(currentStock);
+            }
+        }
+    }
+
+    public void UpdateAllValuesText()
+    {
+        valuesDisplay.UpdateValues();
     }
 
 }

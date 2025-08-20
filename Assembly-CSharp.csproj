@@ -71,7 +71,6 @@
     <Compile Include="Assets/Scripts/FontHelper.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Utils/MouseUtils.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PredictionData.cs" />
-    <Compile Include="Assets/_Project/Scripts/UI/MoneyUI/MoneyUI.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/RestoreEnergyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeStrategyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/TradeStockEffect.cs" />
@@ -82,7 +81,6 @@
     <Compile Include="Assets/_Project/Scripts/Data/StockMarketData.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/NewsUI.cs" />
     <Compile Include="Assets/Scripts/Point.cs" />
-    <Compile Include="Assets/_Project/Scripts/Effects/Player/ChangeStockEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PlayerAttributeData.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeMoneyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PlayerData.cs" />
@@ -110,7 +108,6 @@
     <Compile Include="Assets/_Project/Scripts/Effects/Player/LeverageBuffEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/ManualTargetingSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeNPCStrategyGA.cs" />
-    <Compile Include="Assets/_Project/Scripts/Game Actions/TradeStockGA.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/PerksUI.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/UseStockMaterialEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Target Modes/AllEnemiesTM.cs" />
@@ -119,7 +116,6 @@
     <Compile Include="Assets/_Project/Scripts/Systems/BuffSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/MultiStockSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/CardViewHoverSystem.cs" />
-    <Compile Include="Assets/_Project/Scripts/Game Actions/UpgradeAttributeGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/TipsSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeStockGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/BuffSystemUIIntegration.cs" />
@@ -151,6 +147,7 @@
     <Compile Include="Assets/_Project/Scripts/Target Modes/NoTM.cs" />
     <Compile Include="Assets/Scripts/CameraSetup.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/PredictionGA.cs" />
+    <Compile Include="Assets/_Project/Scripts/Utils.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/BuffUI/BuffUIData.cs" />
     <Compile Include="Assets/_Project/Scripts/Creators/CardViewCreator.cs" />
     <Compile Include="Assets/_Project/Scripts/Models/Perk.cs" />

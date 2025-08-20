@@ -19,12 +19,11 @@ MonoBehaviour:
     rid: 9019117295269839149
   <OtherEffects>k__BackingField: []
   <Mana>k__BackingField: 0
+  <TradeStockAmount>k__BackingField: 100
   references:
     version: 2
     RefIds:
     - rid: 9019117295269839149
       type: {class: TradeStockEffect, ns: , asm: Assembly-CSharp}
       data:
-        stockType: 0
         tradeAmount: 100
-        checkResourcesBeforeUse: 1

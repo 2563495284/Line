@@ -15,6 +15,8 @@ public class Card
 
     public int Mana { get; private set; }
 
+    public int TradeStockAmount { get; private set; }
+
 
     /// <summary>
     /// Initialization of a new generic Card based on its ScriptableObject
@@ -29,5 +31,6 @@ public class Card
         ManualTargetEffect = data.ManualTargetEffect;
         OtherEffects = data.OtherEffects;
         Mana = data.Mana;
+        TradeStockAmount = data.TradeStockAmount;
     }
 }

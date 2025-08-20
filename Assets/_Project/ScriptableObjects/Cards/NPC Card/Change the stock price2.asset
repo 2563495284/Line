@@ -16,21 +16,14 @@ MonoBehaviour:
   <Title>k__BackingField: change0
   <Description>k__BackingField: change0 the stock price
   <ManualTargetEffect>k__BackingField:
-    rid: -2
-  <OtherEffects>k__BackingField:
-  - <TargetMode>k__BackingField:
-      rid: 9019116889392545868
-    <Effect>k__BackingField:
-      rid: 9019117163896373326
+    rid: 9019117317643567978
+  <OtherEffects>k__BackingField: []
+  <Mana>k__BackingField: 0
+  <TradeStockAmount>k__BackingField: 0
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 9019116889392545868
-      type: {class: NoTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 9019117163896373326
+    - rid: 9019117317643567978
       type: {class: ChangeStockPriceEffect, ns: , asm: Assembly-CSharp}
       data:
         changePriceDictionary:

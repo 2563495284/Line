@@ -54,7 +54,7 @@ public class NPCSystem : Singleton<NPCSystem>
             {
                 int randomIndex = UnityEngine.Random.Range(0, npc.hand.Count);
                 Card cardToPlay = npc.hand[randomIndex];
-                PlayCardGA playCardGA = new(cardToPlay, npc);
+                PlayCardGA playCardGA = new(cardToPlay, npc, MultiStockSystem.Instance.GetLineView(EStockType.Oil));
                 ActionSystem.Instance.AddReaction(playCardGA);
             }
             else

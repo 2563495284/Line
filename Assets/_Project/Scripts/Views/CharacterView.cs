@@ -59,7 +59,7 @@ public abstract class CharacterView : MonoBehaviour
         Card card = drawPile.Draw();
         if (card == null)
         {
-            Camera.main.transform.DOShakePosition(0.5f, 0.1f, 10, 90, false, true);
+            Utils.ShakeCamera();
             yield break;
         }
 

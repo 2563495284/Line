@@ -14,24 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Image>k__BackingField: {fileID: 0}
   <Title>k__BackingField: "\u770B\u8DCC"
-  <Description>k__BackingField: "\u4E94\u4E2A\u4EA4\u6613\u65E5\u540E\uFF0C\u77F3\u6CB9\u4EF7\u683C\u5982\u679C\u4E0B\u8DCC\u83B7\u5F97100\u80A1\uFF0C\u5982\u679C\u4E0A\u6DA8\u5219\u626310000\u91D1\u5E01"
+  <Description>k__BackingField: "\u4E09\u4E2A\u4EA4\u6613\u65E5\u540E\uFF0C\u5176\u4EF7\u683C\u5982\u679C\u4E0B\u8DCC\u83B7\u5F97\u5176100\u4EFD\uFF0C\u4E0A\u6DA8\u5219\u626310000\u91D1\u5E01"
   <ManualTargetEffect>k__BackingField:
-    rid: -2
-  <OtherEffects>k__BackingField:
-  - <TargetMode>k__BackingField:
-      rid: 9019117161397092431
-    <Effect>k__BackingField:
-      rid: 9019117161397092432
-  <tradeStockAmount>k__BackingField: 0
+    rid: 9019117317643567753
+  <OtherEffects>k__BackingField: []
+  <Mana>k__BackingField: 0
+  <TradeStockAmount>k__BackingField: 0
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 9019117161397092431
-      type: {class: NoTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 9019117161397092432
+    - rid: 9019117317643567753
       type: {class: PredictEffect, ns: , asm: Assembly-CSharp}
       data:
         predictionType: 1
@@ -39,4 +31,4 @@ MonoBehaviour:
         rewardStockAmount: 100
         penaltyMoneyAmount: 10000
         penaltyStockAmount: 0
-        delayRounds: 5
+        delayRounds: 3

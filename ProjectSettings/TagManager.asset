@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 3
+  serializedVersion: 2
   tags: []
   layers:
   - Default
@@ -13,7 +13,7 @@ TagManager:
   - UI
   - DropLayer
   - Line
-  - 
+  - Card
   - 
   - 
   - 
@@ -41,5 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  m_RenderingLayers:
-  - Default
+  - name: New Layer 1
+    uniqueID: 241700319
+    locked: 0
+  - name: New Layer 2
+    uniqueID: 4139741633
+    locked: 0
+  - name: Line
+    uniqueID: 948551841
+    locked: 0
+  - name: Card
+    uniqueID: 3561431087
+    locked: 0

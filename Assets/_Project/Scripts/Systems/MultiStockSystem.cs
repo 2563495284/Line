@@ -13,25 +13,20 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     [SerializeField] private List<SingleStockMarketData> stockMarkets = new List<SingleStockMarketData>();
 
     [Header("UI引用")]
-    [SerializeField] private MoneyUI moneyUI;
     [SerializeField] private TripleKLineDisplay tripleKLineDisplay;
-
-    [Header("调试")]
-    [SerializeField] private bool showDebugInfo = true;
-
     // 玩家资金
     private float currentMoney = 10000f;
-
-    // 事件
-    public event Action<EStockType, int, bool> OnStockTraded; // 股票类型，数量，是否买入
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<ChangeStockPriceGA>(ChangeStockPricePerformer);
         ActionSystem.AttachPerformer<TradeSpecificStockGA>(TradeSpecificStockPerformer);
-        ActionSystem.AttachPerformer<ChangeMoneyGA>(ChangeMoneyPerformer);
-        ActionSystem.AttachPerformer<UseStockMaterialGA>(UseStockMaterialPerformer);
+        ActionSystem.AttachPerformer<TradeAllStockGA>(TradeAllStockPerformer);
+        ActionSystem.AttachPerformer<NextRoundTurnGA>(NextRoundTurnPostReaction);
 
-        ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
+        //改变金币
+        ActionSystem.AttachPerformer<ChangeMoneyGA>(ChangeMoneyPerformer);
+        //改变股票数量
+        ActionSystem.AttachPerformer<ChangeStockGA>(ChangeStockPerformer);
 
     }
 
@@ -39,10 +34,13 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     {
         ActionSystem.DetachPerformer<ChangeStockPriceGA>();
         ActionSystem.DetachPerformer<TradeSpecificStockGA>();
-        ActionSystem.DetachPerformer<ChangeMoneyGA>();
-        ActionSystem.DetachPerformer<UseStockMaterialGA>();
+        ActionSystem.DetachPerformer<TradeAllStockGA>();
+        ActionSystem.DetachPerformer<NextRoundTurnGA>();
 
-        ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
+        //改变金币
+        ActionSystem.DetachPerformer<ChangeMoneyGA>();
+        //改变股票数量
+        ActionSystem.DetachPerformer<ChangeStockGA>();
     }
 
     #region Initialization
@@ -69,7 +67,6 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
                 market.priceHistory.Add(market.currentPrice);
             }
         }
-        UpdateUI();
         UpdateKLineDisplays();
     }
 
@@ -87,13 +84,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             market.MarkPrice();
         }
 
-        UpdateUI();
         UpdateKLineDisplays();
-
-        if (showDebugInfo)
-        {
-            Debug.Log("所有股票价格已刷新");
-        }
     }
 
     #endregion
@@ -145,89 +136,69 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             yield break;
         }
 
-        bool success = false;
-        float cost = 0f;
-
         if (action.Amount > 0) // 买入
         {
-            cost = action.Amount * market.currentPrice;
-            if (cost <= currentMoney)
-            {
-                success = market.BuyStock(action.Amount, currentMoney);
-                if (success)
-                {
-                    currentMoney -= cost;
-                }
-            }
+            ChangeStockGA changeStockGA = new ChangeStockGA(action.Amount, action.StockType);
+            ActionSystem.Instance.Perform(changeStockGA);
+            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-action.Amount * market.currentPrice);
+            ActionSystem.Instance.Perform(changeMoneyGA);
         }
         else if (action.Amount < 0) // 卖出
         {
             int sellAmount = -action.Amount;
-            success = market.SellStock(sellAmount);
-            if (success)
-            {
-                currentMoney += sellAmount * market.currentPrice;
-            }
+            ChangeStockGA changeStockGA = new ChangeStockGA(sellAmount, action.StockType);
+            ActionSystem.Instance.Perform(changeStockGA);
+            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-sellAmount * market.currentPrice);
+            ActionSystem.Instance.Perform(changeMoneyGA);
         }
-
-        if (success)
-        {
-            OnStockTraded?.Invoke(action.StockType, action.Amount, action.Amount > 0);
-            UpdateUI();
-
-            if (showDebugInfo)
-            {
-                string operation = action.Amount > 0 ? "买入" : "卖出";
-                Debug.Log($"{operation} {market.stockName} {math.abs(action.Amount)}股，" +
-                         $"价格: {market.currentPrice:F2}，总额: {cost:F2}");
-            }
-        }
-
         yield return null;
     }
-
-    /// <summary>
-    /// 处理金币变化
-    /// </summary>
+    private IEnumerator TradeAllStockPerformer(TradeAllStockGA action)
+    {
+        var market = GetStockMarket(action.StockType);
+        if (market == null)
+        {
+            Debug.LogError($"未找到股票类型: {action.StockType}");
+            yield break;
+        }
+        if (action.TradeAllStockType == ETradeAllStockType.Buy)
+        {
+            int buyStockCount = (int)Math.Floor(currentMoney / market.currentPrice);
+            ChangeStockGA changeStockGA = new ChangeStockGA(buyStockCount, action.StockType);
+            ActionSystem.Instance.Perform(changeStockGA);
+            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-buyStockCount * market.currentPrice);
+            ActionSystem.Instance.Perform(changeMoneyGA);
+        }
+        else
+        {
+            ChangeStockGA changeStockGA = new ChangeStockGA(-market.playerHoldings, action.StockType);
+            ActionSystem.Instance.Perform(changeStockGA);
+            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(market.playerHoldings * market.currentPrice);
+            ActionSystem.Instance.Perform(changeMoneyGA);
+        }
+        yield return null;
+    }
+    private IEnumerator NextRoundTurnPostReaction(NextRoundTurnGA action)
+    {
+        RefreshAllStockPrices();
+        yield return null;
+    }
     private IEnumerator ChangeMoneyPerformer(ChangeMoneyGA action)
     {
         currentMoney += action.Amount;
-        UpdateUI();
-
-        if (showDebugInfo)
-        {
-            string operation = action.Amount > 0 ? "获得" : "失去";
-            Debug.Log($"{operation} {math.abs(action.Amount):F2} 金币，当前: {currentMoney:F2}");
-        }
-
         yield return null;
     }
 
-    /// <summary>
-    /// 处理股票材料使用
-    /// </summary>
-    private IEnumerator UseStockMaterialPerformer(UseStockMaterialGA action)
+    private IEnumerator ChangeStockPerformer(ChangeStockGA action)
     {
         var market = GetStockMarket(action.StockType);
-        if (market == null || market.playerHoldings < action.Amount)
+        if (market == null)
         {
-            Debug.LogWarning($"材料不足: {action.StockType} 需要{action.Amount}，拥有{market?.playerHoldings ?? 0}");
+            Debug.LogError($"未找到股票类型: {action.StockType}");
             yield break;
         }
-
-        market.SellStock(action.Amount);
-        UpdateUI();
-
-        if (showDebugInfo)
-        {
-            Debug.Log($"使用材料: {market.stockName} x{action.Amount}");
-        }
-
+        market.playerHoldings = Mathf.Max(0, market.playerHoldings + action.Amount);
         yield return null;
-    }
-    private void NextRoundTurnPostReaction(NextRoundTurnGA action)
-    {
-        RefreshAllStockPrices();
     }
 
     #endregion
@@ -280,44 +251,29 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         return market?.playerHoldings ?? 0;
     }
 
-    /// <summary>
-    /// 检查是否有足够的股票材料
-    /// </summary>
-    public bool HasEnoughMaterial(EStockType stockType, int amount)
-    {
-        return GetStockHoldings(stockType) >= amount;
-    }
-
-    /// <summary>
-    /// 检查是否有足够的金币买入
-    /// </summary>
-    public bool CanAffordStock(EStockType stockType, int amount)
+    public bool CanTradeStock(EStockType stockType, int amount)
     {
         var market = GetStockMarket(stockType);
-        if (market == null) return false;
 
-        float cost = amount * market.currentPrice;
-        return cost <= currentMoney;
+        if (market == null)
+        {
+            return false;
+        }
+        if (amount <= 0)
+        {
+            return market.playerHoldings >= -amount;
+        }
+
+
+        return market.currentPrice * amount <= currentMoney;
     }
-
+    public LineView GetLineView(EStockType eStockType)
+    {
+        return tripleKLineDisplay.GetLineView(eStockType);
+    }
     #endregion
 
     #region UI Updates
-
-    /// <summary>
-    /// 更新UI显示
-    /// </summary>
-    private void UpdateUI()
-    {
-        if (moneyUI != null)
-        {
-            moneyUI.UpdateMoneyText(currentMoney);
-
-            // 更新总资产显示
-            float totalAssets = GetTotalAssetValue();
-            // moneyUI.UpdateTotalAssetsText(totalAssets); // 如果有这个方法的话
-        }
-    }
 
     /// <summary>
     /// 更新K线显示
@@ -330,26 +286,5 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         }
     }
 
-    #endregion
-
-    #region Debug Methods
-
-    /// <summary>
-    /// 打印所有股市状态
-    /// </summary>
-    [ContextMenu("打印股市状态")]
-    public void PrintAllStockStatus()
-    {
-        Debug.Log("=== 股市状态 ===");
-        Debug.Log($"当前金币: {currentMoney:F2}");
-        Debug.Log($"总资产: {GetTotalAssetValue():F2}");
-
-        foreach (var market in stockMarkets)
-        {
-            Debug.Log($"{market.stockName}: 价格{market.currentPrice:F2}, " +
-                     $"持有{market.playerHoldings}股, 价值{market.totalValue:F2}, " +
-                     $"变化{market.GetPriceChangePercent():+F1;-F1}%");
-        }
-    }
     #endregion
 }

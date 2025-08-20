@@ -132,8 +132,6 @@ GameObject:
   m_Component:
   - component: {fileID: 20428366}
   - component: {fileID: 20428367}
-  - component: {fileID: 20428369}
-  - component: {fileID: 20428370}
   m_Layer: 7
   m_Name: Square
   m_TagString: Untagged
@@ -194,11 +192,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 948551841
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.009433985, g: 0.009433985, b: 0.009433985, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -208,59 +206,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &20428369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 20428365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 768eee1fd3cbb46bbb75c352a67c772f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chartWidth: 5.656
-  chartHeight: 4
-  padding: 0.3
-  lineWidth: 0.08
-  lineColor: {r: 0, g: 0, b: 1, a: 1}
-  pointPrefab: {fileID: 1465267497455038283, guid: 547c08b514b6044a0aa2f635e0b13d8e, type: 3}
-  pointSize: 1
-  pointColor: {r: 1, g: 0, b: 0, a: 1}
-  showPriceLabels: 1
-  maxPoints: 25
-  backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
-  background: {fileID: 20428365}
-  titleText: {fileID: 1946688694}
-  currentPriceText: {fileID: 1152850687}
-  changePercentText: {fileID: 1472961400}
-  positiveColor: {r: 0, g: 1, b: 0, a: 1}
-  negativeColor: {r: 1, g: 0, b: 0, a: 1}
-  neutralColor: {r: 1, g: 1, b: 1, a: 1}
-  kLineRenderer: {fileID: 170695753}
-  showDebugInfo: 0
---- !u!65 &20428370
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 20428365}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &43057162
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +335,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: 102, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &94016971
 MonoBehaviour:
@@ -719,12 +664,11 @@ MonoBehaviour:
     stockSymbol: 
     themeColor: {r: 0, g: 0, b: 0, a: 0}
     currentPrice: 100
-    tempPrice: 0
+    tempPrice: 100
     initialPrice: 100
     minPrice: 1
     maxPrice: 1000
     playerHoldings: 0
-    totalValue: 0
     priceHistory: []
     maxHistoryCount: 30
     baseVolatility: 0
@@ -734,12 +678,11 @@ MonoBehaviour:
     stockSymbol: 
     themeColor: {r: 0.5754717, g: 0.5754717, b: 0.5754717, a: 0}
     currentPrice: 100
-    tempPrice: 0
+    tempPrice: 100
     initialPrice: 100
     minPrice: 1
     maxPrice: 1000
     playerHoldings: 0
-    totalValue: 0
     priceHistory: []
     maxHistoryCount: 30
     baseVolatility: 0
@@ -749,19 +692,16 @@ MonoBehaviour:
     stockSymbol: 
     themeColor: {r: 1, g: 1, b: 1, a: 0}
     currentPrice: 100
-    tempPrice: 0
+    tempPrice: 100
     initialPrice: 100
     minPrice: 1
     maxPrice: 1000
     playerHoldings: 0
-    totalValue: 0
     priceHistory: []
     maxHistoryCount: 30
     baseVolatility: 0
     currentVolatility: 0
-  moneyUI: {fileID: 912625144}
   tripleKLineDisplay: {fileID: 1204819672}
-  showDebugInfo: 1
 --- !u!1 &170695751
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,8 +773,8 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 948551841
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_Positions: []
   m_Parameters:
@@ -1116,7 +1056,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 220, y: -75}
-  m_SizeDelta: {x: 428.52, y: 50}
+  m_SizeDelta: {x: 426, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &257865919
 MonoBehaviour:
@@ -1177,7 +1117,7 @@ MonoBehaviour:
   m_Spacing: 60
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
+  m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 0
@@ -1241,62 +1181,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerView: {fileID: 1431424545781732352}
+  playerAttributeDisplay: {fileID: 1408514486}
   playerAttributes:
     attributes:
     - attributeType: 0
       attributeName: "\u793E\u4EA4"
       description: "\u6BCF\u56DE\u5408\u6478\u724C\u6570+{0}"
       icon: {fileID: 0}
-      currentLevel: 1
-      maxLevel: 10
       currentValue: 0
-      baseValue: 0
-      valuePerLevel: 1
-      upgradeCost: 100
-      costMultiplier: 1.5
-      totalUpgradeCost: 0
     - attributeType: 1
       attributeName: "\u8010\u5FC3"
       description: "\u4FDD\u7559{0}\u70B9\u80FD\u91CF\u5230\u4E0B\u56DE\u5408"
       icon: {fileID: 0}
-      currentLevel: 1
-      maxLevel: 10
       currentValue: 0
-      baseValue: 0
-      valuePerLevel: 1
-      upgradeCost: 150
-      costMultiplier: 1.5
-      totalUpgradeCost: 0
     - attributeType: 2
       attributeName: "\u667A\u6167"
       description: "\u6BCF\u56DE\u5408\u80FD\u91CF\u6062\u590D+{0}"
       icon: {fileID: 0}
-      currentLevel: 1
-      maxLevel: 10
       currentValue: 0
-      baseValue: 0
-      valuePerLevel: 1
-      upgradeCost: 120
-      costMultiplier: 1.5
-      totalUpgradeCost: 0
     - attributeType: 3
       attributeName: "\u9B45\u529B"
-      description: "\u80A1\u5E02\u5F71\u54CD\u529B+{0}%"
+      description: "\u5E02\u573A\u5F71\u54CD\u529B+{0}%"
       icon: {fileID: 0}
-      currentLevel: 1
-      maxLevel: 10
       currentValue: 0
-      baseValue: 0
-      valuePerLevel: 10
-      upgradeCost: 200
-      costMultiplier: 1.5
-      totalUpgradeCost: 0
+    - attributeType: 4
+      attributeName: "\u52C7\u6C14"
+      description: "\u5E02\u573A\u4EA4\u6613\u6570\u91CF+{0}"
+      icon: {fileID: 0}
+      currentValue: 0
+    - attributeType: 5
+      attributeName: "\u51B7\u9759"
+      description: "\u73AF\u5883\u5BF9\u5E02\u573A\u4EF7\u683C\u5F71\u54CD-{0}%"
+      icon: {fileID: 0}
+      currentValue: 0
+    - attributeType: 6
+      attributeName: "\u72C2\u70ED"
+      description: "\u73AF\u5883\u5BF9\u5E02\u573A\u4EF7\u683C\u5F71\u54CD+{0}%"
+      icon: {fileID: 0}
+      currentValue: 0
     totalAttributePoints: 0
     totalMoneySpent: 0
   baseEnergyPerTurn: 3
-  currentEnergy: 3
-  maxEnergy: 10
-  savedEnergy: 0
+  currentMana: 3
+  maxMana: 10
+  savedMana: 0
   baseCardsPerTurn: 5
   showDebugInfo: 1
 --- !u!1 &324559502
@@ -1368,6 +1296,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 326595323}
+  - component: {fileID: 326595325}
+  - component: {fileID: 326595324}
   m_Layer: 7
   m_Name: Oil_LineView
   m_TagString: Untagged
@@ -1395,6 +1325,59 @@ Transform:
   - {fileID: 2067788701}
   m_Father: {fileID: 1204819671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &326595324
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326595322}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.656, y: 4, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &326595325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326595322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768eee1fd3cbb46bbb75c352a67c772f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chartWidth: 5.656
+  chartHeight: 4
+  padding: 0.3
+  lineWidth: 0.08
+  lineColor: {r: 0, g: 0, b: 1, a: 1}
+  pointPrefab: {fileID: 1465267497455038283, guid: 547c08b514b6044a0aa2f635e0b13d8e, type: 3}
+  pointSize: 1
+  pointColor: {r: 1, g: 0, b: 0, a: 1}
+  showPriceLabels: 1
+  maxPoints: 25
+  backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
+  background: {fileID: 845305596}
+  titleText: {fileID: 190400406}
+  currentPriceText: {fileID: 648967214}
+  changePercentText: {fileID: 2067788702}
+  positiveColor: {r: 0, g: 1, b: 0, a: 1}
+  negativeColor: {r: 1, g: 0, b: 0, a: 1}
+  neutralColor: {r: 1, g: 1, b: 1, a: 1}
+  kLineRenderer: {fileID: 1300509753}
+  showDebugInfo: 0
 --- !u!1 &329612677
 GameObject:
   m_ObjectHideFlags: 0
@@ -2145,7 +2128,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 00000000df0d680ec171bff6a1c089382f2047d4
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -2437,8 +2420,6 @@ GameObject:
   m_Component:
   - component: {fileID: 845305597}
   - component: {fileID: 845305598}
-  - component: {fileID: 845305600}
-  - component: {fileID: 845305601}
   m_Layer: 7
   m_Name: Square
   m_TagString: Untagged
@@ -2499,11 +2480,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 948551841
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.122641504, g: 0.10817906, b: 0.10817906, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -2513,59 +2494,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &845305600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 845305596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 768eee1fd3cbb46bbb75c352a67c772f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chartWidth: 5.656
-  chartHeight: 4
-  padding: 0.3
-  lineWidth: 0.08
-  lineColor: {r: 0, g: 0, b: 1, a: 1}
-  pointPrefab: {fileID: 1465267497455038283, guid: 547c08b514b6044a0aa2f635e0b13d8e, type: 3}
-  pointSize: 1
-  pointColor: {r: 1, g: 0, b: 0, a: 1}
-  showPriceLabels: 1
-  maxPoints: 25
-  backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
-  background: {fileID: 845305596}
-  titleText: {fileID: 190400406}
-  currentPriceText: {fileID: 648967214}
-  changePercentText: {fileID: 2067788702}
-  positiveColor: {r: 0, g: 1, b: 0, a: 1}
-  negativeColor: {r: 1, g: 0, b: 0, a: 1}
-  neutralColor: {r: 1, g: 1, b: 1, a: 1}
-  kLineRenderer: {fileID: 1300509753}
-  showDebugInfo: 0
---- !u!65 &845305601
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 845305596}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &912625142
 GameObject:
   m_ObjectHideFlags: 0
@@ -2622,12 +2550,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d071215669e584e46ba20a8799478cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moneyDisplay: {fileID: 341310954}
-  stockDisplays:
-  - {fileID: 94016973}
-  - {fileID: 2138306824}
-  - {fileID: 2096715777}
-  valuesDisplay: {fileID: 103192218}
 --- !u!114 &912625145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2839,8 +2761,8 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 948551841
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_Positions: []
   m_Parameters:
@@ -3331,9 +3253,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e79e290d19d134350997e8db7416877e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oilLineView: {fileID: 0}
-  steelLineView: {fileID: 0}
-  cottonLineView: {fileID: 0}
+  oilLineView: {fileID: 326595325}
+  steelLineView: {fileID: 1389643704}
+  cottonLineView: {fileID: 2099981424}
   spacing: 6
   centerPosition: {x: 0, y: 0, z: 0}
   updateInterval: 1
@@ -3410,8 +3332,8 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 948551841
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_Positions: []
   m_Parameters:
@@ -3491,6 +3413,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1389643701}
+  - component: {fileID: 1389643704}
+  - component: {fileID: 1389643705}
   m_Layer: 7
   m_Name: Steel_LineView
   m_TagString: Untagged
@@ -3518,6 +3442,59 @@ Transform:
   - {fileID: 531123332}
   m_Father: {fileID: 1204819671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1389643704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389643700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768eee1fd3cbb46bbb75c352a67c772f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chartWidth: 5.656
+  chartHeight: 4
+  padding: 0.3
+  lineWidth: 0.08
+  lineColor: {r: 0, g: 0, b: 1, a: 1}
+  pointPrefab: {fileID: 1465267497455038283, guid: 547c08b514b6044a0aa2f635e0b13d8e, type: 3}
+  pointSize: 1
+  pointColor: {r: 1, g: 0, b: 0, a: 1}
+  showPriceLabels: 1
+  maxPoints: 25
+  backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
+  background: {fileID: 1685715250}
+  titleText: {fileID: 1116784788}
+  currentPriceText: {fileID: 506887570}
+  changePercentText: {fileID: 531123333}
+  positiveColor: {r: 0, g: 1, b: 0, a: 1}
+  negativeColor: {r: 1, g: 0, b: 0, a: 1}
+  neutralColor: {r: 1, g: 1, b: 1, a: 1}
+  kLineRenderer: {fileID: 1065838879}
+  showDebugInfo: 0
+--- !u!65 &1389643705
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389643700}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.656, y: 4, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1403569641
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4354,8 +4331,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1685715251}
   - component: {fileID: 1685715252}
-  - component: {fileID: 1685715254}
-  - component: {fileID: 1685715255}
   m_Layer: 7
   m_Name: Square
   m_TagString: Untagged
@@ -4416,11 +4391,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 948551841
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.0754717, g: 0.06372374, b: 0.06372374, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -4430,59 +4405,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1685715254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1685715250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 768eee1fd3cbb46bbb75c352a67c772f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chartWidth: 5.656
-  chartHeight: 4
-  padding: 0.3
-  lineWidth: 0.08
-  lineColor: {r: 0, g: 0, b: 1, a: 1}
-  pointPrefab: {fileID: 1465267497455038283, guid: 547c08b514b6044a0aa2f635e0b13d8e, type: 3}
-  pointSize: 1
-  pointColor: {r: 1, g: 0, b: 0, a: 1}
-  showPriceLabels: 1
-  maxPoints: 25
-  backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
-  background: {fileID: 1685715250}
-  titleText: {fileID: 1116784788}
-  currentPriceText: {fileID: 506887570}
-  changePercentText: {fileID: 531123333}
-  positiveColor: {r: 0, g: 1, b: 0, a: 1}
-  negativeColor: {r: 1, g: 0, b: 0, a: 1}
-  neutralColor: {r: 1, g: 1, b: 1, a: 1}
-  kLineRenderer: {fileID: 1065838879}
-  showDebugInfo: 0
---- !u!65 &1685715255
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1685715250}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1818365331
 GameObject:
   m_ObjectHideFlags: 0
@@ -5116,7 +5038,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: 102, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2096715777
 MonoBehaviour:
@@ -5247,6 +5169,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2099981422}
+  - component: {fileID: 2099981424}
+  - component: {fileID: 2099981423}
   m_Layer: 7
   m_Name: Cotton_LineView
   m_TagString: Untagged
@@ -5274,6 +5198,59 @@ Transform:
   - {fileID: 1472961397}
   m_Father: {fileID: 1204819671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2099981423
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099981421}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.656, y: 4, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2099981424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099981421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768eee1fd3cbb46bbb75c352a67c772f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chartWidth: 5.656
+  chartHeight: 4
+  padding: 0.3
+  lineWidth: 0.08
+  lineColor: {r: 0, g: 0, b: 1, a: 1}
+  pointPrefab: {fileID: 1465267497455038283, guid: 547c08b514b6044a0aa2f635e0b13d8e, type: 3}
+  pointSize: 1
+  pointColor: {r: 1, g: 0, b: 0, a: 1}
+  showPriceLabels: 1
+  maxPoints: 25
+  backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
+  background: {fileID: 20428365}
+  titleText: {fileID: 1946688694}
+  currentPriceText: {fileID: 1152850687}
+  changePercentText: {fileID: 1472961400}
+  positiveColor: {r: 0, g: 1, b: 0, a: 1}
+  negativeColor: {r: 1, g: 0, b: 0, a: 1}
+  neutralColor: {r: 1, g: 1, b: 1, a: 1}
+  kLineRenderer: {fileID: 170695753}
+  showDebugInfo: 0
 --- !u!1 &2138306822
 GameObject:
   m_ObjectHideFlags: 0
@@ -5310,7 +5287,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: 102, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2138306824
 MonoBehaviour:
@@ -5715,14 +5692,18 @@ MonoBehaviour:
   DiscardPile: []
   MaxHandSize: 3
   InitialDrawCount: 3
+  moneyDisplay: {fileID: 341310954}
+  stockDisplays:
+  - {fileID: 94016973}
+  - {fileID: 2138306824}
+  - {fileID: 2096715777}
+  valuesDisplay: {fileID: 103192218}
   splineContainer: {fileID: 5706891463222420903}
   doTweenUpdatePositionDuration: 0.15
   cardPositionOffset: 0.01
   drawPilePoint: {fileID: 4944029353499052473}
   discardPilePoint: {fileID: 3695793059487033832}
   nextRoundButton: {fileID: 1451521380}
-  drawCardCostMoney: -100
-  drawCardCount: 2
 --- !u!1 &1922509735401060651
 GameObject:
   m_ObjectHideFlags: 0
@@ -6676,9 +6657,9 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 99
+  m_SortingLayerID: -733536209
+  m_SortingLayer: 4
+  m_SortingOrder: 4
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 5, y: 0, z: 1}
@@ -7132,9 +7113,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 99
+  m_SortingLayerID: -733536209
+  m_SortingLayer: 4
+  m_SortingOrder: 4
   m_Sprite: {fileID: 21300000, guid: 14a66073f0388bd48a6ab5d7da61c136, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

@@ -26,7 +26,7 @@ public class PredictEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        PredictionGA predictionGA = new(predictionType, rewardMoneyAmount, rewardStockAmount, penaltyMoneyAmount, penaltyStockAmount, delayRounds);
+        PredictionGA predictionGA = new(predictionType, rewardMoneyAmount, rewardStockAmount, penaltyMoneyAmount, penaltyStockAmount, targetLineView.StockType, delayRounds);
         return predictionGA;
     }
 }

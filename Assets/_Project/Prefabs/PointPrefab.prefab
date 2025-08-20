@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3337115266694636498}
   - component: {fileID: -1432078182076998270}
   - component: {fileID: 4581991471484235568}
+  - component: {fileID: 6005825339523865657}
   m_Layer: 7
   m_Name: PointPrefab
   m_TagString: Untagged
@@ -148,6 +149,18 @@ MonoBehaviour:
   priceLabel: {fileID: 8714301518519387488}
   showOnHover: 1
   isDefaultVisible: 0
+--- !u!210 &6005825339523865657
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465267497455038283}
+  m_Enabled: 1
+  m_SortingLayerID: 948551841
+  m_SortingLayer: 3
+  m_SortingOrder: 2
+  m_SortAtRoot: 0
 --- !u!1 &6746076643603737803
 GameObject:
   m_ObjectHideFlags: 0

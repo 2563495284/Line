@@ -71,18 +71,26 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
 
-        if (Card.ManualTargetEffect != null)
-        {
-            LineView target = ManualTargetingSystem.Instance.EndTargeting(MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue));
-            PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Instance.playerView, target);
-            ActionSystem.Instance.Perform(playCardGA);
-        }
-        else
+        if (Card.ManualTargetEffect == null)
         {
             PlayCardOrResetPosition();
 
             Interactions.Instance.PlayerIsDragging = false;
+            return;
         }
+        LineView target = ManualTargetingSystem.Instance.EndTargeting(MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue));
+        if (target == null)
+        {
+            return;
+        }
+
+        if (!MultiStockSystem.Instance.CanTradeStock(target.StockType, Card.TradeStockAmount))
+        {
+            Utils.ShakeCamera();
+            return;
+        }
+        PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Instance.playerView, target);
+        ActionSystem.Instance.Perform(playCardGA);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -99,6 +107,10 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             return false;
         }
+        if (!PlayerAttributeSystem.Instance.HasEnoughMana(Card.Mana))
+        {
+            return false;
+        }
         return true;
     }
 
@@ -111,6 +123,7 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         else
         {
+            Utils.ShakeCamera();
             transform.SetPositionAndRotation(dragStartPosition, dragStartRotation);
         }
     }

@@ -10,7 +10,10 @@ public enum EPlayerAttributeType
     Social,     // 社交
     Patience,   // 耐心
     Wisdom,     // 智慧
-    Charisma    // 魅力
+    Charisma,    // 魅力
+    Courage,     // 勇气
+    Calmness,     // 冷静
+    Fanaticism     // 狂热
 }
 
 /// <summary>
@@ -26,22 +29,11 @@ public class PlayerAttributeData
     public Sprite icon;
 
     [Header("数值信息")]
-    public int currentLevel = 1;
-    public int maxLevel = 10;
     public float currentValue;
-    public float baseValue;
-    public float valuePerLevel;
-
-    [Header("升级信息")]
-    public int upgradeCost = 100;
-    public float costMultiplier = 1.5f;
-    public int totalUpgradeCost; // 已花费的总升级费用
-
     public PlayerAttributeData(EPlayerAttributeType type)
     {
         attributeType = type;
         SetupAttributeInfo();
-        RecalculateValue();
     }
 
     /// <summary>
@@ -54,70 +46,41 @@ public class PlayerAttributeData
             case EPlayerAttributeType.Social:
                 attributeName = "社交";
                 description = "每回合摸牌数+{0}";
-                baseValue = 0f;
-                valuePerLevel = 1f;
-                upgradeCost = 100;
+                currentValue = 0f;
                 break;
             case EPlayerAttributeType.Patience:
                 attributeName = "耐心";
                 description = "保留{0}点能量到下回合";
-                baseValue = 0f;
-                valuePerLevel = 1f;
-                upgradeCost = 150;
+                currentValue = 0f;
                 break;
             case EPlayerAttributeType.Wisdom:
                 attributeName = "智慧";
                 description = "每回合能量恢复+{0}";
-                baseValue = 0f;
-                valuePerLevel = 1f;
-                upgradeCost = 120;
+                currentValue = 0f;
                 break;
             case EPlayerAttributeType.Charisma:
                 attributeName = "魅力";
-                description = "股市影响力+{0}%";
-                baseValue = 0f;
-                valuePerLevel = 10f; // 每级增加10%影响力
-                upgradeCost = 200;
+                description = "市场影响力+{0}%";
+                currentValue = 0f;
+                break;
+            case EPlayerAttributeType.Courage:
+                attributeName = "勇气";
+                description = "市场交易数量+{0}";
+                currentValue = 0f;
+                break;
+            case EPlayerAttributeType.Calmness:
+                attributeName = "冷静";
+                description = "环境对市场价格影响-{0}%";
+                currentValue = 0f;
+                break;
+            case EPlayerAttributeType.Fanaticism:
+                attributeName = "狂热";
+                description = "环境对市场价格影响+{0}%";
+                currentValue = 0f;
                 break;
         }
-        costMultiplier = 1.5f;
     }
 
-    /// <summary>
-    /// 重新计算当前值
-    /// </summary>
-    public void RecalculateValue()
-    {
-        currentValue = baseValue + (currentLevel - 1) * valuePerLevel;
-    }
-
-    /// <summary>
-    /// 获取下一级的升级费用
-    /// </summary>
-    public int GetNextUpgradeCost()
-    {
-        if (currentLevel >= maxLevel) return -1;
-
-        return Mathf.RoundToInt(upgradeCost * Mathf.Pow(costMultiplier, currentLevel - 1));
-    }
-
-    /// <summary>
-    /// 升级属性
-    /// </summary>
-    public bool UpgradeAttribute(int availableMoney)
-    {
-        if (currentLevel >= maxLevel) return false;
-
-        int cost = GetNextUpgradeCost();
-        if (cost <= availableMoney)
-        {
-            currentLevel++;
-            totalUpgradeCost += cost;
-            RecalculateValue();
-            return true;
-        }
-        return false;
-    }
 
     /// <summary>
     /// 获取格式化的描述
@@ -132,20 +95,7 @@ public class PlayerAttributeData
     /// </summary>
     public string GetDisplayString()
     {
-        return $"{attributeName} Lv.{currentLevel} ({currentValue})";
-    }
-
-    /// <summary>
-    /// 获取升级预览字符串
-    /// </summary>
-    public string GetUpgradePreviewString()
-    {
-        if (currentLevel >= maxLevel)
-            return "已达到最大等级";
-
-        float nextValue = baseValue + currentLevel * valuePerLevel;
-        int cost = GetNextUpgradeCost();
-        return $"升级到 Lv.{currentLevel + 1} ({nextValue}) - 费用: {cost}金币";
+        return $"{attributeName} ({currentValue})";
     }
 }
 
@@ -179,7 +129,6 @@ public class PlayerAttributesData
             attributes.Add(new PlayerAttributeData(attributeType));
         }
 
-        RecalculateStats();
     }
 
     /// <summary>
@@ -197,35 +146,6 @@ public class PlayerAttributesData
     {
         var attribute = GetAttribute(type);
         return attribute?.currentValue ?? 0f;
-    }
-
-    /// <summary>
-    /// 升级属性
-    /// </summary>
-    public bool UpgradeAttribute(EPlayerAttributeType type, int availableMoney)
-    {
-        var attribute = GetAttribute(type);
-        if (attribute != null && attribute.UpgradeAttribute(availableMoney))
-        {
-            RecalculateStats();
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// 重新计算统计信息
-    /// </summary>
-    private void RecalculateStats()
-    {
-        totalAttributePoints = 0;
-        totalMoneySpent = 0;
-
-        foreach (var attribute in attributes)
-        {
-            totalAttributePoints += attribute.currentLevel - 1; // 减去初始等级1
-            totalMoneySpent += attribute.totalUpgradeCost;
-        }
     }
 
     /// <summary>

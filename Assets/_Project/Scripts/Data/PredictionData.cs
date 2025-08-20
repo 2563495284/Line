@@ -12,6 +12,8 @@ public class PredictionData
     public float penaltyMoneyAmount;
     public int penaltyStockAmount;
 
+    public EStockType stockType;
+
     [Header("时间信息")]
     public int remainingRounds;
     public DateTime createdTime;
@@ -27,6 +29,7 @@ public class PredictionData
         int rewardStockAmount,
         float penaltyMoneyAmount,
         int penaltyStockAmount,
+        EStockType stockType,
         int rounds
     )
     {
@@ -36,6 +39,7 @@ public class PredictionData
         this.rewardStockAmount = rewardStockAmount;
         this.penaltyMoneyAmount = penaltyMoneyAmount;
         this.penaltyStockAmount = penaltyStockAmount;
+        this.stockType = stockType;
         remainingRounds = rounds;
         createdTime = DateTime.Now;
         isResolved = false;

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1639269021925195465}
   - component: {fileID: 7437113020723705865}
   - component: {fileID: 7075004463726517481}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Description Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 9186687664089720303}
   - component: {fileID: 60404177142812722}
   - component: {fileID: 7151045923794761588}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Title Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +352,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3912588201684614629}
   - component: {fileID: 940257467651092917}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Card Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -438,7 +438,7 @@ GameObject:
   - component: {fileID: 3793263008428201621}
   - component: {fileID: 6835362836283020546}
   - component: {fileID: 5816774747392814060}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Card View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,9 +488,9 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5326493520774857432}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -733536209
+  m_SortingLayer: 4
+  m_SortingOrder: 5
   m_SortAtRoot: 0
 --- !u!65 &5816774747392814060
 BoxCollider:
@@ -522,7 +522,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9043555274245307660}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -558,7 +558,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2739338223522798116}
   - component: {fileID: 4294085405384746176}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}

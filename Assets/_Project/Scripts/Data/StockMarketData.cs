@@ -26,14 +26,14 @@ public class SingleStockMarketData
 
     [Header("价格信息")]
     public float currentPrice;
-    public float tempPrice;
+    public float tempPrice = 100f;
     public float initialPrice = 100f;
     public float minPrice = 1f;
     public float maxPrice = 1000f;
 
     [Header("持有信息")]
     public int playerHoldings; // 玩家持有数量
-    public float totalValue;   // 总价值
+    public float totalValue { get { return playerHoldings * currentPrice; } }   // 总价值
 
     [Header("历史数据")]
     public List<float> priceHistory = new List<float>();
@@ -50,7 +50,6 @@ public class SingleStockMarketData
         currentPrice = initialPrice;
         tempPrice = initialPrice;
         priceHistory.Add(currentPrice);
-        UpdateTotalValue();
     }
 
     /// <summary>
@@ -99,44 +98,6 @@ public class SingleStockMarketData
             priceHistory.RemoveAt(0);
         }
 
-        UpdateTotalValue();
-    }
-
-    /// <summary>
-    /// 更新总价值
-    /// </summary>
-    public void UpdateTotalValue()
-    {
-        totalValue = playerHoldings * currentPrice;
-    }
-
-    /// <summary>
-    /// 买入股票
-    /// </summary>
-    public bool BuyStock(int amount, float availableMoney)
-    {
-        float cost = amount * currentPrice;
-        if (cost <= availableMoney)
-        {
-            playerHoldings += amount;
-            UpdateTotalValue();
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// 卖出股票
-    /// </summary>
-    public bool SellStock(int amount)
-    {
-        if (amount <= playerHoldings)
-        {
-            playerHoldings -= amount;
-            UpdateTotalValue();
-            return true;
-        }
-        return false;
     }
 
     /// <summary>

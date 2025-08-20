@@ -16,22 +16,14 @@ MonoBehaviour:
   <Title>k__BackingField: "\u5356\u51FA"
   <Description>k__BackingField: "\u5356\u51FA100\u80A1"
   <ManualTargetEffect>k__BackingField:
-    rid: -2
-  <OtherEffects>k__BackingField:
-  - <TargetMode>k__BackingField:
-      rid: 9019116980302250133
-    <Effect>k__BackingField:
-      rid: 9019117075940769866
-  <tradeStockAmount>k__BackingField: -100
+    rid: 9019117317643567752
+  <OtherEffects>k__BackingField: []
+  <Mana>k__BackingField: 0
+  <TradeStockAmount>k__BackingField: -100
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 9019116980302250133
-      type: {class: NoTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 9019117075940769866
+    - rid: 9019117317643567752
       type: {class: TradeStockEffect, ns: , asm: Assembly-CSharp}
       data:
-        tradeStockAmount: -100
+        tradeAmount: -100

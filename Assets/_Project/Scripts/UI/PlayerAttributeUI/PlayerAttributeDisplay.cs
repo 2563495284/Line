@@ -22,17 +22,10 @@ public class PlayerAttributeDisplay : MonoBehaviour
     [SerializeField] private float updateInterval = 1f;
 
     private List<AttributeDisplayItem> attributeDisplayItems = new List<AttributeDisplayItem>();
-    private Coroutine updateCoroutine;
 
     private void Start()
     {
         InitializeAttributeDisplay();
-        StartUpdateCoroutine();
-    }
-
-    private void OnDestroy()
-    {
-        StopUpdateCoroutine();
     }
 
     #region Initialization
@@ -83,44 +76,6 @@ public class PlayerAttributeDisplay : MonoBehaviour
     }
 
     #endregion
-
-    #region Update System
-
-    /// <summary>
-    /// 开始更新协程
-    /// </summary>
-    private void StartUpdateCoroutine()
-    {
-        if (updateCoroutine == null)
-        {
-            updateCoroutine = StartCoroutine(UpdateDisplayCoroutine());
-        }
-    }
-
-    /// <summary>
-    /// 停止更新协程
-    /// </summary>
-    private void StopUpdateCoroutine()
-    {
-        if (updateCoroutine != null)
-        {
-            StopCoroutine(updateCoroutine);
-            updateCoroutine = null;
-        }
-    }
-
-    /// <summary>
-    /// 更新显示协程
-    /// </summary>
-    private IEnumerator UpdateDisplayCoroutine()
-    {
-        while (true)
-        {
-            UpdateAllDisplays();
-            yield return new WaitForSeconds(updateInterval);
-        }
-    }
-
     /// <summary>
     /// 更新所有显示
     /// </summary>
@@ -168,9 +123,6 @@ public class PlayerAttributeDisplay : MonoBehaviour
         }
     }
 
-    #endregion
-
-    #region Public Interface
 
     /// <summary>
     /// 手动刷新显示
@@ -180,5 +132,4 @@ public class PlayerAttributeDisplay : MonoBehaviour
     {
         UpdateAllDisplays();
     }
-    #endregion
 }

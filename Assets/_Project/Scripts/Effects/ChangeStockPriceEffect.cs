@@ -7,11 +7,10 @@ public class ChangeStockPriceEffect : Effect
 {
     [SerializeField] private SerializableDictionary<ECharacterStrategyType, float> changePriceDictionary;
     [SerializeField] private SerializableDictionary<ECharacterStrategyType, float> changePersentDictionary;
-    [SerializeField] private EStockType stockType;
 
     public override GameAction GetGameAction()
     {
-        ChangeStockPriceGA changeStockPriceGA = new(characterView, stockType, changePriceDictionary.ToDictionary(), changePersentDictionary.ToDictionary());
+        ChangeStockPriceGA changeStockPriceGA = new(characterView, targetLineView.StockType, changePriceDictionary.ToDictionary(), changePersentDictionary.ToDictionary());
         return changeStockPriceGA;
     }
 }

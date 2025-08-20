@@ -86,9 +86,6 @@ public class StockDisplayItem : MonoBehaviour
 
         // 更新持有信息
         UpdateHoldingsDisplay();
-
-        // 更新按钮状态
-        UpdateButtonStates();
     }
 
     /// <summary>
@@ -127,28 +124,6 @@ public class StockDisplayItem : MonoBehaviour
         if (valueText != null)
         {
             valueText.text = $"价值: ¥{marketData.totalValue:F2}";
-        }
-    }
-
-    /// <summary>
-    /// 更新按钮状态
-    /// </summary>
-    private void UpdateButtonStates()
-    {
-        if (MultiStockSystem.Instance == null) return;
-
-        // 更新买入按钮
-        if (buyButton != null)
-        {
-            bool canBuy = MultiStockSystem.Instance.CanAffordStock(marketData.stockType, 1);
-            buyButton.interactable = canBuy;
-        }
-
-        // 更新卖出按钮
-        if (sellButton != null)
-        {
-            bool canSell = marketData.playerHoldings > 0;
-            sellButton.interactable = canSell;
         }
     }
 
