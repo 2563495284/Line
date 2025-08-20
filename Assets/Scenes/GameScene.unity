@@ -1671,13 +1671,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b48a5bae66c7436ea5bb7749646dee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipContainer: {fileID: 7470574365580041298}
+  tooltipContainer: {fileID: 798569213}
   tooltipItemPrefab: {fileID: 2118969290595375201, guid: f71a59751b976439ebc3e38ff1a1bc91, type: 3}
   fadeInDuration: 0.2
   fadeOutDuration: 0.15
   fadeEase: 6
   itemSpacing: 5
-  tooltipOffset: {x: 150, y: 0, z: 0}
+  tooltipOffset: {x: 5, y: 0, z: 0}
 --- !u!1 &467913675
 GameObject:
   m_ObjectHideFlags: 0
@@ -2462,6 +2462,11 @@ MonoBehaviour:
   - {fileID: 1602378935}
   - {fileID: 957351356}
   removeNPCScaleDuration: 0.25
+--- !u!4 &798569213 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9043555274245307660, guid: bdf6d773a6dc98d42b98885102f9bfa6, type: 3}
+  m_PrefabInstance: {fileID: 1403569641}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &845305596
 GameObject:
   m_ObjectHideFlags: 0
