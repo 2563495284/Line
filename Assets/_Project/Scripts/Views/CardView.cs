@@ -1,10 +1,10 @@
-using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
@@ -27,7 +27,10 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         Card = card;
         title.text = Card.Title;
-        description.text = Card.Description;
+
+        // 使用富文本描述以显示高亮效果
+        description.text = Card.RichTextDescription ?? Card.Description;
+
         imageSR.sprite = Card.Image;
     }
 

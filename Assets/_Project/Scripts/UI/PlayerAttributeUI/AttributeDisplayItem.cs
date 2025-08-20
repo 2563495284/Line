@@ -13,14 +13,7 @@ public class AttributeDisplayItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private TextMeshProUGUI valueText;
     [SerializeField] private TextMeshProUGUI descriptionText;
-    [SerializeField] private Button upgradeButton;
     [SerializeField] private Image iconImage;
-
-    [Header("颜色设置")]
-    [SerializeField] private Color canUpgradeColor = Color.green;
-    [SerializeField] private Color cannotUpgradeColor = Color.gray;
-    [SerializeField] private Color maxLevelColor = Color.yellow;
-
     private PlayerAttributeData attributeData;
 
     #region Initialization

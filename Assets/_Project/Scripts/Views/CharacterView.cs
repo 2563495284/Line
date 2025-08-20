@@ -70,6 +70,7 @@ public abstract class CharacterView : MonoBehaviour
 
     public virtual void RefillDeck()
     {
+        DiscardPile.Shuffle();
         drawPile.AddRange(DiscardPile);
         DiscardPile.Clear();
     }

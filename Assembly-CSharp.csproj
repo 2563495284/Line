@@ -81,6 +81,7 @@
     <Compile Include="Assets/_Project/Scripts/Data/StockMarketData.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/NewsUI.cs" />
     <Compile Include="Assets/Scripts/Point.cs" />
+    <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeAttributeGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PlayerAttributeData.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeMoneyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PlayerData.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Assets/_Project/Scripts/Data/PerkData.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/NPCView.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/CharacterView.cs" />
+    <Compile Include="Assets/_Project/Scripts/Systems/CardDescriptionSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/TradeSpecificStockGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Target Modes/NoTM.cs" />
     <Compile Include="Assets/Scripts/CameraSetup.cs" />
@@ -154,6 +156,7 @@
     <Compile Include="Assets/_Project/Scripts/Effects/Player/TradeAllStockEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/PlayerAttributeSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/CardData.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/AttributeTooltipUI/AttributeTooltipItem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeManaGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/CharacterData.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/NPC/ChangeStrategyEffect.cs" />
@@ -173,6 +176,8 @@
     <Compile Include="Assets/SREditor/Package/Scripts/FormerlySerializedTypeAttribute.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/OilMarketMessages.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/MarketEventSystem.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/AttributeTooltipUI/AttributeTooltipDisplay.cs" />
+    <Compile Include="Assets/_Project/Scripts/Effects/Player/ChangeAttributeEffect.cs" />
     <Compile Include="Assets/SREditor/Package/Scripts/Services/SRFormerlyTypeCache.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/EffectSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/Action System/ReactionTiming.cs" />

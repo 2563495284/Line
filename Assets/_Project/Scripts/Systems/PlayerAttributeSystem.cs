@@ -52,6 +52,8 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         ActionSystem.SubscribeReaction<ChangeMoneyGA>(ChangeMoneyPostReaction, ReactionTiming.POST);
         //改变股票数量
         ActionSystem.SubscribeReaction<ChangeStockGA>(ChangeStockPostReaction, ReactionTiming.POST);
+        //改变属性
+        ActionSystem.SubscribeReaction<ChangeAttributeGA>(ChangeAttributePostReaction, ReactionTiming.POST);
     }
 
     private void OnDisable()
@@ -63,6 +65,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<ChangeMoneyGA>(ChangeMoneyPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<ChangeStockGA>(ChangeStockPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<ChangeAttributeGA>(ChangeAttributePostReaction, ReactionTiming.POST);
     }
 
     #region Initialization
@@ -143,6 +146,12 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     {
         UpdateAllInfo();
     }
+
+    private void ChangeAttributePostReaction(ChangeAttributeGA action)
+    {
+        playerAttributes.GetAttribute(action.attributeType).currentValue += action.attributeValue;
+        UpdateAllInfo();
+    }
     #endregion
 
     #region Attribute Effects
@@ -194,9 +203,16 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     /// </summary>
     public float GetStockInfluenceBonus()
     {
-        return GetAttributeValue(EPlayerAttributeType.Charisma) / 100f;
+        return 1 + GetAttributeValue(EPlayerAttributeType.Charisma) * 10f / 100f;
     }
-
+    public float GetStockEnvironmentBonus()
+    {
+        return 1 + (GetAttributeValue(EPlayerAttributeType.Fanaticism) - GetAttributeValue(EPlayerAttributeType.Calmness)) * 10f / 100f;
+    }
+    public float GetStockCourageBonus()
+    {
+        return 1 + GetAttributeValue(EPlayerAttributeType.Courage) * 10f / 100f;
+    }
     #endregion
 
     #region Reactions
@@ -208,7 +224,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
     private void NextRoundTurnPostReaction(NextRoundTurnGA nextRoundTurnGA)
     {
-        DrawCardsGA drawCardsGA = new(playerView.MaxHandSize, playerView);
+        DrawCardsGA drawCardsGA = new(GetCardsPerTurn(), playerView);
         ActionSystem.Instance.AddReaction(drawCardsGA);
 
 

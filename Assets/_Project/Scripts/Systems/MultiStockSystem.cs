@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Unity.Mathematics;
 
@@ -96,6 +97,32 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     /// </summary>
     private IEnumerator ChangeStockPricePerformer(ChangeStockPriceGA action)
     {
+        if (action.characterView.CharacterType == ECharacterType.Player)
+        {
+            // 使用ToList()避免在遍历时修改集合的异常
+            foreach (var item in action.ChangePriceDictionary.ToList())
+            {
+                action.ChangePriceDictionary[item.Key] = item.Value * PlayerAttributeSystem.Instance.GetStockInfluenceBonus();
+            }
+            // 使用ToList()避免在遍历时修改集合的异常
+            foreach (var item in action.ChangePricePersentDictionary.ToList())
+            {
+                action.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Instance.GetStockInfluenceBonus();
+            }
+        }
+        else if (action.characterView.CharacterType == ECharacterType.NPC)
+        {
+            // 使用ToList()避免在遍历时修改集合的异常
+            foreach (var item in action.ChangePriceDictionary.ToList())
+            {
+                action.ChangePriceDictionary[item.Key] = item.Value * PlayerAttributeSystem.Instance.GetStockEnvironmentBonus();
+            }
+            // 使用ToList()避免在遍历时修改集合的异常
+            foreach (var item in action.ChangePricePersentDictionary.ToList())
+            {
+                action.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Instance.GetStockEnvironmentBonus();
+            }
+        }
         var market = GetStockMarket(action.stockType);
         if (market == null)
         {
