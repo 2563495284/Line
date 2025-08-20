@@ -45,6 +45,8 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         ActionSystem.AttachPerformer<RestoreEnergyGA>(RestoreEnergyPerformer);
         //丢弃卡牌
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
+        //改变属性
+        ActionSystem.AttachPerformer<ChangeAttributeGA>(ChangeAttributePerformer);
         //监听 回合前后
         ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
@@ -52,7 +54,8 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         ActionSystem.SubscribeReaction<ChangeMoneyGA>(ChangeMoneyPostReaction, ReactionTiming.POST);
         //改变股票数量
         ActionSystem.SubscribeReaction<ChangeStockGA>(ChangeStockPostReaction, ReactionTiming.POST);
-        //改变属性
+
+        //监听属性变化
         ActionSystem.SubscribeReaction<ChangeAttributeGA>(ChangeAttributePostReaction, ReactionTiming.POST);
     }
 
@@ -61,6 +64,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         ActionSystem.DetachPerformer<ChangeManaGA>();
         ActionSystem.DetachPerformer<RestoreEnergyGA>();
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
+        ActionSystem.DetachPerformer<ChangeAttributeGA>();
         ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<ChangeMoneyGA>(ChangeMoneyPostReaction, ReactionTiming.POST);
@@ -136,6 +140,16 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
         yield return null;
     }
+    private IEnumerator ChangeAttributePerformer(ChangeAttributeGA action)
+    {
+        playerAttributes.GetAttribute(action.attributeType).currentValue += action.attributeValue;
+        yield return null;
+    }
+    private void ChangeAttributePostReaction(ChangeAttributeGA action)
+    {
+        UpdateAllInfo();
+
+    }
 
     private void ChangeMoneyPostReaction(ChangeMoneyGA action)
     {
@@ -147,11 +161,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         UpdateAllInfo();
     }
 
-    private void ChangeAttributePostReaction(ChangeAttributeGA action)
-    {
-        playerAttributes.GetAttribute(action.attributeType).currentValue += action.attributeValue;
-        UpdateAllInfo();
-    }
     #endregion
 
     #region Attribute Effects
@@ -259,7 +268,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         {
             playerView.UpdateStockText((EStockType)stockType, MultiStockSystem.Instance.GetStockHoldings((EStockType)stockType));
         }
-        playerView.UpdateAllValuesText();
+        playerView.UpdateAllDisplays();
         playerAttributeDisplay.UpdateAllDisplays();
     }
     #region Public Interface

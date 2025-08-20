@@ -280,6 +280,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
 
     public bool CanTradeStock(EStockType stockType, int amount)
     {
+        amount = (int)math.floor(amount * PlayerAttributeSystem.Instance.GetStockCourageBonus());
         var market = GetStockMarket(stockType);
 
         if (market == null)

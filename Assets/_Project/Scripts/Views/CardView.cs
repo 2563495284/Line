@@ -33,7 +33,10 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         imageSR.sprite = Card.Image;
     }
-
+    public void UpdateDescription()
+    {
+        description.text = Card.RichTextDescription ?? Card.Description;
+    }
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanHover()) return;

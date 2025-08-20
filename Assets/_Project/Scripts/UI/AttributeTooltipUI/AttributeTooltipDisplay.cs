@@ -16,10 +16,6 @@ public class AttributeTooltipDisplay : MonoBehaviour
     [SerializeField] private float fadeOutDuration = 0.15f;
     [SerializeField] private Ease fadeEase = Ease.OutQuad;
 
-    [Header("布局设置")]
-    [SerializeField] private float itemSpacing = 0.5f; // 世界空间单位
-    [SerializeField] private Vector3 tooltipOffset = new Vector3(3f, 0f, 0f); // 世界坐标偏移（卡牌右侧）
-
     private List<AttributeTooltipItem> tooltipItems = new List<AttributeTooltipItem>();
     private List<EPlayerAttributeType> currentHighlightedAttributes = new List<EPlayerAttributeType>();
     private Tween currentTween;
@@ -53,7 +49,6 @@ public class AttributeTooltipDisplay : MonoBehaviour
 
         // 设置位置
         lastCardPosition = worldPosition;
-        SetTooltipPosition(worldPosition);
 
         // 显示动画
         ShowWithAnimation();
@@ -67,19 +62,6 @@ public class AttributeTooltipDisplay : MonoBehaviour
         isVisible = false;
         HideWithAnimation();
     }
-
-    /// <summary>
-    /// 更新提示框位置
-    /// </summary>
-    /// <param name="newCardPosition">新的卡牌位置</param>
-    public void UpdatePosition(Vector3 newCardPosition)
-    {
-        if (!isVisible) return;
-
-        lastCardPosition = newCardPosition;
-        SetTooltipPosition(newCardPosition);
-    }
-
     /// <summary>
     /// 创建提示框项目
     /// </summary>
@@ -105,14 +87,7 @@ public class AttributeTooltipDisplay : MonoBehaviour
             {
                 bool isHighlighted = currentHighlightedAttributes.Contains(attributeType);
                 tooltipItem.Setup(attributeData, isHighlighted);
-
-                // 设置垂直布局位置（从上往下）
-                Vector3 localPos = itemObj.transform.localPosition;
-                localPos.y = -currentYOffset;
-                itemObj.transform.localPosition = localPos;
-
                 tooltipItems.Add(tooltipItem);
-                currentYOffset += itemSpacing;
             }
         }
     }
@@ -130,28 +105,6 @@ public class AttributeTooltipDisplay : MonoBehaviour
             }
         }
         tooltipItems.Clear();
-    }
-
-    /// <summary>
-    /// 设置提示框位置（世界坐标系）
-    /// </summary>
-    private void SetTooltipPosition(Vector3 worldPosition)
-    {
-        // 直接使用世界坐标，添加偏移量
-        Vector3 targetPosition = worldPosition + tooltipOffset;
-
-        // 调试信息
-        Debug.Log($"[AttributeTooltipDisplay] 卡牌位置: {worldPosition}, 偏移量: {tooltipOffset}, 目标位置: {targetPosition}");
-
-        // 设置位置
-        transform.position = targetPosition;
-
-        // 确保提示框朝向摄像机（如果需要）
-        if (Camera.main != null)
-        {
-            transform.LookAt(Camera.main.transform);
-            transform.Rotate(0, 180, 0); // 翻转以正确显示
-        }
     }
 
     /// <summary>

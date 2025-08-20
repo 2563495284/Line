@@ -20,8 +20,6 @@ public class Card
 
     // 动态描述相关属性
     public List<EPlayerAttributeType> ReferencedAttributes { get; private set; }
-    public Dictionary<EPlayerAttributeType, float> AttributeValues { get; private set; }
-
 
     /// <summary>
     /// Initialization of a new generic Card based on its ScriptableObject
@@ -50,7 +48,6 @@ public class Card
         Description = result.processedDescription;
         RichTextDescription = result.richTextDescription;
         ReferencedAttributes = result.referencedAttributes;
-        AttributeValues = result.attributeValues;
     }
 
     /// <summary>

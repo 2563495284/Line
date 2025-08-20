@@ -12,10 +12,6 @@ public class AttributeTooltipItem : MonoBehaviour
     [SerializeField] private SpriteRenderer backgroundSpriteRenderer;
     [SerializeField] private SpriteRenderer iconSpriteRenderer;
 
-    [Header("样式设置")]
-    [SerializeField] private Color normalBackgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.9f);
-    [SerializeField] private Color highlightBackgroundColor = new Color(0.2f, 0.4f, 0.6f, 0.9f);
-
     private void Awake()
     {
         // 验证世界空间组件配置
@@ -65,31 +61,6 @@ public class AttributeTooltipItem : MonoBehaviour
             {
                 iconSpriteRenderer.gameObject.SetActive(false);
             }
-        }
-
-        // 设置背景颜色
-        if (backgroundSpriteRenderer != null)
-        {
-            backgroundSpriteRenderer.color = isHighlighted ? highlightBackgroundColor : normalBackgroundColor;
-        }
-
-        // 确保朝向摄像机
-        if (Camera.main != null)
-        {
-            transform.LookAt(Camera.main.transform);
-            transform.Rotate(0, 180, 0);
-        }
-    }
-
-    /// <summary>
-    /// 设置高亮状态
-    /// </summary>
-    public void SetHighlight(bool highlighted)
-    {
-        if (backgroundSpriteRenderer != null)
-        {
-            Color targetColor = highlighted ? highlightBackgroundColor : normalBackgroundColor;
-            backgroundSpriteRenderer.color = targetColor;
         }
     }
 }

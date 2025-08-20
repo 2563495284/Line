@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
+  m_Name: Bearish
+  m_EditorClassIdentifier: 
+  <Image>k__BackingField: {fileID: 0}
+  <Title>k__BackingField: "\u770B\u8DCC"
+  <Description>k__BackingField: "\u4E09\u4E2A\u4EA4\u6613\u65E5\u540E\uFF0C\u5176\u4EF7\u683C\u5982\u679C\u4E0B\u8DCC\u83B7\u5F97\u5176100\u4EFD\uFF0C\u4E0A\u6DA8\u5219\u626310000\u91D1\u5E01"
+  <ManualTargetEffect>k__BackingField:
+    rid: 9019117317643567753
+  <OtherEffects>k__BackingField: []
+  <Mana>k__BackingField: 0
+  <TradeStockAmount>k__BackingField: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 9019117317643567753
+      type: {class: PredictEffect, ns: , asm: Assembly-CSharp}
+      data:
+        predictionType: 1
+        rewardMoneyAmount: 0
+        rewardStockAmount: 100
+        penaltyMoneyAmount: 10000
+        penaltyStockAmount: 0
+        delayRounds: 3

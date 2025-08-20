@@ -45,27 +45,6 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
         }
     }
 
-    private void Update()
-    {
-        // 如果正在跟踪且卡牌悬停视图激活
-        if (isTracking && cardViewHover.gameObject.activeInHierarchy)
-        {
-            Vector3 currentCardPosition = cardViewHover.transform.position;
-
-            // 检查位置是否发生变化
-            if (Vector3.Distance(currentCardPosition, lastCardPosition) > 0.01f)
-            {
-                lastCardPosition = currentCardPosition;
-
-                // 更新属性提示框位置
-                if (attributeTooltipDisplay != null)
-                {
-                    attributeTooltipDisplay.UpdatePosition(currentCardPosition);
-                }
-            }
-        }
-    }
-
     /// <summary>
     /// 显示属性提示框
     /// </summary>

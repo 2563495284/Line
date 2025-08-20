@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -45,37 +46,37 @@ public class PlayerAttributeData
         {
             case EPlayerAttributeType.Social:
                 attributeName = "社交";
-                description = "每回合摸牌数+{0}";
+                description = "每回合摸牌数+1";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Patience:
                 attributeName = "耐心";
-                description = "保留{0}点能量到下回合";
+                description = "保留1点能量到下回合";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Wisdom:
                 attributeName = "智慧";
-                description = "每回合能量恢复+{0}";
+                description = "每回合能量恢复+1";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Charisma:
                 attributeName = "魅力";
-                description = "市场影响力+{0}%";
+                description = "市场影响力+10%";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Courage:
                 attributeName = "勇气";
-                description = "市场交易数量+{0}";
+                description = "市场交易数量+10%";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Calmness:
                 attributeName = "冷静";
-                description = "环境对市场价格影响-{0}%";
+                description = "环境对市场价格影响-10%";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Fanaticism:
                 attributeName = "狂热";
-                description = "环境对市场价格影响+{0}%";
+                description = "环境对市场价格影响+10%";
                 currentValue = 0f;
                 break;
         }
@@ -87,7 +88,7 @@ public class PlayerAttributeData
     /// </summary>
     public string GetFormattedDescription()
     {
-        return string.Format(description, currentValue);
+        return description;
     }
 
     /// <summary>

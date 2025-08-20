@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using System;
 using System.Globalization;
+using Unity.Mathematics;
 
 /// <summary>
 /// 卡牌描述系统 - 处理动态数值和高亮显示
@@ -22,10 +23,7 @@ public static class CardDescriptionSystem
     };
 
     // 数值+属性组合的正则表达式模式（如：1{魅力}%）
-    private static readonly string NumberAttributePattern = @"(\d+(?:\.\d+)?)\{([^}]+)\}%?";
-
-    // 纯数值的正则表达式模式（用于识别基础数值）
-    private static readonly string NumberPattern = @"\d+(?:\.\d+)?%?";
+    private static readonly string NumberAttributePattern = @"(\d+(?:\.\d+)?)\{([^}]+)\}?";
 
     // 属性名称映射
     private static readonly Dictionary<EPlayerAttributeType, string> AttributeNames = new Dictionary<EPlayerAttributeType, string>
@@ -80,41 +78,7 @@ public static class CardDescriptionSystem
         var numberAttributeMatches = Regex.Matches(processedText, NumberAttributePattern);
         foreach (Match match in numberAttributeMatches)
         {
-            string fullMatch = match.Groups[0].Value; // 完整匹配（如：1{魅力}%）
-            float baseValue = float.Parse(match.Groups[1].Value); // 基础数值（如：1）
-            string attributeName = match.Groups[2].Value; // 属性名称（如：魅力）
-
-            // 查找对应的属性类型
-            EPlayerAttributeType? attributeType = GetAttributeTypeByName(attributeName);
-            if (attributeType.HasValue)
-            {
-                // 获取属性值
-                float attributeValue = playerAttributeSystem.GetAttributeValue(attributeType.Value);
-
-                // 计算属性影响系数（如魅力3 = 30%影响）
-                float influenceMultiplier = CalculateInfluenceMultiplier(attributeType.Value, attributeValue);
-
-                // 计算最终数值：基础值 × (1 + 影响系数)
-                float finalValue = baseValue * (1f + influenceMultiplier);
-
-                // 记录引用的属性
-                if (!result.referencedAttributes.Contains(attributeType.Value))
-                {
-                    result.referencedAttributes.Add(attributeType.Value);
-                }
-                result.attributeValues[attributeType.Value] = finalValue;
-
-                // 提取百分号（如果有的话）
-                string percentSign = fullMatch.EndsWith("%") ? "%" : "";
-                string basePattern = Regex.Escape(fullMatch);
-
-                // 替换普通文本中的数值
-                processedText = Regex.Replace(processedText, basePattern, $"{finalValue:F1}{percentSign}");
-
-                // 替换富文本中的数值（添加高亮）
-                string highlightedValue = $"<color=#FFD700><b>{finalValue:F1}</b></color>{percentSign}";
-                richText = Regex.Replace(richText, basePattern, highlightedValue);
-            }
+            richText = ReplaceAttributeDesc(result, richText, match);
         }
 
         // 处理纯属性标记（如：{魅力}）- 只高亮属性名称，不替换数值
@@ -170,44 +134,40 @@ public static class CardDescriptionSystem
         }
         return null;
     }
-
-    /// <summary>
-    /// 计算属性影响系数（用于乘法计算）
-    /// </summary>
-    private static float CalculateInfluenceMultiplier(EPlayerAttributeType attributeType, float attributeValue)
+    private static string ReplaceAttributeDesc(CardDescriptionResult result, string richText, Match match)
     {
+        var playerAttributeSystem = PlayerAttributeSystem.Instance;
+        string fullMatch = match.Groups[0].Value; // 完整匹配（如：1{魅力}）
+        string attributeName = match.Groups[2].Value; // 属性名称（如：魅力）
+
+        // 查找对应的属性类型
+        EPlayerAttributeType? attributeType = GetAttributeTypeByName(attributeName);
+        if (!attributeType.HasValue)
+        {
+            return richText;
+        }
         switch (attributeType)
         {
-            case EPlayerAttributeType.Charisma:
-                // 魅力影响：每点魅力增加10%效果
-                return attributeValue * 0.1f; // 3点魅力 = 0.3 (30%加成)
-
             case EPlayerAttributeType.Courage:
+                    int baseValue = int.Parse(match.Groups[1].Value); // 基础数值（如：1）
                 // 勇气影响：每点勇气增加10%效果
-                return attributeValue * 0.1f;
+                // 获取属性值
+                int attributeValue = (int)playerAttributeSystem.GetAttributeValue(attributeType.Value);
 
-            case EPlayerAttributeType.Wisdom:
-                // 智慧影响：每点智慧增加10%效果
-                return attributeValue * 0.1f;
 
-            case EPlayerAttributeType.Social:
-                // 社交影响：每点社交增加10%效果
-                return attributeValue * 0.1f;
+                int finalValue = (int)math.floor(baseValue * (1 + attributeValue*0.1f));
 
-            case EPlayerAttributeType.Patience:
-                // 耐心影响：每点耐心增加10%效果
-                return attributeValue * 0.1f;
+                // 记录引用的属性
+                if (!result.referencedAttributes.Contains(attributeType.Value))
+                {
+                    result.referencedAttributes.Add(attributeType.Value);
+                }
+                result.attributeValues[attributeType.Value] = finalValue;
 
-            case EPlayerAttributeType.Calmness:
-                // 冷静影响：每点冷静增加10%效果
-                return attributeValue * 0.1f;
-
-            case EPlayerAttributeType.Fanaticism:
-                // 狂热影响：每点狂热增加10%效果
-                return attributeValue * 0.1f;
-
+                string basePattern = Regex.Escape(fullMatch);
+                return Regex.Replace(richText, basePattern, $"<color=#FF0000><b>{finalValue}</b></color>");
             default:
-                return 0f;
+                return "";
         }
     }
 

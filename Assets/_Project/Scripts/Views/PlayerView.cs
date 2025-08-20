@@ -122,9 +122,14 @@ public class PlayerView : CharacterView
         }
     }
 
-    public void UpdateAllValuesText()
+    public void UpdateAllDisplays()
     {
         valuesDisplay.UpdateValues();
+        foreach (var card in cards)
+        {
+            card.Card.UpdateDescription();
+            card.UpdateDescription();
+        }
     }
 
 }
