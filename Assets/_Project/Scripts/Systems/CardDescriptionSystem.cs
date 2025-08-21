@@ -155,12 +155,6 @@ public static class CardDescriptionSystem
 
                 int finalValueCourage = (int)math.floor(baseValueCourage * (1 + attributeValueCourage * 0.1f));
 
-                // 记录引用的属性
-                if (!result.referencedAttributes.Contains(attributeType.Value))
-                {
-                    result.referencedAttributes.Add(attributeType.Value);
-                }
-
                 string basePatternCourage = Regex.Escape(fullMatch);
                 return Regex.Replace(richText, basePatternCourage, $"<color=#FF0000><b>{finalValueCourage}</b></color>");
             case EPlayerAttributeType.Charisma:
@@ -171,13 +165,6 @@ public static class CardDescriptionSystem
 
 
                 float finalValue = baseValueCharisma * (1 + attributeValueCharisma * 0.1f) * 100;
-
-                // 记录引用的属性
-                if (!result.referencedAttributes.Contains(attributeType.Value))
-                {
-                    result.referencedAttributes.Add(attributeType.Value);
-                }
-
                 string basePatternCharisma = Regex.Escape(fullMatch);
                 return Regex.Replace(richText, basePatternCharisma, $"<color=#FF0000><b>{finalValue.ToString("F2")}%</b></color>");
             default:

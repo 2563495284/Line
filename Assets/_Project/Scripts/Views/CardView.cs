@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
@@ -87,6 +88,10 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         LineView target = ManualTargetingSystem.Instance.EndTargeting(MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue));
         if (target == null)
+        {
+            return;
+        }
+        if (!ManaSystem.Instance.HasEnoughMana(Card.Mana))
         {
             return;
         }

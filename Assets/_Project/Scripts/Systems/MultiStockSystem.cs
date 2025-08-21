@@ -16,7 +16,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     [Header("UI引用")]
     [SerializeField] private TripleKLineDisplay tripleKLineDisplay;
     // 玩家资金
-    private float currentMoney = 10000f;
+    [SerializeField] public float currentMoney = 100000f;
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<ChangeStockPriceGA>(ChangeStockPricePerformer);
@@ -168,22 +168,10 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             Utils.ShakeCamera();
             yield break;
         }
-        if (action.Amount > 0) // 买入
-        {
-
-            ChangeStockGA changeStockGA = new ChangeStockGA(action.Amount, action.StockType);
-            ActionSystem.Instance.Perform(changeStockGA);
-            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-action.Amount * market.currentPrice);
-            ActionSystem.Instance.Perform(changeMoneyGA);
-        }
-        else if (action.Amount < 0) // 卖出
-        {
-            int sellAmount = -action.Amount;
-            ChangeStockGA changeStockGA = new ChangeStockGA(sellAmount, action.StockType);
-            ActionSystem.Instance.Perform(changeStockGA);
-            ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-sellAmount * market.currentPrice);
-            ActionSystem.Instance.Perform(changeMoneyGA);
-        }
+        ChangeStockGA changeStockGA = new ChangeStockGA(action.Amount, action.StockType);
+        ActionSystem.Instance.Perform(changeStockGA);
+        ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-action.Amount * market.currentPrice);
+        ActionSystem.Instance.Perform(changeMoneyGA);
         yield return null;
     }
     private IEnumerator TradeAllStockPerformer(TradeAllStockGA action)

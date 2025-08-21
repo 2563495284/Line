@@ -91,6 +91,10 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     private IEnumerator ChangeAttributePerformer(ChangeAttributeGA action)
     {
         playerAttributes.GetAttribute(action.attributeType).currentValue += action.attributeValue;
+        if (playerAttributes.GetAttribute(action.attributeType).currentValue < 0)
+        {
+            playerAttributes.GetAttribute(action.attributeType).currentValue = 0;
+        }
         yield return null;
     }
     private void ChangeAttributePostReaction(ChangeAttributeGA action)
@@ -159,6 +163,12 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         ActionSystem.Instance.AddReaction(drawCardsGA);
         // 摸牌
         int cardsToDraw = GetCardsPerTurn();
+
+        ChangeAttributeGA changeAttributeGA = new(EPlayerAttributeType.Social, -1f);
+        ActionSystem.Instance.AddReaction(changeAttributeGA);
+
+        ChangeAttributeGA changeAttributeGA2 = new(EPlayerAttributeType.Patience, -1f);
+        ActionSystem.Instance.AddReaction(changeAttributeGA2);
         //刷新信息
         UpdateAllInfo();
     }

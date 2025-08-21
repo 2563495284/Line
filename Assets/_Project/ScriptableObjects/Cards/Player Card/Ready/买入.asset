@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
-  m_Name: Sell
+  m_Name: "\u4E70\u5165"
   m_EditorClassIdentifier: 
-  <Image>k__BackingField: {fileID: 21300000, guid: e9c5533276fe3ba4b843f407d7f70b83, type: 3}
-  <Title>k__BackingField: "\u5356\u51FA"
-  <Description>k__BackingField: "\u5356\u51FA100{\u52C7\u6C14}\u80A1"
+  <Image>k__BackingField: {fileID: 0}
+  <Title>k__BackingField: "\u4E70\u5165"
+  <Description>k__BackingField: "\u4E70\u5165100{\u52C7\u6C14}"
   <ManualTargetEffect>k__BackingField:
-    rid: 9019117317643567752
+    rid: 8527226634511843328
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
-      rid: 9019117340648800332
+      rid: 8527226634511843329
     <Effect>k__BackingField:
-      rid: 9019117340648800333
+      rid: 8527226634511843330
   <Mana>k__BackingField: 1
   references:
     version: 2
     RefIds:
-    - rid: 9019117317643567752
-      type: {class: TradeStockEffect, ns: , asm: Assembly-CSharp}
+    - rid: 8527226634511843328
+      type: {class: TradeSpecificStockEffect, ns: , asm: Assembly-CSharp}
       data:
-        tradeAmount: -100
-    - rid: 9019117340648800332
+        tradeAmount: 100
+    - rid: 8527226634511843329
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 9019117340648800333
+    - rid: 8527226634511843330
       type: {class: ChangeManaEffect, ns: , asm: Assembly-CSharp}
       data:
         manaAmount: -1

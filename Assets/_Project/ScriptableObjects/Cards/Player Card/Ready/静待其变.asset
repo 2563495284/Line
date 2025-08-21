@@ -21,7 +21,7 @@ MonoBehaviour:
   - <TargetMode>k__BackingField:
       rid: 9019117340648800338
     <Effect>k__BackingField:
-      rid: -2
+      rid: 8527226633865134201
   - <TargetMode>k__BackingField:
       rid: 9019117340648800351
     <Effect>k__BackingField:
@@ -32,6 +32,11 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 8527226633865134201
+      type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
+      data:
+        attributeType: 1
+        attributeValue: 2
     - rid: 9019117340648800338
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 

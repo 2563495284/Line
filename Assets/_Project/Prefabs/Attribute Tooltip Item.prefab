@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6209968904807899071}
   - component: {fileID: 7547221841763265295}
   - component: {fileID: 1205021315002305295}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Title Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,9 +75,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1942933839
+  m_SortingLayer: 8
+  m_SortingOrder: 1
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &1205021315002305295
 MonoBehaviour:
@@ -181,8 +181,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5498719091725858480}
   - component: {fileID: 4104195394050663832}
-  - component: {fileID: 179982154682731496}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Attribute Tooltip Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,20 +226,6 @@ MonoBehaviour:
   attributeDescriptionText: {fileID: 7499243149421686989}
   backgroundSpriteRenderer: {fileID: 538791069276182445}
   iconSpriteRenderer: {fileID: 0}
-  normalBackgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.9}
-  highlightBackgroundColor: {r: 0.2, g: 0.4, b: 0.6, a: 0.9}
---- !u!210 &179982154682731496
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2118969290595375201}
-  m_Enabled: 1
-  m_SortingLayerID: -733536209
-  m_SortingLayer: 4
-  m_SortingOrder: 5
-  m_SortAtRoot: 0
 --- !u!1 &5576200669756184868
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3063118851884935576}
   - component: {fileID: 538791069276182445}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,7 +282,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -315,9 +300,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingLayerID: 1942933839
+  m_SortingLayer: 8
+  m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -340,7 +325,7 @@ GameObject:
   - component: {fileID: 8017715058181510306}
   - component: {fileID: 3746114566140370607}
   - component: {fileID: 7499243149421686989}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Description Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,9 +389,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1942933839
+  m_SortingLayer: 8
+  m_SortingOrder: 2
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &7499243149421686989
 MonoBehaviour:
@@ -428,7 +413,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF"
+  m_text: "\u6BCF\u56DE\u5408\u6478\u724C\u6570+1\uFF0C\u6BCF\u56DE\u5408\u5931\u53BB1"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 569e4850c8a354f00b03f5f1c5c9498d, type: 2}
   m_sharedMaterial: {fileID: 2973617709947840118, guid: 569e4850c8a354f00b03f5f1c5c9498d, type: 2}

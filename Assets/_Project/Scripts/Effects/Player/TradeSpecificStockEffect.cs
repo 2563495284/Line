@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 交易特定股票的效果
 /// </summary>
-public class TradeStockEffect : Effect
+public class TradeSpecificStockEffect : Effect
 {
     [Header("交易设置")]
     [SerializeField]
@@ -14,6 +14,7 @@ public class TradeStockEffect : Effect
 
     public override GameAction GetGameAction()
     {
-        return new TradeSpecificStockGA(targetLineView.StockType, tradeAmount);
+        TradeSpecificStockGA tradeSpecificStockGA = new(targetLineView.StockType, tradeAmount);
+        return tradeSpecificStockGA;
     }
 }
