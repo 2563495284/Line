@@ -17,9 +17,6 @@ public class PlayerAttributeDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cardsPerTurnText;
     [SerializeField] private TextMeshProUGUI totalPointsText;
 
-    [Header("更新设置")]
-    [SerializeField] private float updateInterval = 1f;
-
     private List<AttributeDisplayItem> attributeDisplayItems = new List<AttributeDisplayItem>();
 
     private void Start()

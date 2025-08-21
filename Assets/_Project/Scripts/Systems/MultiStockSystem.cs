@@ -22,13 +22,13 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         ActionSystem.AttachPerformer<ChangeStockPriceGA>(ChangeStockPricePerformer);
         ActionSystem.AttachPerformer<TradeSpecificStockGA>(TradeSpecificStockPerformer);
         ActionSystem.AttachPerformer<TradeAllStockGA>(TradeAllStockPerformer);
-        ActionSystem.AttachPerformer<NextRoundTurnGA>(NextRoundTurnPostReaction);
 
         //改变金币
         ActionSystem.AttachPerformer<ChangeMoneyGA>(ChangeMoneyPerformer);
         //改变股票数量
         ActionSystem.AttachPerformer<ChangeStockGA>(ChangeStockPerformer);
 
+        ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
     }
 
     private void OnDisable()
@@ -36,12 +36,13 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         ActionSystem.DetachPerformer<ChangeStockPriceGA>();
         ActionSystem.DetachPerformer<TradeSpecificStockGA>();
         ActionSystem.DetachPerformer<TradeAllStockGA>();
-        ActionSystem.DetachPerformer<NextRoundTurnGA>();
 
         //改变金币
         ActionSystem.DetachPerformer<ChangeMoneyGA>();
         //改变股票数量
         ActionSystem.DetachPerformer<ChangeStockGA>();
+
+        ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
     }
 
     #region Initialization
@@ -162,7 +163,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             Debug.LogError($"未找到股票类型: {action.StockType}");
             yield break;
         }
-
+        LineView lineView = GetLineView(action.StockType);
         if (!CanTradeStock(action.StockType, action.Amount))
         {
             Utils.ShakeCamera();
@@ -172,6 +173,14 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         ActionSystem.Instance.Perform(changeStockGA);
         ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-action.Amount * market.currentPrice);
         ActionSystem.Instance.Perform(changeMoneyGA);
+        if (action.Amount > 0)
+        {
+            lineView.SetPointState(PointState.Buy);
+        }
+        else
+        {
+            lineView.SetPointState(PointState.Sell);
+        }
         yield return null;
     }
     private IEnumerator TradeAllStockPerformer(TradeAllStockGA action)
@@ -182,6 +191,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             Debug.LogError($"未找到股票类型: {action.StockType}");
             yield break;
         }
+        LineView lineView = GetLineView(action.StockType);
         if (action.TradeAllStockType == ETradeAllStockType.Buy)
         {
             int buyStockCount = (int)Math.Floor(currentMoney / market.currentPrice);
@@ -189,6 +199,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             ActionSystem.Instance.Perform(changeStockGA);
             ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-buyStockCount * market.currentPrice);
             ActionSystem.Instance.Perform(changeMoneyGA);
+            lineView.SetPointState(PointState.Buy);
         }
         else
         {
@@ -196,13 +207,14 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             ActionSystem.Instance.Perform(changeStockGA);
             ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(market.playerHoldings * market.currentPrice);
             ActionSystem.Instance.Perform(changeMoneyGA);
+            lineView.SetPointState(PointState.Sell);
         }
         yield return null;
     }
-    private IEnumerator NextRoundTurnPostReaction(NextRoundTurnGA action)
+    private void NextRoundTurnPostReaction(NextRoundTurnGA action)
     {
         RefreshAllStockPrices();
-        yield return null;
+        tripleKLineDisplay.UpdateAllKLines();
     }
     private IEnumerator ChangeMoneyPerformer(ChangeMoneyGA action)
     {

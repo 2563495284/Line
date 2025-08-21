@@ -18,7 +18,6 @@ public class TripleKLineCreator : MonoBehaviour
     [Header("K线图设置")]
     [SerializeField] private float chartWidth = 7.5f;  // 适合1920x1080三分屏
     [SerializeField] private float chartHeight = 4.5f; // 保持合理比例
-    [SerializeField] private int maxPoints = 25;       // 优化数据点数量
 
     /// <summary>
     /// 针对1920x1080分辨率的优化配置
@@ -30,7 +29,6 @@ public class TripleKLineCreator : MonoBehaviour
         centerPosition = Vector3.zero;
         chartWidth = 7.5f;
         chartHeight = 4.5f;
-        maxPoints = 25;
 
         Debug.Log("已优化为1920x1080三分屏布局");
     }
@@ -88,11 +86,6 @@ public class TripleKLineCreator : MonoBehaviour
         {
             lineView = lineViewObj.AddComponent<LineView>();
         }
-
-        // 设置基础参数
-        lineView.chartWidth = chartWidth;
-        lineView.chartHeight = chartHeight;
-        lineView.maxPoints = maxPoints;
 
         // 创建标题和价格显示文本
         CreateTextElements(lineViewObj, stockType);

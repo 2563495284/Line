@@ -38,7 +38,16 @@ public class PredictionSystem : Singleton<PredictionSystem>
     private IEnumerator PredictionPerformer(PredictionGA predictionGA)
     {
         float currentPrice = MultiStockSystem.Instance.GetStockMarket(predictionGA.StockType).currentPrice;
-
+        LineView lineView = MultiStockSystem.Instance.GetLineView(predictionGA.StockType);
+        switch (predictionGA.PredictionType)
+        {
+            case EPredictionType.Rise:
+                lineView.SetPointState(PointState.Bullish);
+                break;
+            case EPredictionType.Fall:
+                lineView.SetPointState(PointState.Bearish);
+                break;
+        }
         PredictionData newPrediction = new PredictionData(
             predictionGA.PredictionType,
             currentPrice,

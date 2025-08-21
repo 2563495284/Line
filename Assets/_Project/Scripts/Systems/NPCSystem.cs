@@ -10,8 +10,6 @@ public class NPCSystem : Singleton<NPCSystem>
 
     [Header("NPC出牌设置")]
     [SerializeField] private NPCBoardView npcBoardView;
-    [SerializeField] private float npcPlayInterval = 3f; // NPC出牌间隔（秒）
-    [SerializeField] private Timer npcPlayTimer; // NPC出牌计时器
 
     private void OnEnable()
     {

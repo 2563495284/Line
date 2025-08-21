@@ -24,7 +24,6 @@ public static class CardDescriptionSystem
 
     // 数值+属性组合的正则表达式模式（如：1{魅力}%）
     private static readonly string NumberAttributePattern = @"(\d+(?:\.\d+)?)\{([^}]+)\}?";
-    private static readonly string AttributePattern = @"(\d+(?:\.\d+)?)\{([^}]+)\}?";
 
     // 属性名称映射
     private static readonly Dictionary<EPlayerAttributeType, string> AttributeNames = new Dictionary<EPlayerAttributeType, string>

@@ -25,13 +25,6 @@ public class TripleKLineDisplay : MonoBehaviour
     [SerializeField]
     private Vector3 centerPosition = Vector3.zero; // 中心位置
 
-    [Header("更新设置")]
-    [SerializeField]
-    private float updateInterval = 1f;
-
-    [SerializeField]
-    private bool autoUpdate = true;
-
     [Header("调试")]
     [SerializeField]
     private bool showDebugInfo = false;
@@ -43,19 +36,10 @@ public class TripleKLineDisplay : MonoBehaviour
     private void Start()
     {
         InitializeKLineViews();
-
-        if (autoUpdate)
-        {
-            InvokeRepeating(nameof(UpdateAllKLines), 1f, updateInterval);
-        }
     }
 
     private void OnDestroy()
     {
-        if (autoUpdate)
-        {
-            CancelInvoke(nameof(UpdateAllKLines));
-        }
     }
 
     #region Initialization
@@ -94,6 +78,7 @@ public class TripleKLineDisplay : MonoBehaviour
         {
             Debug.Log("三K线显示系统初始化完成");
         }
+        UpdateAllKLines();
     }
 
     #endregion
@@ -164,37 +149,6 @@ public class TripleKLineDisplay : MonoBehaviour
     public void RefreshAllDisplays()
     {
         UpdateAllKLines();
-    }
-
-    /// <summary>
-    /// 设置自动更新间隔
-    /// </summary>
-    public void SetUpdateInterval(float interval)
-    {
-        updateInterval = Mathf.Max(0.1f, interval);
-
-        if (autoUpdate)
-        {
-            CancelInvoke(nameof(UpdateAllKLines));
-            InvokeRepeating(nameof(UpdateAllKLines), 1f, updateInterval);
-        }
-    }
-
-    /// <summary>
-    /// 启用/禁用自动更新
-    /// </summary>
-    public void SetAutoUpdate(bool enabled)
-    {
-        autoUpdate = enabled;
-
-        if (autoUpdate)
-        {
-            InvokeRepeating(nameof(UpdateAllKLines), 1f, updateInterval);
-        }
-        else
-        {
-            CancelInvoke(nameof(UpdateAllKLines));
-        }
     }
 
     /// <summary>
@@ -287,8 +241,6 @@ public class TripleKLineDisplay : MonoBehaviour
     {
         Debug.Log("=== 三K线显示状态 ===");
         Debug.Log($"初始化状态: {isInitialized}");
-        Debug.Log($"自动更新: {autoUpdate}");
-        Debug.Log($"更新间隔: {updateInterval}秒");
         Debug.Log($"间距: {spacing}");
         Debug.Log($"中心位置: {centerPosition}");
 

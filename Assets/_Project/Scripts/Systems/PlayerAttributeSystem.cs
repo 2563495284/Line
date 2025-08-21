@@ -17,9 +17,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     [Header("摸牌系统")]
     [SerializeField] private int baseCardsPerTurn = 5;
 
-    [Header("调试")]
-    [SerializeField] private bool showDebugInfo = true;
-
     protected override void Awake()
     {
         base.Awake();

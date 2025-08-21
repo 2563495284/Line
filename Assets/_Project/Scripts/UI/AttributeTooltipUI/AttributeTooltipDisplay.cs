@@ -11,18 +11,9 @@ public class AttributeTooltipDisplay : MonoBehaviour
     [SerializeField] private Transform tooltipContainer;
     [SerializeField] private GameObject tooltipItemPrefab;
 
-    [Header("动画设置")]
-    [SerializeField] private float fadeInDuration = 0.2f;
-    [SerializeField] private float fadeOutDuration = 0.15f;
-    [SerializeField] private Ease fadeEase = Ease.OutQuad;
-
     private List<AttributeTooltipItem> tooltipItems = new List<AttributeTooltipItem>();
     private List<EPlayerAttributeType> currentHighlightedAttributes = new List<EPlayerAttributeType>();
     private Tween currentTween;
-
-    // 位置跟踪
-    private bool isVisible = false;
-    private Vector3 lastCardPosition;
 
     private void Awake()
     {
@@ -47,11 +38,7 @@ public class AttributeTooltipDisplay : MonoBehaviour
         // 创建新的提示项目
         CreateTooltipItems(attributeTypes);
 
-        // 设置位置
-        lastCardPosition = worldPosition;
-
-        // 显示动画
-        ShowWithAnimation();
+        gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -59,8 +46,8 @@ public class AttributeTooltipDisplay : MonoBehaviour
     /// </summary>
     public void Hide()
     {
-        isVisible = false;
-        HideWithAnimation();
+        ClearTooltipItems();
+        gameObject.SetActive(false);
     }
     /// <summary>
     /// 创建提示框项目
@@ -71,8 +58,6 @@ public class AttributeTooltipDisplay : MonoBehaviour
 
         var playerAttributes = PlayerAttributeSystem.Instance?.GetPlayerAttributes();
         if (playerAttributes == null) return;
-
-        float currentYOffset = 0f;
 
         foreach (var attributeType in attributeTypes)
         {
@@ -105,24 +90,6 @@ public class AttributeTooltipDisplay : MonoBehaviour
             }
         }
         tooltipItems.Clear();
-    }
-
-    /// <summary>
-    /// 显示动画
-    /// </summary>
-    private void ShowWithAnimation()
-    {
-        isVisible = true;
-        gameObject.SetActive(true);
-    }
-
-    /// <summary>
-    /// 隐藏动画
-    /// </summary>
-    private void HideWithAnimation()
-    {
-        gameObject.SetActive(false);
-        ClearTooltipItems();
     }
 
     private void OnDestroy()
