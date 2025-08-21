@@ -13,17 +13,18 @@ public static class CardDescriptionSystem
     // 属性标记的正则表达式模式
     private static readonly Dictionary<EPlayerAttributeType, string> AttributePatterns = new Dictionary<EPlayerAttributeType, string>
     {
-        { EPlayerAttributeType.Charisma, @"\{魅力\}" },
-        { EPlayerAttributeType.Courage, @"\{勇气\}" },
-        { EPlayerAttributeType.Wisdom, @"\{智慧\}" },
-        { EPlayerAttributeType.Social, @"\{社交\}" },
-        { EPlayerAttributeType.Patience, @"\{耐心\}" },
-        { EPlayerAttributeType.Calmness, @"\{冷静\}" },
-        { EPlayerAttributeType.Fanaticism, @"\{狂热\}" }
+        { EPlayerAttributeType.Charisma, @"\[魅力\]" },
+        { EPlayerAttributeType.Courage, @"\[勇气\]" },
+        { EPlayerAttributeType.Wisdom, @"\[智慧\]" },
+        { EPlayerAttributeType.Social, @"\[社交\]" },
+        { EPlayerAttributeType.Patience, @"\[耐心\]" },
+        { EPlayerAttributeType.Calmness, @"\[冷静\]" },
+        { EPlayerAttributeType.Fanaticism, @"\[狂热\]" }
     };
 
     // 数值+属性组合的正则表达式模式（如：1{魅力}%）
     private static readonly string NumberAttributePattern = @"(\d+(?:\.\d+)?)\{([^}]+)\}?";
+    private static readonly string AttributePattern = @"(\d+(?:\.\d+)?)\{([^}]+)\}?";
 
     // 属性名称映射
     private static readonly Dictionary<EPlayerAttributeType, string> AttributeNames = new Dictionary<EPlayerAttributeType, string>
@@ -45,7 +46,6 @@ public static class CardDescriptionSystem
         public string processedDescription;           // 处理后的描述文本
         public string richTextDescription;          // 富文本格式的描述（用于显示）
         public List<EPlayerAttributeType> referencedAttributes; // 引用的属性类型
-        public Dictionary<EPlayerAttributeType, float> attributeValues; // 属性对应的数值
     }
 
     /// <summary>
@@ -60,8 +60,7 @@ public static class CardDescriptionSystem
         {
             processedDescription = originalDescription,
             richTextDescription = originalDescription,
-            referencedAttributes = new List<EPlayerAttributeType>(),
-            attributeValues = new Dictionary<EPlayerAttributeType, float>()
+            referencedAttributes = new List<EPlayerAttributeType>()
         };
 
         if (string.IsNullOrEmpty(originalDescription))
@@ -98,7 +97,6 @@ public static class CardDescriptionSystem
                 {
                     result.referencedAttributes.Add(attributeType);
                 }
-                result.attributeValues[attributeType] = attributeValue;
 
                 // 对于纯属性标记，只在富文本中高亮属性名称，去掉大括号
                 // 普通文本保持原样：{耐心} → {耐心}
@@ -149,23 +147,39 @@ public static class CardDescriptionSystem
         switch (attributeType)
         {
             case EPlayerAttributeType.Courage:
-                    int baseValue = int.Parse(match.Groups[1].Value); // 基础数值（如：1）
+                int baseValueCourage = int.Parse(match.Groups[1].Value); // 基础数值（如：1）
                 // 勇气影响：每点勇气增加10%效果
                 // 获取属性值
-                int attributeValue = (int)playerAttributeSystem.GetAttributeValue(attributeType.Value);
+                int attributeValueCourage = (int)playerAttributeSystem.GetAttributeValue(attributeType.Value);
 
 
-                int finalValue = (int)math.floor(baseValue * (1 + attributeValue*0.1f));
+                int finalValueCourage = (int)math.floor(baseValueCourage * (1 + attributeValueCourage * 0.1f));
 
                 // 记录引用的属性
                 if (!result.referencedAttributes.Contains(attributeType.Value))
                 {
                     result.referencedAttributes.Add(attributeType.Value);
                 }
-                result.attributeValues[attributeType.Value] = finalValue;
 
-                string basePattern = Regex.Escape(fullMatch);
-                return Regex.Replace(richText, basePattern, $"<color=#FF0000><b>{finalValue}</b></color>");
+                string basePatternCourage = Regex.Escape(fullMatch);
+                return Regex.Replace(richText, basePatternCourage, $"<color=#FF0000><b>{finalValueCourage}</b></color>");
+            case EPlayerAttributeType.Charisma:
+                float baseValueCharisma = float.Parse(match.Groups[1].Value); // 基础数值（如：1）
+                // 魅力影响，每层10%
+                // 获取属性值
+                float attributeValueCharisma = playerAttributeSystem.GetAttributeValue(attributeType.Value);
+
+
+                float finalValue = baseValueCharisma * (1 + attributeValueCharisma * 0.1f) * 100;
+
+                // 记录引用的属性
+                if (!result.referencedAttributes.Contains(attributeType.Value))
+                {
+                    result.referencedAttributes.Add(attributeType.Value);
+                }
+
+                string basePatternCharisma = Regex.Escape(fullMatch);
+                return Regex.Replace(richText, basePatternCharisma, $"<color=#FF0000><b>{finalValue.ToString("F2")}%</b></color>");
             default:
                 return "";
         }

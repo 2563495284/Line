@@ -70,12 +70,14 @@
     <Compile Include="Assets/_Project/Scripts/Interfaces/IHaveCaster.cs" />
     <Compile Include="Assets/Scripts/FontHelper.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Utils/MouseUtils.cs" />
+    <Compile Include="Assets/_Project/Scripts/General/Utils/RandomUtils.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PredictionData.cs" />
-    <Compile Include="Assets/_Project/Scripts/Game Actions/RestoreEnergyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeStrategyGA.cs" />
+    <Compile Include="Assets/_Project/Scripts/Effects/Player/ConditionalCostEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/TradeStockEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/AddLeverageBuffGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/Action System/ActionSystem.cs" />
+    <Compile Include="Assets/_Project/Scripts/Game Actions/CheckAndConsumeResourceGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/TriggerEventGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/NPCData.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/StockMarketData.cs" />
@@ -105,6 +107,8 @@
     <Compile Include="Assets/_Project/Scripts/Game Actions/TradeAllStockGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Models/Card.cs" />
     <Compile Include="Assets/_Project/Scripts/Models/PerkCondition.cs" />
+    <Compile Include="Assets/_Project/Scripts/Systems/ManaSystem.cs" />
+    <Compile Include="Assets/_Project/Scripts/Systems/ResourceConsumptionSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/Interactions.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/LeverageBuffEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/ManualTargetingSystem.cs" />
@@ -138,6 +142,7 @@
     <Compile Include="Assets/_Project/Scripts/UI/TripleKLineDisplay.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeStockPriceGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Creators/TripleKLineCreator.cs" />
+    <Compile Include="Assets/_Project/Scripts/Game Actions/RefillManaGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Creators/NPCViewCreator.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/MoneyUI/StockPriceDisplay.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Utils/SerializableDictionary.cs" />
@@ -181,6 +186,7 @@
     <Compile Include="Assets/SREditor/Package/Scripts/Services/SRFormerlyTypeCache.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/EffectSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/Action System/ReactionTiming.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/ManaUI.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/NewsSystem.cs" />
   </ItemGroup>
   <ItemGroup>

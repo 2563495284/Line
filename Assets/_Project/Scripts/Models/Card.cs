@@ -16,8 +16,6 @@ public class Card
 
     public int Mana { get; private set; }
 
-    public int TradeStockAmount { get; private set; }
-
     // 动态描述相关属性
     public List<EPlayerAttributeType> ReferencedAttributes { get; private set; }
 
@@ -33,7 +31,6 @@ public class Card
         ManualTargetEffect = data.ManualTargetEffect;
         OtherEffects = data.OtherEffects;
         Mana = data.Mana;
-        TradeStockAmount = data.TradeStockAmount;
 
         // 初始化动态描述
         UpdateDescription();

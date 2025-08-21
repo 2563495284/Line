@@ -14,7 +14,6 @@ public class PlayerAttributeDisplay : MonoBehaviour
     [SerializeField] private GameObject attributeItemPrefab;
 
     [Header("状态显示")]
-    [SerializeField] private TextMeshProUGUI energyText;
     [SerializeField] private TextMeshProUGUI cardsPerTurnText;
     [SerializeField] private TextMeshProUGUI totalPointsText;
 
@@ -99,14 +98,6 @@ public class PlayerAttributeDisplay : MonoBehaviour
     private void UpdateStatusDisplay()
     {
         if (PlayerAttributeSystem.Instance == null) return;
-
-        // 更新能量显示
-        if (energyText != null)
-        {
-            int currentEnergy = PlayerAttributeSystem.Instance.GetCurrentEnergy();
-            int energyPerTurn = PlayerAttributeSystem.Instance.GetEnergyPerTurn();
-            energyText.text = $"能量: {currentEnergy} (每回合+{energyPerTurn})";
-        }
 
         // 更新摸牌数显示
         if (cardsPerTurnText != null)

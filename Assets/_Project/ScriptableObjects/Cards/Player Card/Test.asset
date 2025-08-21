@@ -10,30 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
-  m_Name: "\u52C7\u6C14"
+  m_Name: Test
   m_EditorClassIdentifier: 
   <Image>k__BackingField: {fileID: 0}
-  <Title>k__BackingField: "\u52C7\u6C14"
-  <Description>k__BackingField: "\u83B7\u5F972\u70B9\u52C7\u6C14"
+  <Title>k__BackingField: 
+  <Description>k__BackingField: 
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
-      rid: 8527226613794865152
+      rid: 9019117340648800465
     <Effect>k__BackingField:
-      rid: 8527226613794865153
+      rid: 9019117340648800466
   <Mana>k__BackingField: 0
-  <TradeStockAmount>k__BackingField: 0
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8527226613794865152
+    - rid: 9019117340648800465
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 8527226613794865153
+    - rid: 9019117340648800466
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
-        attributeType: 4
-        attributeValue: 2
+        attributeType: 3
+        attributeValue: 3

@@ -7,7 +7,7 @@ using UnityEngine;
 public static class OilMarketMessages
 {
     /// <summary>
-    /// 利好消息（做多卡组）
+    /// 石油 利好消息（做多卡组）
     /// </summary>
     public static readonly List<string> BullishMessages = new List<string>
     {
@@ -46,7 +46,7 @@ public static class OilMarketMessages
     };
 
     /// <summary>
-    /// 利空消息（做空卡组）
+    /// 石油 利空消息（做空卡组）
     /// </summary>
     public static readonly List<string> BearishMessages = new List<string>
     {
@@ -85,7 +85,7 @@ public static class OilMarketMessages
     };
 
     /// <summary>
-    /// 中性消息（中性卡组/无卡牌时）
+    /// 石油 中性消息（中性卡组/无卡牌时）
     /// </summary>
     public static readonly List<string> NeutralMessages = new List<string>
     {
@@ -123,31 +123,113 @@ public static class OilMarketMessages
         "市场参与者情绪指数处于中性水平，等待新的催化因素"
     };
 
-    /// <summary>
-    /// 根据事件类型获取随机消息
-    /// </summary>
-    /// <param name="eventType">事件类型</param>
-    /// <returns>随机选择的消息</returns>
-    public static string GetRandomMessage(EEventCardType eventType)
+    // ================= 新增：钢铁与棉花的消息 =================
+
+    public static readonly List<string> SteelBullishMessages = new List<string>
     {
-        List<string> messages = eventType switch
+        "钢铁行业订单大增，基建需求推动价格走强",
+        "主要钢铁产区限产措施升级，供应收缩预期增强",
+        "海外需求复苏，钢材出口报价上调",
+        "矿石价格上涨传导至钢价，产业链利润修复",
+        "制造业PMI回到扩张区间，钢材消费预期改善"
+    };
+
+    public static readonly List<string> SteelBearishMessages = new List<string>
+    {
+        "粗钢产量持续走高，库存累积压制价格",
+        "房地产投资放缓，钢材终端需求转弱",
+        "海外竞争加剧，钢材出口订单下滑",
+        "原料成本回落，成材价格回吐涨幅",
+        "环保限产边际放松，供给压力抬头"
+    };
+
+    public static readonly List<string> SteelNeutralMessages = new List<string>
+    {
+        "钢材现货与期货价差收敛，市场情绪中性",
+        "钢厂开工率稳定，供需基本平衡",
+        "社会库存去化放缓，价格区间震荡",
+        "终端采购按需进行，短期指引有限",
+        "行业利润维持常态，市场观望情绪浓厚"
+    };
+
+    public static readonly List<string> CottonBullishMessages = new List<string>
+    {
+        "新季棉花减产预期增强，供给紧张推升价格",
+        "纺织订单回暖，下游补库意愿提升",
+        "主要产区天气不佳，棉花采收受阻",
+        "国际棉价走强带动内盘联动上涨",
+        "库存持续去化，现货报价上调"
+    };
+
+    public static readonly List<string> CottonBearishMessages = new List<string>
+    {
+        "纺织行业开机率回落，原料需求走弱",
+        "新花集中上市，阶段性供应压力显现",
+        "国际订单不足，出口不及预期",
+        "替代纤维性价比提升，挤压棉花需求",
+        "库存累积加快，贸易商报价松动"
+    };
+
+    public static readonly List<string> CottonNeutralMessages = new List<string>
+    {
+        "棉花期现价差稳定，市场博弈加剧",
+        "上下游维持刚需采购，价格窄幅波动",
+        "产销两端节奏平稳，短期指引不足",
+        "宏观扰动有限，品种跟随盘面震荡",
+        "贸易流向正常，供需边际变化不大"
+    };
+
+    /// <summary>
+    /// 根据股票类型与事件类型获取随机消息
+    /// </summary>
+    public static string GetRandomMessage(EStockType stockType, EEventCardType eventType)
+    {
+        List<string> messages;
+
+        switch (stockType)
         {
-            EEventCardType.Bull => BullishMessages,
-            EEventCardType.Bear => BearishMessages,
-            EEventCardType.Neutral => NeutralMessages,
-            _ => NeutralMessages
-        };
+            case EStockType.Steel:
+                messages = eventType switch
+                {
+                    EEventCardType.Bull => SteelBullishMessages,
+                    EEventCardType.Bear => SteelBearishMessages,
+                    _ => SteelNeutralMessages
+                };
+                break;
+            case EStockType.Cotton:
+                messages = eventType switch
+                {
+                    EEventCardType.Bull => CottonBullishMessages,
+                    EEventCardType.Bear => CottonBearishMessages,
+                    _ => CottonNeutralMessages
+                };
+                break;
+            case EStockType.Oil:
+            default:
+                messages = eventType switch
+                {
+                    EEventCardType.Bull => BullishMessages,
+                    EEventCardType.Bear => BearishMessages,
+                    _ => NeutralMessages
+                };
+                break;
+        }
 
         if (messages.Count == 0) return "市场信息暂无更新";
-
         return messages[Random.Range(0, messages.Count)];
     }
 
     /// <summary>
-    /// 获取指定类型的所有消息
+    /// 兼容旧接口：默认以石油为品类
     /// </summary>
-    /// <param name="eventType">事件类型</param>
-    /// <returns>该类型的所有消息列表</returns>
+    public static string GetRandomMessage(EEventCardType eventType)
+    {
+        return GetRandomMessage(EStockType.Oil, eventType);
+    }
+
+    /// <summary>
+    /// 获取指定类型的所有消息（兼容旧接口，仅石油）
+    /// </summary>
     public static List<string> GetAllMessages(EEventCardType eventType)
     {
         return eventType switch

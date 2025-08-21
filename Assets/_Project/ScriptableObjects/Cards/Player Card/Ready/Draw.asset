@@ -22,6 +22,11 @@ MonoBehaviour:
       rid: 3569982942541250663
     <Effect>k__BackingField:
       rid: 9019116889392545865
+  - <TargetMode>k__BackingField:
+      rid: 9019117340648800326
+    <Effect>k__BackingField:
+      rid: 9019117340648800327
+  <Mana>k__BackingField: 1
   references:
     version: 2
     RefIds:
@@ -34,3 +39,10 @@ MonoBehaviour:
       type: {class: DrawCardsEffect, ns: , asm: Assembly-CSharp}
       data:
         drawAmount: 2
+    - rid: 9019117340648800326
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 9019117340648800327
+      type: {class: ChangeManaEffect, ns: , asm: Assembly-CSharp}
+      data:
+        manaAmount: -1

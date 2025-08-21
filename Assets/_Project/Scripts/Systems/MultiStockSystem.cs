@@ -163,8 +163,14 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             yield break;
         }
 
+        if (!CanTradeStock(action.StockType, action.Amount))
+        {
+            Utils.ShakeCamera();
+            yield break;
+        }
         if (action.Amount > 0) // 买入
         {
+
             ChangeStockGA changeStockGA = new ChangeStockGA(action.Amount, action.StockType);
             ActionSystem.Instance.Perform(changeStockGA);
             ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-action.Amount * market.currentPrice);
@@ -298,6 +304,10 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     public LineView GetLineView(EStockType eStockType)
     {
         return tripleKLineDisplay.GetLineView(eStockType);
+    }
+    public LineView GetLineViewRandom()
+    {
+        return tripleKLineDisplay.GetLineViewRandom();
     }
     #endregion
 

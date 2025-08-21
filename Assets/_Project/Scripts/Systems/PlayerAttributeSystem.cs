@@ -14,12 +14,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     [Header("属性数据")]
     [SerializeField] private PlayerAttributesData playerAttributes;
 
-    [Header("能量系统")]
-    [SerializeField] private int baseEnergyPerTurn = 3;
-    [SerializeField] private int currentMana = 3;
-    [SerializeField] private int maxMana = 10;
-    [SerializeField] private int savedMana = 0; // 耐心属性保存的能量
-
     [Header("摸牌系统")]
     [SerializeField] private int baseCardsPerTurn = 5;
 
@@ -39,10 +33,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
     private void OnEnable()
     {
-        //改变能量
-        ActionSystem.AttachPerformer<ChangeManaGA>(ChangeManaPerformer);
-        //存储能量
-        ActionSystem.AttachPerformer<RestoreEnergyGA>(RestoreEnergyPerformer);
         //丢弃卡牌
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
         //改变属性
@@ -61,8 +51,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
     private void OnDisable()
     {
-        ActionSystem.DetachPerformer<ChangeManaGA>();
-        ActionSystem.DetachPerformer<RestoreEnergyGA>();
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<ChangeAttributeGA>();
         ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPreReaction, ReactionTiming.PRE);
@@ -84,8 +72,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
             playerAttributes = new PlayerAttributesData();
         }
 
-        // 初始化能量
-        currentMana = GetTotalEnergyPerTurn();
     }
 
     #endregion
@@ -101,44 +87,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         }
 
         characterView.hand.Clear();
-    }
-
-    /// <summary>
-    /// 处理能量使用
-    /// </summary>
-    private IEnumerator ChangeManaPerformer(ChangeManaGA action)
-    {
-        if (currentMana >= action.Amount)
-        {
-            currentMana -= action.Amount;
-
-            if (showDebugInfo)
-            {
-                Debug.Log($"使用能量: {action.Amount}，剩余: {currentMana}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"能量不足，需要 {action.Amount}，拥有 {currentMana}");
-        }
-
-        yield return null;
-    }
-
-    /// <summary>
-    /// 处理能量恢复
-    /// </summary>
-    private IEnumerator RestoreEnergyPerformer(RestoreEnergyGA action)
-    {
-        int oldEnergy = currentMana;
-        currentMana = Mathf.Min(currentMana + action.Amount, maxMana);
-
-        if (showDebugInfo)
-        {
-            Debug.Log($"恢复能量: {action.Amount}，{oldEnergy} -> {currentMana}");
-        }
-
-        yield return null;
     }
     private IEnumerator ChangeAttributePerformer(ChangeAttributeGA action)
     {
@@ -181,32 +129,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         int socialBonus = (int)GetAttributeValue(EPlayerAttributeType.Social);
         return baseCardsPerTurn + socialBonus;
     }
-
-    /// <summary>
-    /// 获取每回合能量恢复数
-    /// </summary>
-    public int GetEnergyPerTurn()
-    {
-        int wisdomBonus = (int)GetAttributeValue(EPlayerAttributeType.Wisdom);
-        return baseEnergyPerTurn + wisdomBonus;
-    }
-
-    /// <summary>
-    /// 获取总能量上限（包括保存的能量）
-    /// </summary>
-    public int GetTotalEnergyPerTurn()
-    {
-        return GetEnergyPerTurn() + savedMana;
-    }
-
-    /// <summary>
-    /// 获取可保存的能量数量
-    /// </summary>
-    public int GetSaveableEnergy()
-    {
-        return (int)GetAttributeValue(EPlayerAttributeType.Patience);
-    }
-
     /// <summary>
     /// 获取股市影响力加成
     /// </summary>
@@ -235,29 +157,10 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     {
         DrawCardsGA drawCardsGA = new(GetCardsPerTurn(), playerView);
         ActionSystem.Instance.AddReaction(drawCardsGA);
-
-
-        // 保存剩余能量（耐心属性）
-        int saveableAmount = GetSaveableEnergy();
-        int energyToSave = Mathf.Min(currentMana, saveableAmount);
-        savedMana = energyToSave;
-
-        // 恢复能量
-        int energyToRestore = GetEnergyPerTurn();
-        currentMana = Mathf.Min(energyToRestore + savedMana, maxMana);
-
         // 摸牌
         int cardsToDraw = GetCardsPerTurn();
-
-        // 触发事件
-        ActionSystem.Instance.AddReaction(new ChangeManaGA(currentMana));
-
         //刷新信息
         UpdateAllInfo();
-        if (showDebugInfo)
-        {
-            Debug.Log($"新回合开始 - 能量: {currentMana} (保存: {savedMana}), 摸牌: {cardsToDraw}");
-        }
     }
     #endregion
 
@@ -279,22 +182,6 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     public PlayerAttributesData GetPlayerAttributes()
     {
         return playerAttributes;
-    }
-
-    /// <summary>
-    /// 获取当前能量
-    /// </summary>
-    public int GetCurrentEnergy()
-    {
-        return currentMana;
-    }
-
-    /// <summary>
-    /// 检查是否有足够能量
-    /// </summary>
-    public bool HasEnoughMana(int amount)
-    {
-        return currentMana >= amount;
     }
     #endregion
 }

@@ -10,36 +10,40 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
-  m_Name: Short selling
+  m_Name: "\u5DE6\u53F3\u9022\u6E90"
   m_EditorClassIdentifier: 
   <Image>k__BackingField: {fileID: 0}
-  <Title>k__BackingField: "\u505A\u7A7A"
-  <Description>k__BackingField: "\u964D\u4F4E\u5176\u4EF7\u683C0.01{\u9B45\u529B}"
+  <Title>k__BackingField: "\u5DE6\u53F3\u9022\u6E90"
+  <Description>k__BackingField: "\u83B7\u5F972[\u793E\u4EA4]"
   <ManualTargetEffect>k__BackingField:
-    rid: 9019117317643567975
+    rid: -2
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
-      rid: 9019117340648800334
+      rid: 1
     <Effect>k__BackingField:
-      rid: 9019117340648800335
-  <Mana>k__BackingField: 1
+      rid: 2
+  - <TargetMode>k__BackingField:
+      rid: 9019117340648800343
+    <Effect>k__BackingField:
+      rid: 9019117340648800344
+  <Mana>k__BackingField: 2
   references:
     version: 2
     RefIds:
-    - rid: 9019117317643567975
-      type: {class: ChangeStockPriceEffect, ns: , asm: Assembly-CSharp}
-      data:
-        changePriceDictionary:
-          keys: 
-          values: []
-        changePersentDictionary:
-          keys: 00000000
-          values:
-          - -1
-    - rid: 9019117340648800334
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 1
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 9019117340648800335
+    - rid: 2
+      type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
+      data:
+        attributeType: 0
+        attributeValue: 2
+    - rid: 9019117340648800343
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 9019117340648800344
       type: {class: ChangeManaEffect, ns: , asm: Assembly-CSharp}
       data:
-        manaAmount: -1
+        manaAmount: -2

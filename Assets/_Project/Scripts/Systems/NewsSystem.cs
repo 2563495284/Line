@@ -94,6 +94,22 @@ public class NewsSystem : Singleton<NewsSystem>
     }
 
     /// <summary>
+    /// 播报市场事件新闻（多股市版本，指定品类）
+    /// </summary>
+    public void BroadcastMarketEvent(EStockType stockType, EEventCardType eventType)
+    {
+        // 标题包含品类名
+        string stockName = MultiStockSystem.Instance?.GetStockMarket(stockType)?.stockName ?? stockType.ToString();
+        string title = $"新闻 - {stockName}";
+
+        // 内容依据品类与事件类型
+        string content = OilMarketMessages.GetRandomMessage(stockType, eventType);
+
+        BroadcastNews(title, content, NewsType.MarketEvent, displayDuration[NewsType.MarketEvent]);
+        Debug.Log($"市场事件播报: {stockType} {eventType} - {title}");
+    }
+
+    /// <summary>
     /// 播报NPC出牌新闻
     /// </summary>
     /// <param name="npcName">NPC名称</param>

@@ -44,37 +44,37 @@ public class PlayerAttributeData
     {
         switch (attributeType)
         {
-            case EPlayerAttributeType.Social:
+            case EPlayerAttributeType.Social://基础的
                 attributeName = "社交";
-                description = "每回合摸牌数+1";
+                description = "每回合摸牌数+1，每回合失去1";
                 currentValue = 0f;
                 break;
-            case EPlayerAttributeType.Patience:
+            case EPlayerAttributeType.Patience://基础的
                 attributeName = "耐心";
-                description = "保留1点能量到下回合";
+                description = "保留1点能量到下回合，每回合失去1";
                 currentValue = 0f;
                 break;
-            case EPlayerAttributeType.Wisdom:
+            case EPlayerAttributeType.Wisdom://中级
                 attributeName = "智慧";
                 description = "每回合能量恢复+1";
                 currentValue = 0f;
                 break;
-            case EPlayerAttributeType.Charisma:
+            case EPlayerAttributeType.Charisma://中级
                 attributeName = "魅力";
                 description = "市场影响力+10%";
                 currentValue = 0f;
                 break;
-            case EPlayerAttributeType.Courage:
+            case EPlayerAttributeType.Courage://基础
                 attributeName = "勇气";
                 description = "市场交易数量+10%";
                 currentValue = 0f;
                 break;
-            case EPlayerAttributeType.Calmness:
+            case EPlayerAttributeType.Calmness://中性
                 attributeName = "冷静";
                 description = "环境对市场价格影响-10%";
                 currentValue = 0f;
                 break;
-            case EPlayerAttributeType.Fanaticism:
+            case EPlayerAttributeType.Fanaticism://中性
                 attributeName = "狂热";
                 description = "环境对市场价格影响+10%";
                 currentValue = 0f;

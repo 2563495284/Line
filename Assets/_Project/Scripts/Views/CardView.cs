@@ -9,6 +9,7 @@ using DG.Tweening;
 public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
     [SerializeField] private TMP_Text title;
+    [SerializeField] private TMP_Text mana;
     [SerializeField] private TMP_Text description;
     [SerializeField] private SpriteRenderer imageSR;
     [SerializeField] private GameObject wrapper;
@@ -27,7 +28,7 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         Card = card;
         title.text = Card.Title;
-
+        mana.text = Card.Mana.ToString();
         // 使用富文本描述以显示高亮效果
         description.text = Card.RichTextDescription ?? Card.Description;
 
@@ -89,12 +90,6 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             return;
         }
-
-        if (!MultiStockSystem.Instance.CanTradeStock(target.StockType, Card.TradeStockAmount))
-        {
-            Utils.ShakeCamera();
-            return;
-        }
         PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Instance.playerView, target);
         ActionSystem.Instance.Perform(playCardGA);
     }
@@ -113,7 +108,7 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             return false;
         }
-        if (!PlayerAttributeSystem.Instance.HasEnoughMana(Card.Mana))
+        if (!ManaSystem.Instance.HasEnoughMana(Card.Mana))
         {
             return false;
         }

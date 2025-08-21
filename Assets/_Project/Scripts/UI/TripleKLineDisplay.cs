@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
 using System;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 
 /// <summary>
 /// 三个并排K线图显示管理器
@@ -9,20 +9,32 @@ using System;
 public class TripleKLineDisplay : MonoBehaviour
 {
     [Header("K线组件引用")]
-    [SerializeField] private LineView oilLineView;
-    [SerializeField] private LineView steelLineView;
-    [SerializeField] private LineView cottonLineView;
+    [SerializeField]
+    private LineView oilLineView;
+
+    [SerializeField]
+    private LineView steelLineView;
+
+    [SerializeField]
+    private LineView cottonLineView;
 
     [Header("布局设置")]
-    [SerializeField] private float spacing = 6f; // K线图之间的间距（1920x1080优化）
-    [SerializeField] private Vector3 centerPosition = Vector3.zero; // 中心位置
+    [SerializeField]
+    private float spacing = 6f; // K线图之间的间距（1920x1080优化）
+
+    [SerializeField]
+    private Vector3 centerPosition = Vector3.zero; // 中心位置
 
     [Header("更新设置")]
-    [SerializeField] private float updateInterval = 1f;
-    [SerializeField] private bool autoUpdate = true;
+    [SerializeField]
+    private float updateInterval = 1f;
+
+    [SerializeField]
+    private bool autoUpdate = true;
 
     [Header("调试")]
-    [SerializeField] private bool showDebugInfo = false;
+    [SerializeField]
+    private bool showDebugInfo = false;
 
     // 私有变量
     private Dictionary<EStockType, LineView> lineViewMap;
@@ -31,7 +43,6 @@ public class TripleKLineDisplay : MonoBehaviour
     private void Start()
     {
         InitializeKLineViews();
-        SetupLayout();
 
         if (autoUpdate)
         {
@@ -58,7 +69,7 @@ public class TripleKLineDisplay : MonoBehaviour
         {
             { EStockType.Oil, oilLineView },
             { EStockType.Steel, steelLineView },
-            { EStockType.Cotton, cottonLineView }
+            { EStockType.Cotton, cottonLineView },
         };
 
         // 为每个LineView设置股票类型信息
@@ -85,38 +96,6 @@ public class TripleKLineDisplay : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 设置布局
-    /// </summary>
-    private void SetupLayout()
-    {
-        if (!isInitialized) return;
-
-        // 设置三个K线图的位置
-        Vector3 leftPosition = centerPosition + Vector3.left * spacing;
-        Vector3 rightPosition = centerPosition + Vector3.right * spacing;
-
-        if (oilLineView != null)
-        {
-            oilLineView.transform.position = leftPosition;
-        }
-
-        if (steelLineView != null)
-        {
-            steelLineView.transform.position = centerPosition;
-        }
-
-        if (cottonLineView != null)
-        {
-            cottonLineView.transform.position = rightPosition;
-        }
-
-        if (showDebugInfo)
-        {
-            Debug.Log($"K线布局设置完成 - 左: {leftPosition}, 中: {centerPosition}, 右: {rightPosition}");
-        }
-    }
-
     #endregion
 
     #region Update System
@@ -126,7 +105,8 @@ public class TripleKLineDisplay : MonoBehaviour
     /// </summary>
     public void UpdateAllKLines()
     {
-        if (!isInitialized || MultiStockSystem.Instance == null) return;
+        if (!isInitialized || MultiStockSystem.Instance == null)
+            return;
 
         var stockMarkets = MultiStockSystem.Instance.GetAllStockMarkets();
 
@@ -146,13 +126,19 @@ public class TripleKLineDisplay : MonoBehaviour
     /// </summary>
     private void UpdateKLine(SingleStockMarketData marketData)
     {
-        if (lineViewMap.TryGetValue(marketData.stockType, out LineView lineView) && lineView != null)
+        if (
+            lineViewMap.TryGetValue(marketData.stockType, out LineView lineView)
+            && lineView != null
+        )
         {
             // 使用历史价格数据更新K线
             lineView.SetNewData(marketData.priceHistory);
 
             // 更新当前价格显示
-            lineView.UpdateCurrentPrice(marketData.currentPrice, marketData.GetPriceChangePercent());
+            lineView.UpdateCurrentPrice(
+                marketData.currentPrice,
+                marketData.GetPriceChangePercent()
+            );
         }
     }
 
@@ -220,6 +206,11 @@ public class TripleKLineDisplay : MonoBehaviour
         return lineView;
     }
 
+    public LineView GetLineViewRandom()
+    {
+        return lineViewMap.Values.RandomElement();
+    }
+
     /// <summary>
     /// 设置LineView引用（用于编辑器或代码配置）
     /// </summary>
@@ -234,12 +225,11 @@ public class TripleKLineDisplay : MonoBehaviour
         {
             { EStockType.Oil, oilLineView },
             { EStockType.Steel, steelLineView },
-            { EStockType.Cotton, cottonLineView }
+            { EStockType.Cotton, cottonLineView },
         };
 
         // 重新初始化
         InitializeKLineViews();
-        SetupLayout();
 
         if (showDebugInfo)
         {
@@ -253,7 +243,6 @@ public class TripleKLineDisplay : MonoBehaviour
     public void SetCenterPosition(Vector3 newCenter)
     {
         centerPosition = newCenter;
-        SetupLayout();
     }
 
     /// <summary>
@@ -262,7 +251,6 @@ public class TripleKLineDisplay : MonoBehaviour
     public void SetSpacing(float newSpacing)
     {
         spacing = newSpacing;
-        SetupLayout();
     }
 
     /// <summary>
@@ -284,13 +272,9 @@ public class TripleKLineDisplay : MonoBehaviour
 
     #region Event Handlers
 
-    private void OnEnable()
-    {
-    }
+    private void OnEnable() { }
 
-    private void OnDisable()
-    {
-    }
+    private void OnDisable() { }
     #endregion
 
     #region Debug Methods

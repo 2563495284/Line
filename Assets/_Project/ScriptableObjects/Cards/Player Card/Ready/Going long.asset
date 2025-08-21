@@ -14,12 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Image>k__BackingField: {fileID: 0}
   <Title>k__BackingField: "\u505A\u591A"
-  <Description>k__BackingField: "\u62AC\u9AD8\u5176\u4EF7\u683C1%"
+  <Description>k__BackingField: "\u62AC\u9AD8\u5176\u4EF7\u683C0.01{\u9B45\u529B}"
   <ManualTargetEffect>k__BackingField:
     rid: 9019117317643567973
-  <OtherEffects>k__BackingField: []
-  <Mana>k__BackingField: 0
-  <TradeStockAmount>k__BackingField: 0
+  <OtherEffects>k__BackingField:
+  - <TargetMode>k__BackingField:
+      rid: 9019117340648800328
+    <Effect>k__BackingField:
+      rid: 9019117340648800329
+  <Mana>k__BackingField: 1
   references:
     version: 2
     RefIds:
@@ -33,3 +36,10 @@ MonoBehaviour:
           keys: 00000000
           values:
           - 1
+    - rid: 9019117340648800328
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 9019117340648800329
+      type: {class: ChangeManaEffect, ns: , asm: Assembly-CSharp}
+      data:
+        manaAmount: -1

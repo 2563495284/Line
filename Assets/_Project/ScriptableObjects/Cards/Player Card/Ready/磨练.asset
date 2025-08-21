@@ -10,35 +10,57 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
-  m_Name: "\u9759\u5F85\u5176\u53D8"
+  m_Name: "\u78E8\u7EC3"
   m_EditorClassIdentifier: 
   <Image>k__BackingField: {fileID: 0}
-  <Title>k__BackingField: "\u9759\u5F85\u5176\u53D8"
-  <Description>k__BackingField: "\u83B7\u5F972[\u8010\u5FC3]"
+  <Title>k__BackingField: "\u78E8\u7EC3"
+  <Description>k__BackingField: "\u6D88\u8017100\u94A2\u94C1\uFF0C\u83B7\u5F973[\u8010\u5FC3]\u30011[\u51B7\u9759]"
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
-      rid: 9019117340648800338
+      rid: 1
     <Effect>k__BackingField:
-      rid: -2
+      rid: 2
   - <TargetMode>k__BackingField:
-      rid: 9019117340648800351
+      rid: 9019117340648800347
     <Effect>k__BackingField:
-      rid: 9019117340648800352
+      rid: 9019117340648800348
   <Mana>k__BackingField: 2
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 9019117340648800338
+    - rid: 1
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 9019117340648800351
+    - rid: 2
+      type: {class: ConditionalCostEffect, ns: , asm: Assembly-CSharp}
+      data:
+        resourceCosts:
+        - resourceType: 0
+          stockType: 1
+          stockAmount: 100
+          attributeType: 0
+          attributeAmount: 0
+        successEffects:
+        - rid: 3
+        - rid: 4
+    - rid: 3
+      type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
+      data:
+        attributeType: 1
+        attributeValue: 3
+    - rid: 4
+      type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
+      data:
+        attributeType: 5
+        attributeValue: 1
+    - rid: 9019117340648800347
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 9019117340648800352
+    - rid: 9019117340648800348
       type: {class: ChangeManaEffect, ns: , asm: Assembly-CSharp}
       data:
         manaAmount: -2
