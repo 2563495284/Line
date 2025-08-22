@@ -173,13 +173,22 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
     public void UpdateAllInfo()
     {
+        // 检查所有必要的组件是否仍然有效
+        if (playerView == null || playerView.gameObject == null ||
+            MultiStockSystem.Instance == null || this == null)
+            return;
+
         playerView.UpdateMoneyText(MultiStockSystem.Instance.GetCurrentMoney());
         foreach (var stockType in Enum.GetValues(typeof(EStockType)))
         {
             playerView.UpdateStockText((EStockType)stockType, MultiStockSystem.Instance.GetStockHoldings((EStockType)stockType));
         }
         playerView.UpdateAllDisplays();
-        playerAttributeDisplay.UpdateAllDisplays();
+
+        if (playerAttributeDisplay != null && playerAttributeDisplay.gameObject != null)
+        {
+            playerAttributeDisplay.UpdateAllDisplays();
+        }
     }
     #region Public Interface
 
@@ -189,6 +198,37 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     public PlayerAttributesData GetPlayerAttributes()
     {
         return playerAttributes;
+    }
+
+    /// <summary>
+    /// 重置玩家属性系统到初始状态
+    /// </summary>
+    public void ResetSystem()
+    {
+        // 重置所有属性值为0
+        foreach (var attribute in playerAttributes.attributes)
+        {
+            attribute.currentValue = 0f;
+        }
+
+        // 重置统计信息
+        playerAttributes.totalAttributePoints = 0;
+        playerAttributes.totalMoneySpent = 0;
+
+        // 清空玩家手牌和牌堆，停止协程
+        if (playerView != null)
+        {
+            // 使用PlayerView的清理方法
+            playerView.ClearAllCards();
+
+            // 清空数据模型
+            playerView.hand.Clear();
+            playerView.drawPile.Clear();
+            playerView.DiscardPile.Clear();
+        }
+
+        // 更新UI显示
+        UpdateAllInfo();
     }
     #endregion
 }

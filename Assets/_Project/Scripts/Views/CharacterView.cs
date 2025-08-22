@@ -56,6 +56,12 @@ public abstract class CharacterView : MonoBehaviour
 
     public virtual IEnumerator DrawCard()
     {
+        // 检查对象是否仍然有效
+        if (this == null || gameObject == null)
+        {
+            yield break;
+        }
+
         Card card = drawPile.Draw();
         if (card == null)
         {

@@ -60,6 +60,12 @@ public class PlayerView : CharacterView
 
         for (int i = 0; i < cards.Count; i++)
         {
+            // 检查卡牌是否仍然存在
+            if (cards[i] == null || cards[i].gameObject == null)
+            {
+                continue;
+            }
+
             float p = firstCardPosition + i * cardSpacing;
             Vector3 splinePosition = spline.EvaluatePosition(p);
             Vector3 forward = spline.EvaluateTangent(p);
@@ -130,6 +136,28 @@ public class PlayerView : CharacterView
             card.Card.UpdateDescription();
             card.UpdateDescription();
         }
+    }
+
+    /// <summary>
+    /// 清理所有卡牌和协程（用于重置）
+    /// </summary>
+    public void ClearAllCards()
+    {
+        // 停止所有协程
+        StopAllCoroutines();
+
+        // 销毁所有卡牌视图
+        var cardsToDestroy = new List<CardView>(cards);
+        foreach (var cardView in cardsToDestroy)
+        {
+            if (cardView != null)
+            {
+                Destroy(cardView.gameObject);
+            }
+        }
+
+        // 清空卡牌列表
+        cards.Clear();
     }
 
 }

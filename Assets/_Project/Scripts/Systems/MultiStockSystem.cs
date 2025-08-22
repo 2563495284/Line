@@ -15,8 +15,32 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
 
     [Header("UI引用")]
     [SerializeField] private TripleKLineDisplay tripleKLineDisplay;
-    // 玩家资金
-    [SerializeField] public float currentMoney = 100000f;
+
+    [Header("资金配置")]
+    [SerializeField] private FinancialData financialData;
+
+    // 当前资金状态
+    private float currentMoney;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        InitializeFinancialSystem();
+    }
+
+    private void InitializeFinancialSystem()
+    {
+        if (financialData != null)
+        {
+            currentMoney = financialData.InitialMoney;
+        }
+        else
+        {
+            Debug.LogWarning("FinancialData 未设置，使用默认值 200000");
+            currentMoney = 200000f;
+        }
+    }
+
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<ChangeStockPriceGA>(ChangeStockPricePerformer);
@@ -263,6 +287,57 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     }
 
     /// <summary>
+    /// 获取资金配置数据
+    /// </summary>
+    // public FinancialData GetFinancialData()
+    // {
+    //     return financialData;
+    // }
+
+    /// <summary>
+    /// 设置当前金币（使用配置的限制）
+    /// </summary>
+    public void SetCurrentMoney(float amount)
+    {
+        if (financialData != null)
+        {
+            currentMoney = financialData.ClampMoney(amount);
+        }
+        else
+        {
+            currentMoney = Mathf.Max(0, amount);
+        }
+    }
+
+    /// <summary>
+    /// 检查是否有足够的资金
+    /// </summary>
+    public bool HasEnoughMoney(float requiredAmount)
+    {
+        return currentMoney >= requiredAmount;
+    }
+
+    /// <summary>
+    /// 格式化金钱显示
+    /// </summary>
+    public string FormatMoney(float amount)
+    {
+        if (financialData != null)
+        {
+            return financialData.FormatMoney(amount);
+        }
+        return amount.ToString("N0");
+    }
+
+    /// <summary>
+    /// 格式化当前金钱显示
+    /// </summary>
+    public string FormatCurrentMoney()
+    {
+        return FormatMoney(currentMoney);
+    }
+
+    /// <summary>
     /// 获取总资产价值
     /// </summary>
     public float GetTotalAssetValue()
@@ -308,6 +383,29 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     public LineView GetLineViewRandom()
     {
         return tripleKLineDisplay.GetLineViewRandom();
+    }
+
+    /// <summary>
+    /// 重置股市系统到初始状态
+    /// </summary>
+    public void ResetSystem()
+    {
+        // 重置玩家资金到初始值
+        InitializeFinancialSystem();
+
+        // 重置所有股市数据
+        foreach (var market in stockMarkets)
+        {
+            market.currentPrice = market.initialPrice;
+            market.tempPrice = market.initialPrice;
+            market.playerHoldings = 0;
+            market.currentVolatility = market.baseVolatility;
+            market.priceHistory.Clear();
+            market.priceHistory.Add(market.currentPrice);
+        }
+
+        // 更新K线显示
+        UpdateKLineDisplays();
     }
     #endregion
 

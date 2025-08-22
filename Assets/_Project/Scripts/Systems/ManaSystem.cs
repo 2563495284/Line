@@ -95,4 +95,18 @@ public class ManaSystem : Singleton<ManaSystem>
     {
         return (int)PlayerAttributeSystem.Instance.GetAttributeValue(EPlayerAttributeType.Patience);
     }
+
+    /// <summary>
+    /// 重置Mana系统到初始状态
+    /// </summary>
+    public void ResetSystem()
+    {
+        currentMana = baseEnergyPerTurn;
+        savedMana = 0;
+
+        if (manaUI != null)
+        {
+            manaUI.UpdateManaText(currentMana);
+        }
+    }
 }
