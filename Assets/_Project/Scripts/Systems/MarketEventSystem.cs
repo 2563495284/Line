@@ -16,12 +16,11 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
 {
     [Header("触发回合配置（多股市）")]
     [SerializeField] private int roundInterval = 2; // 每隔 N 回合尝试触发
-    [SerializeField] private float eventChance = 0.6f;  // 触发概率（0-1）
 
     [Header("价格影响区间（百分比）")]
     [SerializeField] private Vector2 bullImpactPercentRange = new Vector2(1.0f, 4.0f);
-    [SerializeField] private Vector2 bearImpactPercentRange = new Vector2(1.0f, 4.0f);
-    [SerializeField] private Vector2 neutralImpactPercentRange = new Vector2(0.5f, 1.5f);
+    [SerializeField] private Vector2 neutralImpactPercentRange = new Vector2(-0.1f, 0.1f);
+    [SerializeField] private Vector2 bearImpactPercentRange = new Vector2(-4.0f, -1.0f);
 
     private int roundCounter = 0;
 
@@ -39,17 +38,15 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
     {
         roundCounter++;
         if (roundCounter % roundInterval != 0) return;
-        TryTriggerMarketNewsForRandomStock();
+        TryTriggerMarketNewsForRandomStock(EStockType.Oil, 0.8f, 0.3f);
+        TryTriggerMarketNewsForRandomStock(EStockType.Steel, 0.6f, 0.5f);
+        TryTriggerMarketNewsForRandomStock(EStockType.Cotton, 0.3f, 0.7f);
     }
 
-    private void TryTriggerMarketNewsForRandomStock()
+    private void TryTriggerMarketNewsForRandomStock(EStockType stockType, float eventChance, float effectFactor)
     {
-        if (MultiStockSystem.Instance == null) return;
-        var markets = MultiStockSystem.Instance.GetAllStockMarkets();
-        if (markets == null || markets.Count == 0) return;
-
-        // 随机选择一个股票品类
-        var market = markets[Random.Range(0, markets.Count)];
+        var market = MultiStockSystem.Instance.GetStockMarket(stockType);
+        if (market == null) return;
         if (Random.value > eventChance) return; // 本次不触发
 
         // 根据相对初始价格的偏离选择事件方向
@@ -57,7 +54,7 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
         EEventCardType eventType = SelectEventTypeByDeviation(deviation);
 
         // 应用价格影响
-        float impactPercent = GetImpactPercentByEvent(eventType);
+        float impactPercent = GetImpactPercentByEvent(eventType) * effectFactor;
         ApplyPriceImpact(market.stockType, impactPercent);
 
         // 播报新闻
@@ -86,8 +83,7 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
             EEventCardType.Bear => bearImpactPercentRange,
             _ => neutralImpactPercentRange
         };
-        float sign = type == EEventCardType.Bear ? -1f : 1f;
-        return sign * Random.Range(range.x, range.y);
+        return Random.Range(range.x, range.y);
     }
 
     private void ApplyPriceImpact(EStockType stockType, float percent)

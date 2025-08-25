@@ -105,3 +105,27 @@ MonoBehaviour:
   <StrategyType>k__BackingField: 0
   <doTweenScaleDuration>k__BackingField: 0.15
   <doTweenMoveDuration>k__BackingField: 0.15
+  changePricePersentDictionaryWhenBuy:
+    keys: 000000000100000002000000
+    values:
+    - 0.3
+    - 0.3
+    - 0.3
+  changePriceDictionaryWhenBuy:
+    keys: 000000000100000002000000
+    values:
+    - 0
+    - 0
+    - 0
+  changePricePersentDictionaryWhenSell:
+    keys: 000000000100000002000000
+    values:
+    - -0.3
+    - -0.3
+    - -0.3
+  changePriceDictionaryWhenSell:
+    keys: 000000000100000002000000
+    values:
+    - 0
+    - 0
+    - 0

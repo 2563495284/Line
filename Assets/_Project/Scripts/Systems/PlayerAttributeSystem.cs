@@ -16,6 +16,10 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
     [Header("摸牌系统")]
     [SerializeField] private int baseCardsPerTurn = 5;
+    public Dictionary<ECharacterStrategyType, float> ChangePricePersentDictionaryWhenBuy;
+    public Dictionary<ECharacterStrategyType, float> ChangePriceDictionaryWhenBuy;
+    public Dictionary<ECharacterStrategyType, float> ChangePricePersentDictionaryWhenSell;
+    public Dictionary<ECharacterStrategyType, float> ChangePriceDictionaryWhenSell;
 
     protected override void Awake()
     {
@@ -25,7 +29,12 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     public void Setup(PlayerData playerData)
     {
         playerView.Setup(playerData);
+        ChangePricePersentDictionaryWhenBuy = playerData.changePricePersentDictionaryWhenBuy.ToDictionary();
+        ChangePriceDictionaryWhenBuy = playerData.changePriceDictionaryWhenBuy.ToDictionary();
+        ChangePricePersentDictionaryWhenSell = playerData.changePricePersentDictionaryWhenSell.ToDictionary();
+        ChangePriceDictionaryWhenSell = playerData.changePriceDictionaryWhenSell.ToDictionary();
         UpdateAllInfo();
+
     }
 
     private void OnEnable()

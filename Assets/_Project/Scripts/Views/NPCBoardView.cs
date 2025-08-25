@@ -8,19 +8,12 @@ public class NPCBoardView : MonoBehaviour
 {
     public List<NPCView> NPCViews { get; private set; } = new();
 
-    [SerializeField] private List<Transform> slots;
+    [SerializeField] private Transform slot;
     [SerializeField] private float removeNPCScaleDuration = 0.25f;
 
     public void AddNPC(NPCData npcData)
     {
-        // 检查是否有可用的slot
-        if (NPCViews.Count >= slots.Count)
-        {
-            Debug.LogError($"无法添加更多NPC，已达到最大数量限制: {slots.Count}");
-            return;
-        }
 
-        Transform slot = slots[NPCViews.Count];
         NPCView npcView = NPCViewCreator.Instance.CreateNPCView(npcData, slot.position, slot.rotation);
         npcView.transform.parent = slot;
         //初始手牌

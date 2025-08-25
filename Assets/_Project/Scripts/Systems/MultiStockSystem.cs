@@ -255,6 +255,16 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             yield break;
         }
         market.playerHoldings = Mathf.Max(0, market.playerHoldings + action.Amount);
+        ChangeStockPriceGA changeStockPriceGA;
+        if (action.Amount > 0)
+        {
+            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Instance.playerView, action.StockType, PlayerAttributeSystem.Instance.ChangePriceDictionaryWhenBuy, PlayerAttributeSystem.Instance.ChangePricePersentDictionaryWhenBuy);
+        }
+        else
+        {
+            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Instance.playerView, action.StockType, PlayerAttributeSystem.Instance.ChangePriceDictionaryWhenSell, PlayerAttributeSystem.Instance.ChangePricePersentDictionaryWhenSell);
+        }
+        ActionSystem.Instance.Perform(changeStockPriceGA);
         yield return null;
     }
 

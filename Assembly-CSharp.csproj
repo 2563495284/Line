@@ -171,7 +171,6 @@
     <Compile Include="Assets/_Project/Scripts/Effects/NPC/ChangeStrategyEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/MatchSetupSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/NPCSystem.cs" />
-    <Compile Include="Assets/_Project/Scripts/Systems/StockSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/ArrowView.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/PlayerView.cs" />
     <Compile Include="Assets/_Project/Scripts/Models/TargetMode.cs" />
