@@ -53,3 +53,9 @@ TagManager:
   - name: Card
     uniqueID: 3561431087
     locked: 0
+  - name: UI
+    uniqueID: 2954218373
+    locked: 0
+  - name: Tips
+    uniqueID: 2475693077
+    locked: 0

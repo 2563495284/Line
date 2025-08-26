@@ -2794,7 +2794,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000df0d680ec171bff6a1c089382f2047d4bb47fc92eb00ea12c95d037e4fd1ce73
+  m_ApplyToSortingLayers: 00000000df0d680ec171bff6a1c089382f2047d4bb47fc92eb00ea12c95d037e4fd1ce7385cb15b015149093
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -4345,7 +4345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -4944,10 +4944,10 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1451521378}
   m_Enabled: 1
-  m_SortingLayerID: 2114149833
-  m_SortingLayer: 0
+  m_SortingLayerID: -1340748923
+  m_SortingLayer: 5
   m_SortingOrder: 0
-  m_SortAtRoot: 0
+  m_SortAtRoot: 1
 --- !u!1 &1472663146
 GameObject:
   m_ObjectHideFlags: 0
@@ -6973,7 +6973,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 2114149833
+  m_SortingLayerID: -1340748923
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &1023648332696539650

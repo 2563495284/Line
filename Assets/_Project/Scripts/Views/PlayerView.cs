@@ -23,13 +23,17 @@ public class PlayerView : CharacterView
 
     public Button nextRoundButton;
 
+    [SerializeField] private float nextRoundButtonCooldown = 2.0f; // 冷却时间（秒）
+    private bool isNextRoundButtonOnCooldown = false; // 是否处于冷却状态
+    private Coroutine cooldownCoroutine; // 冷却协程引用
+    private string originalButtonText; // 原始按钮文本
+
     private float doTweenScaleDuration;
     private float doTweenMoveDuration;
 
     private WaitForSeconds updateCardPositionTime;
 
     private List<CardView> cards = new();
-
     private void Awake()
     {
         updateCardPositionTime = new WaitForSeconds(doTweenUpdatePositionDuration);
@@ -37,10 +41,32 @@ public class PlayerView : CharacterView
     private void Start()
     {
         nextRoundButton.onClick.AddListener(OnNextRoundButtonClick);
+
+        // 保存原始按钮文本
+        var buttonText = nextRoundButton.GetComponentInChildren<UnityEngine.UI.Text>();
+        if (buttonText != null)
+        {
+            originalButtonText = buttonText.text;
+        }
+        else
+        {
+            // 如果使用的是TextMeshPro
+            var buttonTMP = nextRoundButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (buttonTMP != null)
+            {
+                originalButtonText = buttonTMP.text;
+            }
+        }
     }
     void OnDestroy()
     {
         nextRoundButton.onClick.RemoveListener(OnNextRoundButtonClick);
+
+        // 停止冷却协程
+        if (cooldownCoroutine != null)
+        {
+            StopCoroutine(cooldownCoroutine);
+        }
     }
     public void Setup(PlayerData playerData)
     {
@@ -109,8 +135,18 @@ public class PlayerView : CharacterView
     }
     public void OnNextRoundButtonClick()
     {
+        // 检查是否处于冷却状态
+        if (isNextRoundButtonOnCooldown)
+        {
+            return; // 如果在冷却中，直接返回，不执行操作
+        }
+
+        // 执行原有逻辑
         NextRoundTurnGA nextRoundTurnGA = new();
         ActionSystem.Instance.Perform(nextRoundTurnGA);
+
+        // 开始冷却
+        StartButtonCooldown();
     }
     public void UpdateMoneyText(float currentMoney)
     {
@@ -159,5 +195,108 @@ public class PlayerView : CharacterView
         // 清空卡牌列表
         cards.Clear();
     }
+
+    #region 按钮冷却系统
+
+    /// <summary>
+    /// 开始按钮冷却
+    /// </summary>
+    private void StartButtonCooldown()
+    {
+        if (isNextRoundButtonOnCooldown)
+            return;
+
+        // 停止之前的冷却协程（如果有的话）
+        if (cooldownCoroutine != null)
+        {
+            StopCoroutine(cooldownCoroutine);
+        }
+
+        // 开始新的冷却
+        cooldownCoroutine = StartCoroutine(ButtonCooldownCoroutine());
+    }
+
+    /// <summary>
+    /// 按钮冷却倒计时协程
+    /// </summary>
+    private IEnumerator ButtonCooldownCoroutine()
+    {
+        isNextRoundButtonOnCooldown = true;
+        nextRoundButton.interactable = false;
+
+        float remainingTime = nextRoundButtonCooldown;
+
+        while (remainingTime > 0)
+        {
+            // 更新按钮文本显示剩余冷却时间
+            UpdateButtonText($"{originalButtonText} ({remainingTime:F1}s)");
+
+            remainingTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        // 冷却结束
+        isNextRoundButtonOnCooldown = false;
+        nextRoundButton.interactable = true;
+        UpdateButtonText(originalButtonText);
+        cooldownCoroutine = null;
+    }
+
+    /// <summary>
+    /// 更新按钮文本
+    /// </summary>
+    private void UpdateButtonText(string text)
+    {
+        var buttonText = nextRoundButton.GetComponentInChildren<UnityEngine.UI.Text>();
+        if (buttonText != null)
+        {
+            buttonText.text = text;
+        }
+        else
+        {
+            // 如果使用的是TextMeshPro
+            var buttonTMP = nextRoundButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (buttonTMP != null)
+            {
+                buttonTMP.text = text;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 设置按钮冷却时间
+    /// </summary>
+    /// <param name="cooldownTime">冷却时间（秒）</param>
+    public void SetButtonCooldown(float cooldownTime)
+    {
+        nextRoundButtonCooldown = Mathf.Max(0f, cooldownTime);
+    }
+
+    /// <summary>
+    /// 停止按钮冷却
+    /// </summary>
+    public void StopButtonCooldown()
+    {
+        if (cooldownCoroutine != null)
+        {
+            StopCoroutine(cooldownCoroutine);
+            cooldownCoroutine = null;
+        }
+
+        isNextRoundButtonOnCooldown = false;
+        nextRoundButton.interactable = true;
+        UpdateButtonText(originalButtonText);
+    }
+
+    /// <summary>
+    /// 获取当前是否处于冷却状态
+    /// </summary>
+    /// <returns>是否处于冷却状态</returns>
+    public bool IsButtonOnCooldown()
+    {
+        return isNextRoundButtonOnCooldown;
+    }
+
+    #endregion
 
 }
