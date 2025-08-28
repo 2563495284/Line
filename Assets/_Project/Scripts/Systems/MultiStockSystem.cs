@@ -13,6 +13,9 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     [Header("股市配置")]
     [SerializeField] private List<SingleStockMarketData> stockMarkets = new List<SingleStockMarketData>();
 
+    [Header("交易设置")]
+    [SerializeField] private bool showTradeDebugLogs = true; // 显示交易调试日志
+
     [Header("UI引用")]
     [SerializeField] private TripleKLineDisplay tripleKLineDisplay;
 
@@ -53,6 +56,8 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         ActionSystem.AttachPerformer<ChangeStockGA>(ChangeStockPerformer);
 
         ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
+
+        ActionSystem.SubscribeReaction<MadeInHeavenExecuteGA>(StartMadeInHeavenPostReaction, ReactionTiming.PRE);
     }
 
     private void OnDisable()
@@ -67,6 +72,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         ActionSystem.DetachPerformer<ChangeStockGA>();
 
         ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<MadeInHeavenExecuteGA>(StartMadeInHeavenPostReaction, ReactionTiming.PRE);
     }
 
     #region Initialization
@@ -177,7 +183,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         yield return null;
     }
     /// <summary>
-    /// 处理特定股票交易
+    /// 处理特定股票交易（支持尽可能多地买卖模式）
     /// </summary>
     private IEnumerator TradeSpecificStockPerformer(TradeSpecificStockGA action)
     {
@@ -187,17 +193,66 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             Debug.LogError($"未找到股票类型: {action.StockType}");
             yield break;
         }
+
         LineView lineView = GetLineView(action.StockType);
-        if (!CanTradeStock(action.StockType, action.Amount))
+        int actualTradeAmount = 0;
+        // 尽可能多地买卖模式
+        if (action.Amount > 0) // 买入意向
         {
-            Utils.ShakeCamera();
-            yield break;
+            // 计算能买入的最大数量
+            int maxBuyAmount = (int)Math.Floor(currentMoney / market.currentPrice);
+            actualTradeAmount = Math.Min(action.Amount, maxBuyAmount);
+
+            if (actualTradeAmount <= 0)
+            {
+                if (showTradeDebugLogs)
+                    Debug.LogWarning($"[MultiStockSystem] 资金不足，无法买入 {action.StockType} 股票。当前资金: {currentMoney:F2}，股价: {market.currentPrice:F2}");
+                Utils.ShakeCamera();
+                yield break;
+            }
+
+            if (showTradeDebugLogs)
+                Debug.Log($"[MultiStockSystem] 买入 {action.StockType}: 请求 {action.Amount} 股，实际买入 {actualTradeAmount} 股 (最大化模式)");
         }
-        ChangeStockGA changeStockGA = new ChangeStockGA(action.Amount, action.StockType);
+        else // 卖出意向
+        {
+            // 计算能卖出的最大数量
+            int maxSellAmount = market.playerHoldings;
+            actualTradeAmount = Math.Max(action.Amount, -maxSellAmount); // action.Amount是负数
+
+            if (actualTradeAmount >= 0)
+            {
+                if (showTradeDebugLogs)
+                    Debug.LogWarning($"[MultiStockSystem] 持有量不足，无法卖出 {action.StockType} 股票。当前持有: {market.playerHoldings} 股");
+                Utils.ShakeCamera();
+                yield break;
+            }
+
+            if (showTradeDebugLogs)
+                Debug.Log($"[MultiStockSystem] 卖出 {action.StockType}: 请求卖出 {-action.Amount} 股，实际卖出 {-actualTradeAmount} 股 (最大化模式)");
+        }
+        // // 传统固定数量交易模式
+        // if (!CanTradeStock(action.StockType, action.Amount))
+        // {
+        //     if (showTradeDebugLogs)
+        //         Debug.LogWarning($"[MultiStockSystem] 无法交易 {action.Amount} 股 {action.StockType}");
+        //     Utils.ShakeCamera();
+        //     yield break;
+        // }
+
+        // actualTradeAmount = action.Amount;
+        // if (showTradeDebugLogs)
+        //     Debug.Log($"[MultiStockSystem] 交易 {action.StockType}: {actualTradeAmount} 股 (固定数量模式)");
+
+        // 执行交易
+        ChangeStockGA changeStockGA = new ChangeStockGA(actualTradeAmount, action.StockType);
         ActionSystem.Instance.Perform(changeStockGA);
-        ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-action.Amount * market.currentPrice);
+
+        ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-actualTradeAmount * market.currentPrice);
         ActionSystem.Instance.Perform(changeMoneyGA);
-        if (action.Amount > 0)
+
+        // 设置视觉反馈
+        if (actualTradeAmount > 0)
         {
             lineView.SetPointState(PointState.Buy);
         }
@@ -205,6 +260,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         {
             lineView.SetPointState(PointState.Sell);
         }
+
         yield return null;
     }
     private IEnumerator TradeAllStockPerformer(TradeAllStockGA action)
@@ -235,10 +291,25 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         }
         yield return null;
     }
-    private void NextRoundTurnPostReaction(NextRoundTurnGA action)
+    private void UpdateStockPrice()
     {
         RefreshAllStockPrices();
         tripleKLineDisplay.UpdateAllKLines();
+    }
+    private void StartMadeInHeavenPostReaction(MadeInHeavenExecuteGA action)
+    {
+        if (MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        {
+            UpdateStockPrice();
+        }
+    }
+
+    private void NextRoundTurnPostReaction(NextRoundTurnGA action)
+    {
+        if (!MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        {
+            UpdateStockPrice();
+        }
     }
     private IEnumerator ChangeMoneyPerformer(ChangeMoneyGA action)
     {
@@ -385,6 +456,29 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
 
 
         return market.currentPrice * amount <= currentMoney;
+    }
+
+    /// <summary>
+    /// 计算最大可交易数量
+    /// </summary>
+    /// <param name="stockType">股票类型</param>
+    /// <param name="isBuying">是否为买入操作</param>
+    /// <returns>最大可交易数量（买入为正数，卖出为负数）</returns>
+    public int GetMaxTradeAmount(EStockType stockType, bool isBuying)
+    {
+        var market = GetStockMarket(stockType);
+        if (market == null) return 0;
+
+        if (isBuying)
+        {
+            // 买入：计算用所有资金能买多少股
+            return (int)Math.Floor(currentMoney / market.currentPrice);
+        }
+        else
+        {
+            // 卖出：返回所有持有量（负数）
+            return -market.playerHoldings;
+        }
     }
     public LineView GetLineView(EStockType eStockType)
     {

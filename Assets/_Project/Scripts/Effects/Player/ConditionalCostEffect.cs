@@ -108,7 +108,6 @@ public class ResourceCost
         switch (type)
         {
             case EPlayerAttributeType.Social: return "社交";
-            case EPlayerAttributeType.Patience: return "耐心";
             case EPlayerAttributeType.Wisdom: return "智慧";
             case EPlayerAttributeType.Charisma: return "魅力";
             case EPlayerAttributeType.Courage: return "勇气";

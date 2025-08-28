@@ -74,7 +74,18 @@ public class StockDisplay : MonoBehaviour
     {
         if (stockText != null)
         {
-            stockText.text = $"石油: {currentStock.ToString(stockFormat)}";
+            switch (stockType)
+            {
+                case EStockType.Oil:
+                    stockText.text = $"石油: {currentStock.ToString(stockFormat)}";
+                    break;
+                case EStockType.Cotton:
+                    stockText.text = $"棉花: {currentStock.ToString(stockFormat)}";
+                    break;
+                case EStockType.Steel:
+                    stockText.text = $"钢铁: {currentStock.ToString(stockFormat)}";
+                    break;
+            }
         }
     }
 

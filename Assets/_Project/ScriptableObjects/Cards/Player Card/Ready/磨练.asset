@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
   m_Name: "\u78E8\u7EC3"
   m_EditorClassIdentifier: 
-  <Image>k__BackingField: {fileID: 0}
+  <Image>k__BackingField: {fileID: 21300000, guid: 06606280092c84f19b49790d52f9adab, type: 3}
   <Title>k__BackingField: "\u78E8\u7EC3"
-  <Description>k__BackingField: "\u6D88\u8017100\u94A2\u94C1\uFF0C\u83B7\u5F973[\u8010\u5FC3]\u30011[\u51B7\u9759]"
+  <Description>k__BackingField: "\u6D88\u8017100\u94A2\u94C1\uFF0C\u83B7\u5F973[\u52C7\u6C14]\u30011[\u51B7\u9759]"
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:
@@ -50,12 +50,12 @@ MonoBehaviour:
     - rid: 3
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
-        attributeType: 1
+        attributeType: 3
         attributeValue: 3
     - rid: 4
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
-        attributeType: 5
+        attributeType: 4
         attributeValue: 1
     - rid: 9019117340648800347
       type: {class: NoTM, ns: , asm: Assembly-CSharp}

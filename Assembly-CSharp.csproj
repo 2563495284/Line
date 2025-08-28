@@ -68,14 +68,18 @@
     <Compile Include="Assets/_Project/Scripts/UI/BuffUI/BuffDisplayItem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/DrawCardsGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Interfaces/IHaveCaster.cs" />
+    <Compile Include="Assets/_Project/Scripts/Game Actions/EndMadeInHeavenGA.cs" />
     <Compile Include="Assets/Scripts/FontHelper.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Utils/MouseUtils.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Utils/RandomUtils.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PredictionData.cs" />
+    <Compile Include="Assets/_Project/Scripts/Systems/MadeInHeavenSystem.cs" />
+    <Compile Include="Assets/_Project/Scripts/Game Actions/MadeInHeavenExecuteGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeStrategyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/ConditionalCostEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/AddLeverageBuffGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/Action System/ActionSystem.cs" />
+    <Compile Include="Assets/_Project/Scripts/Views/TimeAccelerationSprite.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/CheckAndConsumeResourceGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/TriggerEventGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/NPCData.cs" />
@@ -85,6 +89,7 @@
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeAttributeGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PlayerAttributeData.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeMoneyGA.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/TimeAccelerationBackground.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PlayerData.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/ChangeManaEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/CardView.cs" />
@@ -114,6 +119,7 @@
     <Compile Include="Assets/_Project/Scripts/Effects/Player/LeverageBuffEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/ManualTargetingSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeNPCStrategyGA.cs" />
+    <Compile Include="Assets/_Project/Scripts/Effects/Player/NextRoundEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/PerksUI.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/UseStockMaterialEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Target Modes/AllEnemiesTM.cs" />
@@ -139,6 +145,7 @@
     <Compile Include="Assets/_Project/Scripts/Systems/CardSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/PlayerAttributeUI/PlayerAttributeDisplay.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/Action System/GameAction.cs" />
+    <Compile Include="Assets/_Project/Scripts/Systems/TimeAccelerationFilterSystem.cs" />
     <Compile Include="Assets/Scripts/SimpleLineRenderer.cs" />
     <Compile Include="Assets/SREditor/Package/Scripts/SRNameAttribute.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Singleton.cs" />
@@ -146,6 +153,7 @@
     <Compile Include="Assets/_Project/Scripts/UI/TripleKLineDisplay.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeStockPriceGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Creators/TripleKLineCreator.cs" />
+    <Compile Include="Assets/_Project/Scripts/Effects/Player/MadeInHeavenEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/RefillManaGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Creators/NPCViewCreator.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/MoneyUI/StockPriceDisplay.cs" />
@@ -178,8 +186,10 @@
     <Compile Include="Assets/_Project/Scripts/Effects/DrawCardsEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/ChangeStockPriceEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/PlayerAttributeUI/AttributeDisplayItem.cs" />
+    <Compile Include="Assets/_Project/Scripts/Systems/TimeAccelerationRenderFeature.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/PlayCardGA.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/MultiStockUI/StockDisplayItem.cs" />
+    <Compile Include="Assets/_Project/Scripts/Game Actions/StartMadeInHeavenGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/UseStockMaterialGA.cs" />
     <Compile Include="Assets/SREditor/Package/Scripts/FormerlySerializedTypeAttribute.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/OilMarketMessages.cs" />
@@ -197,10 +207,13 @@
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader" />
+    <None Include="Assets/_Project/Art/Materials/TestFilter.shader" />
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader" />
     <None Include="Assets/TextMesh Pro/Fonts/7000汉字+符号+英文字符集.txt" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets/_Project/Art/Materials/TimeAccelerationSprite.shader" />
+    <None Include="Assets/_Project/Art/Materials/TimeAccelerationFilter.shader" />
     <None Include="Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader" />
     <None Include="Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt" />

@@ -285,6 +285,7 @@ GameObject:
   - component: {fileID: 1094760981242267783}
   - component: {fileID: 4009361602571030111}
   - component: {fileID: 1448100922128949609}
+  - component: {fileID: 3533916612496515289}
   m_Layer: 5
   m_Name: News UI
   m_TagString: Untagged
@@ -387,6 +388,18 @@ MonoBehaviour:
   positiveColor: {r: 0.2, g: 0.8, b: 0.2, a: 0.9}
   negativeColor: {r: 1, g: 0.2, b: 0.2, a: 0.9}
   predictionColor: {r: 0.2, g: 0.8, b: 0.2, a: 0.9}
+--- !u!210 &3533916612496515289
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4660458925129205938}
+  m_Enabled: 1
+  m_SortingLayerID: -1819274219
+  m_SortingLayer: 6
+  m_SortingOrder: 0
+  m_SortAtRoot: 1
 --- !u!1 &5887112408991048020
 GameObject:
   m_ObjectHideFlags: 0

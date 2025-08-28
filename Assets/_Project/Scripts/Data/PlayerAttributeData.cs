@@ -9,7 +9,6 @@ using UnityEngine;
 public enum EPlayerAttributeType
 {
     Social,     // 社交
-    Patience,   // 耐心
     Wisdom,     // 智慧
     Charisma,    // 魅力
     Courage,     // 勇气
@@ -47,11 +46,6 @@ public class PlayerAttributeData
             case EPlayerAttributeType.Social://基础的
                 attributeName = "社交";
                 description = "每回合摸牌数+1，每回合失去1";
-                currentValue = 0f;
-                break;
-            case EPlayerAttributeType.Patience://基础的
-                attributeName = "耐心";
-                description = "保留1点能量到下回合，每回合失去1";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Wisdom://中级

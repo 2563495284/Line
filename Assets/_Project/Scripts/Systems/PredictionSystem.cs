@@ -20,14 +20,16 @@ public class PredictionSystem : Singleton<PredictionSystem>
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<PredictionGA>(PredictionPerformer);
-        ActionSystem.SubscribeReaction<NextRoundTurnGA>(UpdatePredictionCountdown, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<NextRoundTurnGA>(NextRoundTurnReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<MadeInHeavenExecuteGA>(MadeInHeavenExecuteReaction, ReactionTiming.POST);
 
     }
 
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<PredictionGA>();
-        ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(UpdatePredictionCountdown, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(NextRoundTurnReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<MadeInHeavenExecuteGA>(MadeInHeavenExecuteReaction, ReactionTiming.POST);
     }
 
     #region Performers
@@ -71,10 +73,26 @@ public class PredictionSystem : Singleton<PredictionSystem>
 
     #region Prediction Management
 
+    private void MadeInHeavenExecuteReaction(MadeInHeavenExecuteGA madeInHeavenExecuteGA)
+    {
+        if (MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        {
+            UpdatePredictionCountdown();
+        }
+    }
+
+    private void NextRoundTurnReaction(NextRoundTurnGA nextRoundTurnGA)
+    {
+        if (!MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        {
+            UpdatePredictionCountdown();
+        }
+    }
+
     /// <summary>
     /// 更新所有预测的倒计时
     /// </summary>
-    public void UpdatePredictionCountdown(NextRoundTurnGA nextRoundTurnGA)
+    public void UpdatePredictionCountdown()
     {
         List<PredictionData> toResolve = new List<PredictionData>();
 
@@ -105,6 +123,7 @@ public class PredictionSystem : Singleton<PredictionSystem>
             }
         }
     }
+
 
     /// <summary>
     /// 结算单个预测

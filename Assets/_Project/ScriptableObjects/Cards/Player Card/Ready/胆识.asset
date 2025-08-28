@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
   m_Name: "\u80C6\u8BC6"
   m_EditorClassIdentifier: 
-  <Image>k__BackingField: {fileID: 0}
+  <Image>k__BackingField: {fileID: 21300000, guid: 42df3fc4897f443e99c780ef4d93a847, type: 3}
   <Title>k__BackingField: "\u80C6\u8BC6"
   <Description>k__BackingField: "\u83B7\u5F972[\u52C7\u6C14]"
   <ManualTargetEffect>k__BackingField:
@@ -38,7 +38,7 @@ MonoBehaviour:
     - rid: 2
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
-        attributeType: 4
+        attributeType: 3
         attributeValue: 2
     - rid: 9019117340648800349
       type: {class: NoTM, ns: , asm: Assembly-CSharp}

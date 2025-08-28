@@ -31,7 +31,7 @@ public class Point : MonoBehaviour
     public Color bullishColor = Color.blue;        // 看多颜色
     public Color bearishColor = new Color(0.5f, 0f, 0.5f);      // 看空颜色（紫色）
     public Color bullishBearishColor = new Color(1f, 0.5f, 0f); // 多空颜色（橙色）
-    public Color defaultColor = Color.white;       // 默认颜色
+    public Color defaultColor = Color.black;       // 默认颜色
 
     [Header("状态文字设置")]
 

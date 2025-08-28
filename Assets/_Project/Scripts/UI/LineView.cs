@@ -9,7 +9,7 @@ using TMPro;
 public class LineView : MonoBehaviour
 {
     #region 配置参数
-    
+
     [Header("图表设置")]
     [SerializeField] private float chartWidth = 8f;
     [SerializeField] private float chartHeight = 5f;
@@ -48,10 +48,10 @@ public class LineView : MonoBehaviour
 
     // 数据存储
     private List<float> prices = new List<float>();
-    
+
     // 点对象管理
     private List<GameObject> pointObjects = new List<GameObject>();
-    
+
     // 状态管理
     private Dictionary<int, PointState> pointStates = new Dictionary<int, PointState>();
 
@@ -155,7 +155,7 @@ public class LineView : MonoBehaviour
     {
         if (kLineRenderer == null) return;
 
-        Color targetColor = themeColor != Color.clear ? themeColor : lineColor;
+        Color targetColor = lineColor;
         kLineRenderer.startColor = targetColor;
         kLineRenderer.endColor = targetColor;
     }
@@ -250,7 +250,7 @@ public class LineView : MonoBehaviour
     private List<float> FilterValidPrices(List<float> newPrices)
     {
         List<float> validPrices = new List<float>();
-        
+
         for (int i = 0; i < newPrices.Count; i++)
         {
             if (float.IsNaN(newPrices[i]) || float.IsInfinity(newPrices[i]))
@@ -290,7 +290,7 @@ public class LineView : MonoBehaviour
 
         var priceRange = CalculatePriceRange();
         var positions = CalculatePointPositions(priceRange);
-        
+
         kLineRenderer.positionCount = prices.Count;
         kLineRenderer.SetPositions(positions);
     }
@@ -455,7 +455,7 @@ public class LineView : MonoBehaviour
     public void SetPointState(int index, PointState state)
     {
         pointStates[index] = state;
-        
+
         if (index < pointObjects.Count && pointObjects[index] != null)
         {
             pointObjects[index].GetComponent<Point>().SetState(state);
@@ -497,7 +497,7 @@ public class LineView : MonoBehaviour
         if (pointStates.ContainsKey(index))
         {
             pointStates.Remove(index);
-            
+
             if (index < pointObjects.Count && pointObjects[index] != null)
             {
                 pointObjects[index].GetComponent<Point>().ClearState();
@@ -511,7 +511,7 @@ public class LineView : MonoBehaviour
     public void ClearAllPointStates()
     {
         pointStates.Clear();
-        
+
         foreach (var pointObj in pointObjects)
         {
             if (pointObj != null)
@@ -538,12 +538,12 @@ public class LineView : MonoBehaviour
         Debug.Log($"总点数: {prices.Count}");
         Debug.Log($"点对象数: {pointObjects.Count}");
         Debug.Log($"保存的状态数: {pointStates.Count}");
-        
+
         foreach (var kvp in pointStates)
         {
             Debug.Log($"点 {kvp.Key}: 状态 = {kvp.Value}");
         }
-        
+
         for (int i = 0; i < pointObjects.Count; i++)
         {
             if (pointObjects[i] != null)
@@ -565,38 +565,38 @@ public class LineView : MonoBehaviour
     private void AdjustStateIndicesForNewPrice()
     {
         Dictionary<int, PointState> newStates = new Dictionary<int, PointState>();
-        
+
         foreach (var kvp in pointStates)
         {
             int oldIndex = kvp.Key;
             PointState state = kvp.Value;
             int newIndex = oldIndex - 1;
-            
+
             if (newIndex >= 0 && newIndex < maxPoints)
             {
                 newStates[newIndex] = state;
             }
         }
-        
+
         pointStates = newStates;
     }
 
     private void AdjustStateIndices(int startIndex)
     {
         Dictionary<int, PointState> newStates = new Dictionary<int, PointState>();
-        
+
         foreach (var kvp in pointStates)
         {
             int oldIndex = kvp.Key;
             PointState state = kvp.Value;
             int newIndex = oldIndex - startIndex;
-            
+
             if (newIndex >= 0 && newIndex < maxPoints)
             {
                 newStates[newIndex] = state;
             }
         }
-        
+
         pointStates = newStates;
     }
 

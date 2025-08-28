@@ -27,14 +27,47 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
     private void OnEnable()
     {
         ActionSystem.SubscribeReaction<NextRoundTurnGA>(OnNextRoundTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<MadeInHeavenExecuteGA>(OnMadeInHeavenExecutePostReaction, ReactionTiming.POST);
     }
 
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<NextRoundTurnGA>(OnNextRoundTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<MadeInHeavenExecuteGA>(OnMadeInHeavenExecutePostReaction, ReactionTiming.POST);
     }
 
+    #region 天堂制造事件处理
+
+    #endregion
+
+    #region 市场事件执行逻辑
+
+    /// <summary>
+    /// NextRoundTurnGA触发的市场事件
+    /// </summary>
     private void OnNextRoundTurnPostReaction(NextRoundTurnGA nextRound)
+    {
+        if (!MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        {
+            ExecuteMarketEvents();
+        }
+    }
+
+    /// <summary>
+    /// MadeInHeavenExecuteGA触发的市场事件
+    /// </summary>
+    private void OnMadeInHeavenExecutePostReaction(MadeInHeavenExecuteGA action)
+    {
+        if (MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        {
+            ExecuteMarketEvents();
+        }
+    }
+
+    /// <summary>
+    /// 执行市场事件的核心逻辑
+    /// </summary>
+    private void ExecuteMarketEvents()
     {
         roundCounter++;
         if (roundCounter % roundInterval != 0) return;
@@ -42,6 +75,8 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
         TryTriggerMarketNewsForRandomStock(EStockType.Steel, 0.6f, 0.5f);
         TryTriggerMarketNewsForRandomStock(EStockType.Cotton, 0.3f, 0.7f);
     }
+
+    #endregion
 
     private void TryTriggerMarketNewsForRandomStock(EStockType stockType, float eventChance, float effectFactor)
     {

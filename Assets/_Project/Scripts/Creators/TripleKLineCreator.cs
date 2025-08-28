@@ -169,12 +169,6 @@ public class TripleKLineCreator : MonoBehaviour
     {
         switch (stockType)
         {
-            case EStockType.Oil:
-                return ("石油", new Color(0.2f, 0.2f, 0.2f));
-            case EStockType.Steel:
-                return ("钢铁", new Color(0.7f, 0.7f, 0.7f));
-            case EStockType.Cotton:
-                return ("棉花", new Color(0.9f, 0.9f, 0.8f));
             default:
                 return ("未知", Color.white);
         }
@@ -203,9 +197,9 @@ public class TripleKLineCreator : MonoBehaviour
         // 分配前三个LineView
         if (existingLineViews.Length >= 3)
         {
-            existingLineViews[0].SetStockInfo(EStockType.Oil, "石油", new Color(0.2f, 0.2f, 0.2f));
-            existingLineViews[1].SetStockInfo(EStockType.Steel, "钢铁", new Color(0.7f, 0.7f, 0.7f));
-            existingLineViews[2].SetStockInfo(EStockType.Cotton, "棉花", new Color(0.9f, 0.9f, 0.8f));
+            existingLineViews[0].SetStockInfo(EStockType.Oil, "石油", Color.white);
+            existingLineViews[1].SetStockInfo(EStockType.Steel, "钢铁", Color.white);
+            existingLineViews[2].SetStockInfo(EStockType.Cotton, "棉花", Color.white);
 
             tripleDisplay.SetLineViewReferences(existingLineViews[0], existingLineViews[1], existingLineViews[2]);
 

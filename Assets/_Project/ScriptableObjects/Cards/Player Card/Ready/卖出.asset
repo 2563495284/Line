@@ -12,28 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
   m_Name: "\u5356\u51FA"
   m_EditorClassIdentifier: 
-  <Image>k__BackingField: {fileID: 0}
+  <Image>k__BackingField: {fileID: 21300000, guid: 266471ba04a214e8ba695d8c9dd253df, type: 3}
   <Title>k__BackingField: "\u5356\u51FA"
-  <Description>k__BackingField: "\u5356\u51FA100{\u52C7\u6C14}"
+  <Description>k__BackingField: "\u5356\u51FA200{\u52C7\u6C14}"
   <ManualTargetEffect>k__BackingField:
     rid: 8527226634511843334
-  <OtherEffects>k__BackingField:
-  - <TargetMode>k__BackingField:
-      rid: 8527226634511843335
-    <Effect>k__BackingField:
-      rid: 8527226634511843336
-  <Mana>k__BackingField: 1
+  <OtherEffects>k__BackingField: []
+  <Mana>k__BackingField: 0
   references:
     version: 2
     RefIds:
     - rid: 8527226634511843334
       type: {class: TradeSpecificStockEffect, ns: , asm: Assembly-CSharp}
       data:
-        tradeAmount: -100
-    - rid: 8527226634511843335
-      type: {class: NoTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 8527226634511843336
-      type: {class: ChangeManaEffect, ns: , asm: Assembly-CSharp}
-      data:
-        manaAmount: -1
+        tradeAmount: -200

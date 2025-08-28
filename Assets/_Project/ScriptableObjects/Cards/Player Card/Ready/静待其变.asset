@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c37689a416add443b3af5c06fdb9d04, type: 3}
   m_Name: "\u9759\u5F85\u5176\u53D8"
   m_EditorClassIdentifier: 
-  <Image>k__BackingField: {fileID: 0}
+  <Image>k__BackingField: {fileID: 21300000, guid: ce463be3449e1449fb5a59b687b2d23f, type: 3}
   <Title>k__BackingField: "\u9759\u5F85\u5176\u53D8"
-  <Description>k__BackingField: "\u83B7\u5F972[\u8010\u5FC3]"
+  <Description>k__BackingField: "\u83B7\u5F971[\u667A\u6167]"
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:
@@ -26,7 +26,7 @@ MonoBehaviour:
       rid: 9019117340648800351
     <Effect>k__BackingField:
       rid: 9019117340648800352
-  <Mana>k__BackingField: 2
+  <Mana>k__BackingField: 3
   references:
     version: 2
     RefIds:
@@ -36,7 +36,7 @@ MonoBehaviour:
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
         attributeType: 1
-        attributeValue: 2
+        attributeValue: 1
     - rid: 9019117340648800338
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 
@@ -46,4 +46,4 @@ MonoBehaviour:
     - rid: 9019117340648800352
       type: {class: ChangeManaEffect, ns: , asm: Assembly-CSharp}
       data:
-        manaAmount: -2
+        manaAmount: -3

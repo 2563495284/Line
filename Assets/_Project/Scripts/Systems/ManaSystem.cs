@@ -93,7 +93,7 @@ public class ManaSystem : Singleton<ManaSystem>
     /// </summary>
     public int GetSaveableEnergy()
     {
-        return (int)PlayerAttributeSystem.Instance.GetAttributeValue(EPlayerAttributeType.Patience);
+        return 0;
     }
 
     /// <summary>

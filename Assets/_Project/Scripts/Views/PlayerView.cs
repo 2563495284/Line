@@ -23,7 +23,7 @@ public class PlayerView : CharacterView
 
     public Button nextRoundButton;
 
-    [SerializeField] private float nextRoundButtonCooldown = 2.0f; // 冷却时间（秒）
+    [SerializeField] private float nextRoundButtonCooldown = 0.5f; // 冷却时间（秒）
     private bool isNextRoundButtonOnCooldown = false; // 是否处于冷却状态
     private Coroutine cooldownCoroutine; // 冷却协程引用
     private string originalButtonText; // 原始按钮文本
@@ -247,6 +247,7 @@ public class PlayerView : CharacterView
     /// </summary>
     private void UpdateButtonText(string text)
     {
+        return;
         var buttonText = nextRoundButton.GetComponentInChildren<UnityEngine.UI.Text>();
         if (buttonText != null)
         {

@@ -17,7 +17,6 @@ public static class CardDescriptionSystem
         { EPlayerAttributeType.Courage, @"\[勇气\]" },
         { EPlayerAttributeType.Wisdom, @"\[智慧\]" },
         { EPlayerAttributeType.Social, @"\[社交\]" },
-        { EPlayerAttributeType.Patience, @"\[耐心\]" },
         { EPlayerAttributeType.Calmness, @"\[冷静\]" },
         { EPlayerAttributeType.Fanaticism, @"\[狂热\]" }
     };
@@ -32,7 +31,6 @@ public static class CardDescriptionSystem
         { EPlayerAttributeType.Courage, "勇气" },
         { EPlayerAttributeType.Wisdom   , "智慧" },
         { EPlayerAttributeType.Social, "社交" },
-        { EPlayerAttributeType.Patience, "耐心" },
         { EPlayerAttributeType.Calmness, "冷静" },
         { EPlayerAttributeType.Fanaticism, "狂热" }
     };
@@ -192,10 +190,6 @@ public static class CardDescriptionSystem
 
             case EPlayerAttributeType.Social:
                 // 社交可能影响某些卡牌效果
-                return attributeValue;
-
-            case EPlayerAttributeType.Patience:
-                // 耐心可能影响持续效果
                 return attributeValue;
 
             case EPlayerAttributeType.Calmness:

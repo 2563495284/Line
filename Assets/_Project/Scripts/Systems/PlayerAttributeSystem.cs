@@ -173,8 +173,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         ChangeAttributeGA changeAttributeGA = new(EPlayerAttributeType.Social, -1f);
         ActionSystem.Instance.AddReaction(changeAttributeGA);
 
-        ChangeAttributeGA changeAttributeGA2 = new(EPlayerAttributeType.Patience, -1f);
-        ActionSystem.Instance.AddReaction(changeAttributeGA2);
+
         //刷新信息
         UpdateAllInfo();
     }

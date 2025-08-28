@@ -104,7 +104,8 @@ MonoBehaviour:
   bullishColor: {r: 0, g: 0, b: 1, a: 1}
   bearishColor: {r: 0.5, g: 0, b: 0.5, a: 1}
   bullishBearishColor: {r: 1, g: 0.5, b: 0, a: 1}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  defaultColor: {r: 0, g: 0, b: 0, a: 1}
+  defaultText: 
   buyText: "\u4E70"
   sellText: "\u5356"
   buySellText: "\u4E70/\u5356"
