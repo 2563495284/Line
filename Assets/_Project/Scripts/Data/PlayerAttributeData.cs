@@ -55,22 +55,22 @@ public class PlayerAttributeData
                 break;
             case EPlayerAttributeType.Charisma://中级
                 attributeName = "魅力";
-                description = "市场影响力+10%";
+                description = "玩家影响力+10%";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Courage://基础
                 attributeName = "勇气";
-                description = "市场交易数量+10%";
+                description = "玩家交易数量+10%";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Calmness://中性
                 attributeName = "冷静";
-                description = "环境对市场价格影响-10%";
+                description = "环境对市场价格影响-2%";
                 currentValue = 0f;
                 break;
             case EPlayerAttributeType.Fanaticism://中性
                 attributeName = "狂热";
-                description = "环境对市场价格影响+10%";
+                description = "环境对市场价格影响+2%";
                 currentValue = 0f;
                 break;
         }

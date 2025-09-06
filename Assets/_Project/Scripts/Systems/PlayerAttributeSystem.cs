@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 /// <summary>
@@ -144,11 +145,18 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     /// </summary>
     public float GetStockInfluenceBonus()
     {
-        return 1 + GetAttributeValue(EPlayerAttributeType.Charisma) * 10f / 100f;
+        float charisma = GetAttributeValue(EPlayerAttributeType.Charisma);
+        charisma = math.min(10, charisma);
+        return 1 + charisma * 10f / 100f;
     }
     public float GetStockEnvironmentBonus()
     {
-        return 1 + (GetAttributeValue(EPlayerAttributeType.Fanaticism) - GetAttributeValue(EPlayerAttributeType.Calmness)) * 10f / 100f;
+        float fanaticism = GetAttributeValue(EPlayerAttributeType.Fanaticism);
+        float calmness = GetAttributeValue(EPlayerAttributeType.Calmness);
+        float effect = fanaticism - calmness;
+        effect = math.clamp(effect, -30, 30);
+        float bonus = 1 + effect * 2f / 100f;
+        return math.max(0.2f, bonus);
     }
     public float GetStockCourageBonus()
     {

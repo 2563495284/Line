@@ -9,6 +9,7 @@ using SerializeReferenceEditor;
 [System.Serializable]
 public class ConditionalCostEffect : Effect
 {
+
     [Header("消耗配置")]
     [SerializeField] private List<ResourceCost> resourceCosts = new List<ResourceCost>();
 
@@ -38,6 +39,7 @@ public class ResourceCost
 
     // 股票相关
     [SerializeField] public EStockType stockType;
+    [SerializeField] public bool markPoint = false;
     [SerializeField] public int stockAmount;
 
     // 属性相关

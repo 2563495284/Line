@@ -10,7 +10,9 @@ public enum PointState
     Buy = 1,            // 买入 (001)
     Sell = 2,           // 卖出 (010)
     Bullish = 4,        // 看多 (100)
-    Bearish = 8         // 看空 (1000)
+    Bearish = 8,        // 看空 (1000)
+    PredictionBearish = 16,    // 预测看空 (10000)
+    PredictionBullish = 32, // 预测看多 (100000)
 }
 
 public class Point : MonoBehaviour
@@ -31,6 +33,10 @@ public class Point : MonoBehaviour
     public Color bullishColor = Color.blue;        // 看多颜色
     public Color bearishColor = new Color(0.5f, 0f, 0.5f);      // 看空颜色（紫色）
     public Color bullishBearishColor = new Color(1f, 0.5f, 0f); // 多空颜色（橙色）
+    public Color predictionBullishBearishColor = new Color(1f, 0.5f, 0f); // 预测多空颜色（橙色）
+
+    public Color predictionBullishColor = Color.green; // 预测看多颜色
+    public Color predictionBearishColor = Color.red; // 预测看空颜色
     public Color defaultColor = Color.black;       // 默认颜色
 
     [Header("状态文字设置")]
@@ -39,9 +45,15 @@ public class Point : MonoBehaviour
     public string buyText = "买";
     public string sellText = "卖";
     public string buySellText = "买卖";
-    public string bullishText = "多";
-    public string bearishText = "空";
-    public string bullishBearishText = "多空";
+    public string bullishText = "涨";
+    public string bearishText = "跌";
+
+    public string bullishBearishText = "涨/跌";
+    public string predictionBullishText = "多";
+
+    public string predictionBearishText = "空";
+    public string predictionBullishBearishText = "多/空";
+
 
     private bool isHovered = false;
     private float originalPrice;
@@ -82,6 +94,8 @@ public class Point : MonoBehaviour
         pointIndex = index;
         isDefaultVisible = defaultVisible;
 
+        Debug.Log($"RefreshPriceLabel: Point {index}, 价格: {price:F2}, 默认显示: {defaultVisible}");
+
         // 更新价格标签文本
         if (priceLabel != null)
         {
@@ -98,6 +112,7 @@ public class Point : MonoBehaviour
         {
             // 如果默认显示，或者鼠标悬停且启用了悬停显示
             bool shouldShow = isDefaultVisible || (isHovered && showOnHover);
+            Debug.Log($"UpdatePriceLabelVisibility: Point {pointIndex}, 默认显示: {isDefaultVisible}, 悬停: {isHovered}, 悬停显示: {showOnHover}, 最终显示: {shouldShow}");
             priceLabel.gameObject.SetActive(shouldShow);
         }
     }
@@ -152,6 +167,8 @@ public class Point : MonoBehaviour
         bool hasSell = HasState(PointState.Sell);
         bool hasBullish = HasState(PointState.Bullish);
         bool hasBearish = HasState(PointState.Bearish);
+        bool hasPredictionBullish = HasState(PointState.PredictionBullish);
+        bool hasPredictionBearish = HasState(PointState.PredictionBearish);
 
         // 优先级：买卖组合 > 多空组合 > 单个状态
         if (hasBuy && hasSell)
@@ -166,6 +183,13 @@ public class Point : MonoBehaviour
             // 多空组合
             spriteRenderer.color = bullishBearishColor;
             if (stateLabel != null) stateLabel.text = bullishBearishText;
+            transform.localScale = Vector3.one * originalSize; // 使用原始大小
+        }
+        else if (hasPredictionBullish && hasPredictionBearish)
+        {
+            // 预测多空组合
+            spriteRenderer.color = predictionBullishBearishColor;
+            if (stateLabel != null) stateLabel.text = predictionBullishBearishText;
             transform.localScale = Vector3.one * originalSize; // 使用原始大小
         }
         else if (hasBuy)
@@ -194,6 +218,18 @@ public class Point : MonoBehaviour
             // 只有看空
             spriteRenderer.color = bearishColor;
             if (stateLabel != null) stateLabel.text = bearishText;
+            transform.localScale = Vector3.one * originalSize; // 使用原始大小
+        }
+        else if (hasPredictionBullish)
+        {
+            spriteRenderer.color = predictionBullishColor;
+            if (stateLabel != null) stateLabel.text = predictionBullishText;
+            transform.localScale = Vector3.one * originalSize; // 使用原始大小
+        }
+        else if (hasPredictionBearish)
+        {
+            spriteRenderer.color = predictionBearishColor;
+            if (stateLabel != null) stateLabel.text = predictionBearishText;
             transform.localScale = Vector3.one * originalSize; // 使用原始大小
         }
         else
@@ -299,4 +335,42 @@ public class Point : MonoBehaviour
     public float GetPrice() => originalPrice;
     public int GetIndex() => pointIndex;
     public bool IsHovered() => isHovered;
+
+    /// <summary>
+    /// 重置Point状态（用于对象池复用）
+    /// </summary>
+    public void ResetForReuse()
+    {
+        // 重置状态
+        currentState = PointState.None;
+        isHovered = false;
+
+        // 重置原始大小为默认值
+        originalSize = 1f;
+
+        // 重置颜色和大小
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = defaultColor;
+        }
+
+        // 重置缩放
+        transform.localScale = Vector3.one * originalSize;
+
+        // 重置价格标签颜色，但不隐藏（让RefreshPriceLabel来控制显示）
+        if (priceLabel != null)
+        {
+            priceLabel.color = Color.red; // 重置为默认颜色
+        }
+
+        // 重置状态标签
+        if (stateLabel != null)
+        {
+            stateLabel.text = defaultText;
+        }
+
+        // 不重置isDefaultVisible，让RefreshPriceLabel来设置
+
+        Debug.Log($"Point {pointIndex} 状态已重置");
+    }
 }

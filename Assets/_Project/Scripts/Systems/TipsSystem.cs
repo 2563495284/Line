@@ -45,16 +45,21 @@ public class TipsSystem : Singleton<TipsSystem>
     {
         if (duration < 0) duration = displayDuration;
 
+        Debug.Log($"显示提示: '{message}', 类型: {tipsType}, 时长: {duration}");
+        Debug.Log($"显示前状态 - 活动队列: {activeTips.Count}, 对象池: {tipsPool.Count}");
+
         TipsUI tipsUI = GetOrCreateTipsUI();
         tipsUI.ShowTip(message, tipsType, duration, fadeInDuration, fadeOutDuration, moveDistance);
 
         // 添加到活动队列
         activeTips.Enqueue(tipsUI);
+        Debug.Log($"已添加到活动队列，当前活动数量: {activeTips.Count}");
 
         // 限制同时显示的提示数量
         if (activeTips.Count > maxTipsOnScreen)
         {
             TipsUI oldTip = activeTips.Dequeue();
+            Debug.Log($"超过最大显示数量，强制隐藏旧提示");
             oldTip.HideTip();
         }
     }
@@ -102,10 +107,12 @@ public class TipsSystem : Singleton<TipsSystem>
         {
             tipsUI = tipsPool.Dequeue();
             tipsUI.gameObject.SetActive(true);
+            Debug.Log($"从对象池获取TipsUI，剩余对象池数量: {tipsPool.Count}");
         }
         else
         {
             tipsUI = Instantiate(tipsUIPrefab, tipsParent);
+            Debug.Log($"创建新的TipsUI实例");
         }
 
         return tipsUI;
@@ -116,8 +123,38 @@ public class TipsSystem : Singleton<TipsSystem>
     /// </summary>
     public void RecycleTipsUI(TipsUI tipsUI)
     {
+        // 从活动队列中移除（如果存在）
+        RemoveFromActiveTips(tipsUI);
+
+        // 重置TipsUI状态
         tipsUI.gameObject.SetActive(false);
         tipsPool.Enqueue(tipsUI);
+
+        Debug.Log($"TipsUI已回收，活动队列数量: {activeTips.Count}, 对象池数量: {tipsPool.Count}");
+    }
+
+    /// <summary>
+    /// 从活动队列中移除指定的TipsUI
+    /// </summary>
+    private void RemoveFromActiveTips(TipsUI tipsUI)
+    {
+        // 由于Queue不支持直接移除，需要重建队列
+        Queue<TipsUI> tempQueue = new Queue<TipsUI>();
+
+        while (activeTips.Count > 0)
+        {
+            TipsUI tip = activeTips.Dequeue();
+            if (tip != tipsUI)
+            {
+                tempQueue.Enqueue(tip);
+            }
+        }
+
+        // 将临时队列的内容放回原队列
+        while (tempQueue.Count > 0)
+        {
+            activeTips.Enqueue(tempQueue.Dequeue());
+        }
     }
 
     /// <summary>

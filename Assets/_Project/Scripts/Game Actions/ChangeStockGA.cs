@@ -9,6 +9,7 @@ public class ChangeStockGA : GameAction
 
     public EStockType StockType { get; set; }
 
+
     public ChangeStockGA(int amount, EStockType stockType)
     {
         Amount = amount;

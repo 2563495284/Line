@@ -140,6 +140,7 @@ public class PlayerView : CharacterView
         {
             return; // 如果在冷却中，直接返回，不执行操作
         }
+        if (ActionSystem.Instance.IsProcessingQueue) return;
 
         // 执行原有逻辑
         NextRoundTurnGA nextRoundTurnGA = new();

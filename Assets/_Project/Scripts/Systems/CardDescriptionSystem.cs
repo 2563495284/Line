@@ -170,42 +170,6 @@ public static class CardDescriptionSystem
     }
 
     /// <summary>
-    /// 计算属性对效果的实际影响数值（保持向后兼容）
-    /// </summary>
-    private static float CalculateEffectValue(EPlayerAttributeType attributeType, float attributeValue, Card card)
-    {
-        switch (attributeType)
-        {
-            case EPlayerAttributeType.Charisma:
-                // 魅力影响市场影响力，可能影响交易效果
-                return attributeValue * 10f; // 每点魅力增加10%效果
-
-            case EPlayerAttributeType.Courage:
-                // 勇气影响交易数量
-                return attributeValue; // 每点勇气增加1点交易数量
-
-            case EPlayerAttributeType.Wisdom:
-                // 智慧可能影响某些卡牌的效果
-                return attributeValue;
-
-            case EPlayerAttributeType.Social:
-                // 社交可能影响某些卡牌效果
-                return attributeValue;
-
-            case EPlayerAttributeType.Calmness:
-                // 冷静影响风险控制
-                return attributeValue * 10f;
-
-            case EPlayerAttributeType.Fanaticism:
-                // 狂热影响激进操作
-                return attributeValue * 10f;
-
-            default:
-                return attributeValue;
-        }
-    }
-
-    /// <summary>
     /// 获取卡牌引用的所有属性类型
     /// </summary>
     public static List<EPlayerAttributeType> GetReferencedAttributes(string description)

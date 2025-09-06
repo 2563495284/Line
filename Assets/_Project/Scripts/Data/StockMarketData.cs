@@ -32,7 +32,7 @@ public class SingleStockMarketData
     public float maxPrice = 1000f;
 
     [Header("持有信息")]
-    public int playerHoldings; // 玩家持有数量
+    public int playerHoldings = 200; // 玩家持有数量
     public float totalValue { get { return playerHoldings * currentPrice; } }   // 总价值
 
     [Header("历史数据")]

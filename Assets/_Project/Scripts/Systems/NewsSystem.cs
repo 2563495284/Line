@@ -69,6 +69,17 @@ public class NewsSystem : Singleton<NewsSystem>
         // 然后显示新闻
         newsUI.ShowNews(title, content, newsType, duration, fadeInDuration, fadeOutDuration, slideDistance);
 
+        // 添加到历史记录系统
+        if (NewsHistorySystem.Instance != null)
+        {
+            NewsHistorySystem.Instance.AddNewsToHistory(title, content, newsType, Time.time);
+            Debug.Log($"新闻已添加到历史记录系统: {title}");
+        }
+        else
+        {
+            Debug.LogWarning("NewsHistorySystem实例不存在，无法添加新闻到历史记录!");
+        }
+
         Debug.Log($"新闻播报: {title} - {content} (当前新闻数量: {activeNews.Count})");
     }
     /// <summary>
@@ -237,7 +248,7 @@ public class NewsSystem : Singleton<NewsSystem>
             RectTransform rectTransform = newsUIPrefab.GetComponent<RectTransform>();
             if (rectTransform != null)
             {
-                return rectTransform.rect.height;
+                return rectTransform.rect.height * rectTransform.localScale.y;
             }
         }
 

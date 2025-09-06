@@ -47,8 +47,18 @@ public class TipsUI : MonoBehaviour
     /// </summary>
     public void ShowTip(string message, TipsType tipsType, float duration, float fadeInDuration, float fadeOutDuration, float moveDistance)
     {
-        // 停止之前的动画
+        Debug.Log($"TipsUI.ShowTip: '{message}', 持续时间: {duration}");
+
+        // 停止之前的动画和协程
         StopCurrentAnimation();
+        if (hideCoroutine != null)
+        {
+            StopCoroutine(hideCoroutine);
+            hideCoroutine = null;
+        }
+
+        // 重置状态
+        ResetState();
 
         // 设置消息和样式
         SetMessage(message);
@@ -61,11 +71,27 @@ public class TipsUI : MonoBehaviour
         StartShowAnimation(fadeInDuration, moveDistance);
 
         // 设置自动隐藏
-        if (hideCoroutine != null)
-        {
-            StopCoroutine(hideCoroutine);
-        }
         hideCoroutine = StartCoroutine(AutoHideCoroutine(duration, fadeOutDuration, moveDistance));
+    }
+
+    /// <summary>
+    /// 重置TipsUI状态
+    /// </summary>
+    private void ResetState()
+    {
+        // 确保CanvasGroup处于正确状态
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0f;
+        }
+
+        // 重置位置
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = originalPosition;
+        }
+
+        Debug.Log("TipsUI状态已重置");
     }
 
     /// <summary>
@@ -73,6 +99,8 @@ public class TipsUI : MonoBehaviour
     /// </summary>
     public void HideTip()
     {
+        Debug.Log("TipsUI.HideTip: 开始隐藏提示");
+
         if (hideCoroutine != null)
         {
             StopCoroutine(hideCoroutine);
@@ -166,7 +194,15 @@ public class TipsUI : MonoBehaviour
         currentAnimation.OnComplete(() =>
         {
             currentAnimation = null;
-            TipsSystem.Instance.RecycleTipsUI(this);
+            Debug.Log("TipsUI隐藏动画完成，准备回收");
+            if (TipsSystem.Instance != null)
+            {
+                TipsSystem.Instance.RecycleTipsUI(this);
+            }
+            else
+            {
+                Debug.LogError("TipsSystem.Instance为null，无法回收TipsUI！");
+            }
         });
     }
 
@@ -175,11 +211,19 @@ public class TipsUI : MonoBehaviour
     /// </summary>
     private IEnumerator AutoHideCoroutine(float duration, float fadeOutDuration, float moveDistance)
     {
+        Debug.Log($"AutoHideCoroutine开始等待 {duration} 秒");
         yield return new WaitForSeconds(duration);
+
+        Debug.Log($"AutoHideCoroutine等待完成，GameObject活跃状态: {gameObject.activeInHierarchy}");
 
         if (gameObject.activeInHierarchy)
         {
+            Debug.Log("开始自动隐藏动画");
             StartHideAnimation(fadeOutDuration, moveDistance);
+        }
+        else
+        {
+            Debug.Log("GameObject已不活跃，跳过隐藏动画");
         }
 
         hideCoroutine = null;

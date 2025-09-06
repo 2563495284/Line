@@ -32,6 +32,10 @@ public class NPCSystem : Singleton<NPCSystem>
         }
     }
 
+    public NPCView GetRandomNPCView()
+    {
+        return NPCs[UnityEngine.Random.Range(0, NPCs.Count)];
+    }
 
 
 

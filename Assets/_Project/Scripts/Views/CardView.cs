@@ -93,6 +93,7 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (!ManaSystem.Instance.HasEnoughMana(Card.Mana))
         {
+            TipsSystem.Instance.ShowTip("能量不足");
             return;
         }
         PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Instance.playerView, target);
@@ -115,6 +116,7 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         if (!ManaSystem.Instance.HasEnoughMana(Card.Mana))
         {
+            TipsSystem.Instance.ShowTip("能量不足");
             return false;
         }
         return true;

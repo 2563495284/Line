@@ -131,7 +131,7 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
             { ECharacterStrategyType.conservative, percent },
         };
 
-        var cv = PlayerAttributeSystem.Instance?.playerView;
+        var cv = NPCSystem.Instance.GetRandomNPCView();
         if (cv == null)
         {
             Debug.LogWarning("PlayerView 未就绪，价格影响未应用");

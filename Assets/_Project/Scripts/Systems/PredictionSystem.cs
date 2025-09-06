@@ -44,10 +44,10 @@ public class PredictionSystem : Singleton<PredictionSystem>
         switch (predictionGA.PredictionType)
         {
             case EPredictionType.Rise:
-                lineView.SetPointState(PointState.Bullish);
+                lineView.SetPointState(PointState.PredictionBullish);
                 break;
             case EPredictionType.Fall:
-                lineView.SetPointState(PointState.Bearish);
+                lineView.SetPointState(PointState.PredictionBearish);
                 break;
         }
         PredictionData newPrediction = new PredictionData(

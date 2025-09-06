@@ -8,13 +8,15 @@ public class ChangeStockPriceGA : GameAction
     public CharacterView characterView;
     public Dictionary<ECharacterStrategyType, float> ChangePricePersentDictionary;
     public Dictionary<ECharacterStrategyType, float> ChangePriceDictionary;
+    public bool MarkPoint { get; set; }
 
     public EStockType stockType;
-    public ChangeStockPriceGA(CharacterView characterView, EStockType stockType, Dictionary<ECharacterStrategyType, float> changePrice = null, Dictionary<ECharacterStrategyType, float> changePersentDictionary = null)
+    public ChangeStockPriceGA(CharacterView characterView, EStockType stockType, Dictionary<ECharacterStrategyType, float> changePrice = null, Dictionary<ECharacterStrategyType, float> changePersentDictionary = null, bool markPoint = false)
     {
         this.characterView = characterView;
         this.stockType = stockType;
         ChangePriceDictionary = changePrice ?? new();
         ChangePricePersentDictionary = changePersentDictionary ?? new();
+        MarkPoint = markPoint;
     }
 }

@@ -7,8 +7,10 @@ public class StockDisplay : MonoBehaviour
 {
     public EStockType stockType;
     [Header("UI组件")]
-    public TextMeshProUGUI stockText;
-    public TextMeshProUGUI changeText;
+    public TextMeshPro stockText;
+    public TextMeshPro changeText;
+    public TextMeshPro StockPrice;
+
 
     [Header("显示设置")]
     public string stockFormat = "N0";
@@ -38,11 +40,7 @@ public class StockDisplay : MonoBehaviour
 
     void InitializeDisplay()
     {
-        if (stockText != null)
-        {
-            stockText.text = $"{stockType.ToString()}: {0.ToString(stockFormat)}";
-        }
-
+        UpdateStockText();
         if (changeText != null)
         {
             changeText.text = "";
@@ -54,6 +52,7 @@ public class StockDisplay : MonoBehaviour
     {
         previousStock = currentStock;
         currentStock = newStock;
+        StockPrice.text = "当前价格: " + MultiStockSystem.Instance.GetStockMarket(stockType).currentPrice;
 
         if (enableCountAnimation)
         {
@@ -77,13 +76,13 @@ public class StockDisplay : MonoBehaviour
             switch (stockType)
             {
                 case EStockType.Oil:
-                    stockText.text = $"石油: {currentStock.ToString(stockFormat)}";
+                    stockText.text = $"拥有石油数量: {currentStock.ToString(stockFormat)}";
                     break;
                 case EStockType.Cotton:
-                    stockText.text = $"棉花: {currentStock.ToString(stockFormat)}";
+                    stockText.text = $"拥有棉花数量: {currentStock.ToString(stockFormat)}";
                     break;
                 case EStockType.Steel:
-                    stockText.text = $"钢铁: {currentStock.ToString(stockFormat)}";
+                    stockText.text = $"拥有钢铁数量: {currentStock.ToString(stockFormat)}";
                     break;
             }
         }
@@ -117,7 +116,18 @@ public class StockDisplay : MonoBehaviour
 
             if (stockText != null)
             {
-                stockText.text = $"石油: {currentValue.ToString(stockFormat)}";
+                switch (stockType)
+                {
+                    case EStockType.Oil:
+                        stockText.text = $"拥有石油数量: {currentValue.ToString(stockFormat)}";
+                        break;
+                    case EStockType.Cotton:
+                        stockText.text = $"拥有棉花数量: {currentValue.ToString(stockFormat)}";
+                        break;
+                    case EStockType.Steel:
+                        stockText.text = $"拥有钢铁数量: {currentValue.ToString(stockFormat)}";
+                        break;
+                }
             }
 
             yield return null;

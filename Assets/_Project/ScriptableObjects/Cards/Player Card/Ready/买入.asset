@@ -17,8 +17,12 @@ MonoBehaviour:
   <Description>k__BackingField: "\u4E70\u5165200{\u52C7\u6C14}"
   <ManualTargetEffect>k__BackingField:
     rid: 8527226634511843328
-  <OtherEffects>k__BackingField: []
-  <Mana>k__BackingField: 0
+  <OtherEffects>k__BackingField:
+  - <TargetMode>k__BackingField:
+      rid: 9019117506563933055
+    <Effect>k__BackingField:
+      rid: 9019117506563933056
+  <Mana>k__BackingField: 1
   references:
     version: 2
     RefIds:
@@ -26,3 +30,10 @@ MonoBehaviour:
       type: {class: TradeSpecificStockEffect, ns: , asm: Assembly-CSharp}
       data:
         tradeAmount: 200
+    - rid: 9019117506563933055
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 9019117506563933056
+      type: {class: ChangeManaEffect, ns: , asm: Assembly-CSharp}
+      data:
+        manaAmount: -1

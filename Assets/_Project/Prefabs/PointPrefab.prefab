@@ -104,14 +104,20 @@ MonoBehaviour:
   bullishColor: {r: 0, g: 0, b: 1, a: 1}
   bearishColor: {r: 0.5, g: 0, b: 0.5, a: 1}
   bullishBearishColor: {r: 1, g: 0.5, b: 0, a: 1}
+  predictionBullishBearishColor: {r: 1, g: 0.5, b: 0, a: 1}
+  predictionBullishColor: {r: 0, g: 1, b: 0, a: 1}
+  predictionBearishColor: {r: 1, g: 0, b: 0, a: 1}
   defaultColor: {r: 0, g: 0, b: 0, a: 1}
   defaultText: 
   buyText: "\u4E70"
   sellText: "\u5356"
-  buySellText: "\u4E70/\u5356"
-  bullishText: "\u591A"
-  bearishText: "\u7A7A"
-  bullishBearishText: "\u591A/\u7A7A"
+  buySellText: "\u4E70\u5356"
+  bullishText: "\u6DA8"
+  bearishText: "\u8DCC"
+  bullishBearishText: "\u6DA8/\u8DCC"
+  predictionBullishText: "\u591A"
+  predictionBearishText: "\u7A7A"
+  predictionBullishBearishText: "\u591A/\u7A7A"
 --- !u!210 &6005825339523865657
 SortingGroup:
   m_ObjectHideFlags: 0

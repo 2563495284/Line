@@ -13,7 +13,8 @@ public class LineView : MonoBehaviour
     [Header("图表设置")]
     [SerializeField] private float chartWidth = 8f;
     [SerializeField] private float chartHeight = 5f;
-    [SerializeField] private float padding = 0.3f;
+    [SerializeField] private float paddingX = 0.3f;
+    [SerializeField] private float paddingY = 0.5f;
 
     [Header("线条设置")]
     [SerializeField] private Color lineColor = Color.blue;
@@ -344,8 +345,8 @@ public class LineView : MonoBehaviour
         float normalizedX = CalculateNormalizedX(index);
         float normalizedY = Mathf.InverseLerp(priceRange.minPrice, priceRange.maxPrice, prices[index]);
 
-        float x = Mathf.Lerp(-chartWidth / 2 + padding, chartWidth / 2 - padding, normalizedX);
-        float y = Mathf.Lerp(-chartHeight / 2 + padding, chartHeight / 2 - padding, normalizedY);
+        float x = Mathf.Lerp(-chartWidth / 2 + paddingX, chartWidth / 2 - paddingX, normalizedX);
+        float y = Mathf.Lerp(-chartHeight / 2 + paddingY, chartHeight / 2 - paddingY, normalizedY);
 
         // 验证坐标值
         if (float.IsNaN(x) || float.IsNaN(y))
@@ -418,8 +419,8 @@ public class LineView : MonoBehaviour
         // 激活点对象
         pointObj.SetActive(true);
 
-        // 确保状态标签正确初始化
-        point.InitializeStateLabel();
+        // 重置Point状态（清除之前的复用状态）
+        point.ResetForReuse();
 
         // 更新位置和价格信息
         bool isDefaultVisible = (index == prices.Count - 1) || index == 0;
@@ -428,7 +429,7 @@ public class LineView : MonoBehaviour
         point.SetColor(pointColor);
         point.SetSize(pointSize);
 
-        // 恢复状态
+        // 恢复保存的状态
         RestorePointState(point, index);
     }
 

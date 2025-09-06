@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Image>k__BackingField: {fileID: 21300000, guid: 4a15d8fba635a45e88f2666e3270d4e1, type: 3}
   <Title>k__BackingField: "\u6F14\u8BB2"
-  <Description>k__BackingField: "\u83B7\u5F972[\u793E\u4EA4]"
+  <Description>k__BackingField: "\u83B7\u5F973[\u793E\u4EA4]"
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:
@@ -39,7 +39,7 @@ MonoBehaviour:
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
         attributeType: 0
-        attributeValue: 2
+        attributeValue: 3
     - rid: 9019117340648800343
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 

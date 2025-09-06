@@ -59,11 +59,12 @@
     <UnityVersion>2022.3.62f1c1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="/Users/yijin/.vscode/extensions/visualstudiotoolsforunity.vstuc-1.1.2/Analyzers/Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="/Users/yijin/.vscode/extensions/visualstudiotoolsforunity.vstuc-1.1.3/Analyzers/Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/2022.3.62f1c1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll" />
     <Analyzer Include="/Applications/Unity/Hub/Editor/2022.3.62f1c1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/_Project/Scripts/Systems/NewsHistoryTestSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/TipsUI.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/BuffUI/BuffDisplayItem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/DrawCardsGA.cs" />
@@ -73,9 +74,11 @@
     <Compile Include="Assets/_Project/Scripts/General/Utils/MouseUtils.cs" />
     <Compile Include="Assets/_Project/Scripts/General/Utils/RandomUtils.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/PredictionData.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/NewsHistoryItemUI.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/MadeInHeavenSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/MadeInHeavenExecuteGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeStrategyGA.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/PlayerAttributeUI/AttributeDisplayItemTips.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/ConditionalCostEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/AddLeverageBuffGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/Action System/ActionSystem.cs" />
@@ -97,7 +100,6 @@
     <Compile Include="Assets/_Project/Scripts/UI/MultiStockUI/MultiStockDisplay.cs" />
     <Compile Include="Assets/_Project/Scripts/Models/AutoTargetEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/LineView.cs" />
-    <Compile Include="Assets/_Project/Scripts/Systems/PerkSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/LeverageBuffData.cs" />
     <Compile Include="Assets/SREditor/Package/Scripts/SRAttribute.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/EndGameUI.cs" />
@@ -120,7 +122,6 @@
     <Compile Include="Assets/_Project/Scripts/Systems/ManualTargetingSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeNPCStrategyGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/NextRoundEffect.cs" />
-    <Compile Include="Assets/_Project/Scripts/UI/PerksUI.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/UseStockMaterialEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/Target Modes/AllEnemiesTM.cs" />
     <Compile Include="Assets/_Project/Scripts/Extensions/ListExtensions.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Assets/_Project/Scripts/Data/PerkData.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/NPCView.cs" />
     <Compile Include="Assets/_Project/Scripts/Views/CharacterView.cs" />
+    <Compile Include="Assets/_Project/Scripts/Systems/NewsHistorySystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/CardDescriptionSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/TradeSpecificStockGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Target Modes/NoTM.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Assets/_Project/Scripts/Systems/PlayerAttributeSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/CardData.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/AttributeTooltipUI/AttributeTooltipItem.cs" />
+    <Compile Include="Assets/_Project/Scripts/Systems/NewsHistoryDiagnostic.cs" />
     <Compile Include="Assets/_Project/Scripts/Game Actions/ChangeManaGA.cs" />
     <Compile Include="Assets/_Project/Scripts/Data/CharacterData.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/NPC/ChangeStrategyEffect.cs" />
@@ -184,6 +187,7 @@
     <Compile Include="Assets/_Project/Scripts/Models/TargetMode.cs" />
     <Compile Include="Assets/Scripts/FontTest.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/DrawCardsEffect.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/NewsHistoryButtonTest.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/ChangeStockPriceEffect.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/PlayerAttributeUI/AttributeDisplayItem.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/TimeAccelerationRenderFeature.cs" />
@@ -195,6 +199,7 @@
     <Compile Include="Assets/_Project/Scripts/Data/OilMarketMessages.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/MarketEventSystem.cs" />
     <Compile Include="Assets/_Project/Scripts/UI/AttributeTooltipUI/AttributeTooltipDisplay.cs" />
+    <Compile Include="Assets/_Project/Scripts/UI/NewsHistoryUI.cs" />
     <Compile Include="Assets/_Project/Scripts/Effects/Player/ChangeAttributeEffect.cs" />
     <Compile Include="Assets/SREditor/Package/Scripts/Services/SRFormerlyTypeCache.cs" />
     <Compile Include="Assets/_Project/Scripts/Systems/EffectSystem.cs" />

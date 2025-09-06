@@ -36,6 +36,7 @@ MonoBehaviour:
           keys: 00000000
           values:
           - 1
+        markPoint: 1
     - rid: 9019117340648800328
       type: {class: NoTM, ns: , asm: Assembly-CSharp}
       data: 

@@ -31,6 +31,7 @@ public class ResourceConsumptionSystem : Singleton<ResourceConsumptionSystem>
             {
                 // 资源不足，震动相机提示
                 Utils.ShakeCamera();
+                TipsSystem.Instance.ShowTip("资源不足");
                 Debug.Log($"资源不足: {cost.GetDescription()}");
                 yield break;
             }

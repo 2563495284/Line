@@ -15,6 +15,8 @@ public class ActionSystem : Singleton<ActionSystem>
     private Queue<ActionRequest> actionQueue = new();
     private bool isProcessingQueue = false;
 
+    public bool IsProcessingQueue => isProcessingQueue;
+
     private struct ActionRequest
     {
         public GameAction action;

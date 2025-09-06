@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Image>k__BackingField: {fileID: 21300000, guid: 2c9b636a0182d47c680775fd0fd5aae7, type: 3}
   <Title>k__BackingField: "\u770B\u6DA8"
-  <Description>k__BackingField: "\u4E09\u4E2A\u4EA4\u6613\u65E5\u540E\uFF0C\u5176\u4EF7\u683C\u5982\u679C\u4E0A\u6DA8\u83B7\u5F9710000\u91D1\u5E01\uFF0C\u5982\u679C\u4E0B\u8DCC\u5219\u5931\u53BB100"
+  <Description>k__BackingField: "\u4E09\u4E2A\u4EA4\u6613\u65E5\u540E\uFF0C\u5176\u4EF7\u683C\u5982\u679C\u4E0A\u6DA8\u83B7\u5F9710000\u91D1\u5E01\uFF0C\u5982\u679C\u4E0B\u8DCC\u5219\u5931\u53BB100\u6750\u6599"
   <ManualTargetEffect>k__BackingField:
     rid: 9019117317643567862
   <OtherEffects>k__BackingField:

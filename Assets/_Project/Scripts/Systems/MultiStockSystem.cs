@@ -115,7 +115,6 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         {
             market.MarkPrice();
         }
-
         UpdateKLineDisplays();
     }
 
@@ -179,6 +178,18 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
 
         // 更新价格历史
         market.UpdatePrice(tempPrice);
+        if (action.MarkPoint)
+        {
+            LineView lineView = GetLineView(action.stockType);
+            if (tempPrice > market.currentPrice)
+            {
+                lineView.SetPointState(PointState.Bullish);
+            }
+            else
+            {
+                lineView.SetPointState(PointState.Bearish);
+            }
+        }
         Debug.Log($"NPC {action.characterView.name} 投资策略: {characterStrategyType} 价格: {tempPrice:F2} -> {tempPrice:F2} ({priceIncrease:F2})");
         yield return null;
     }
@@ -195,41 +206,44 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         }
 
         LineView lineView = GetLineView(action.StockType);
+        int amount = (int)math.floor(action.Amount * PlayerAttributeSystem.Instance.GetStockCourageBonus());
         int actualTradeAmount = 0;
         // 尽可能多地买卖模式
-        if (action.Amount > 0) // 买入意向
+        if (amount > 0) // 买入意向
         {
             // 计算能买入的最大数量
             int maxBuyAmount = (int)Math.Floor(currentMoney / market.currentPrice);
-            actualTradeAmount = Math.Min(action.Amount, maxBuyAmount);
+            actualTradeAmount = Math.Min(amount, maxBuyAmount);
 
             if (actualTradeAmount <= 0)
             {
                 if (showTradeDebugLogs)
                     Debug.LogWarning($"[MultiStockSystem] 资金不足，无法买入 {action.StockType} 股票。当前资金: {currentMoney:F2}，股价: {market.currentPrice:F2}");
+                TipsSystem.Instance.ShowTip("资金不足，无法买入股票");
                 Utils.ShakeCamera();
                 yield break;
             }
 
             if (showTradeDebugLogs)
-                Debug.Log($"[MultiStockSystem] 买入 {action.StockType}: 请求 {action.Amount} 股，实际买入 {actualTradeAmount} 股 (最大化模式)");
+                Debug.Log($"[MultiStockSystem] 买入 {action.StockType}: 请求 {amount} 股，实际买入 {actualTradeAmount} 股 (最大化模式)");
         }
         else // 卖出意向
         {
             // 计算能卖出的最大数量
             int maxSellAmount = market.playerHoldings;
-            actualTradeAmount = Math.Max(action.Amount, -maxSellAmount); // action.Amount是负数
+            actualTradeAmount = Math.Max(amount, -maxSellAmount); // amount是负数
 
             if (actualTradeAmount >= 0)
             {
                 if (showTradeDebugLogs)
                     Debug.LogWarning($"[MultiStockSystem] 持有量不足，无法卖出 {action.StockType} 股票。当前持有: {market.playerHoldings} 股");
+                TipsSystem.Instance.ShowTip("持有量不足，无法卖出股票");
                 Utils.ShakeCamera();
                 yield break;
             }
 
             if (showTradeDebugLogs)
-                Debug.Log($"[MultiStockSystem] 卖出 {action.StockType}: 请求卖出 {-action.Amount} 股，实际卖出 {-actualTradeAmount} 股 (最大化模式)");
+                Debug.Log($"[MultiStockSystem] 卖出 {action.StockType}: 请求卖出 {-amount} 股，实际卖出 {-actualTradeAmount} 股 (最大化模式)");
         }
         // // 传统固定数量交易模式
         // if (!CanTradeStock(action.StockType, action.Amount))
@@ -314,6 +328,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     private IEnumerator ChangeMoneyPerformer(ChangeMoneyGA action)
     {
         currentMoney += action.Amount;
+        currentMoney = Mathf.Max(0, currentMoney);
         yield return null;
     }
 
@@ -440,23 +455,23 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         return market?.playerHoldings ?? 0;
     }
 
-    public bool CanTradeStock(EStockType stockType, int amount)
-    {
-        amount = (int)math.floor(amount * PlayerAttributeSystem.Instance.GetStockCourageBonus());
-        var market = GetStockMarket(stockType);
+    // public bool CanTradeStock(EStockType stockType, int amount)
+    // {
+    //     amount = (int)math.floor(amount * PlayerAttributeSystem.Instance.GetStockCourageBonus());
+    //     var market = GetStockMarket(stockType);
 
-        if (market == null)
-        {
-            return false;
-        }
-        if (amount <= 0)
-        {
-            return market.playerHoldings >= -amount;
-        }
+    //     if (market == null)
+    //     {
+    //         return false;
+    //     }
+    //     if (amount <= 0)
+    //     {
+    //         return market.playerHoldings >= -amount;
+    //     }
 
 
-        return market.currentPrice * amount <= currentMoney;
-    }
+    //     return market.currentPrice * amount <= currentMoney;
+    // }
 
     /// <summary>
     /// 计算最大可交易数量
