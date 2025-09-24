@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class CardSystem : Singleton<CardSystem>
+public class CardSystem : SingletonCom<CardSystem>
 {
 
     private void OnEnable()
@@ -38,7 +38,7 @@ public class CardSystem : Singleton<CardSystem>
         int handCapacity = characterView.MaxHandSize - characterView.hand.Count;
         if (handCapacity <= 0 && characterView.CharacterType == ECharacterType.Player)
         {
-            TipsSystem.Instance.ShowError("手牌已满！");
+            TipsSystem.Ins.ShowError("手牌已满！");
             yield break;
         }
         bool handFull = drawCardsGA.Amount > handCapacity;
@@ -64,7 +64,7 @@ public class CardSystem : Singleton<CardSystem>
         }
         if (handFull && characterView.CharacterType == ECharacterType.Player)
         {
-            TipsSystem.Instance.ShowInfo("手牌已满!");
+            TipsSystem.Ins.ShowInfo("手牌已满!");
         }
     }
 
@@ -77,7 +77,6 @@ public class CardSystem : Singleton<CardSystem>
         characterView.DoManualTargetEffect(playCardGA);
         characterView.DoAutoTargetEffect(playCardGA);
 
-        Debug.Log($"玩家 {characterView.name} 出牌: {playCardGA.Card.Title}");
     }
     #endregion
 }

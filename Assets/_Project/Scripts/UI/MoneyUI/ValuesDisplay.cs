@@ -52,7 +52,7 @@ public class ValuesDisplay : MonoBehaviour
     public void UpdateValues()
     {
         previousValues = currentValues;
-        currentValues = MultiStockSystem.Instance.GetTotalAssetValue();
+        currentValues = MultiStockSystem.Ins.GetTotalAssetValue();
 
         if (enableCountAnimation)
         {

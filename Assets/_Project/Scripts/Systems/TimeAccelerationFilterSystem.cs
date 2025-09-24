@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// URP兼容的时间加速滤镜系统
 /// </summary>
-public class TimeAccelerationFilterSystem : Singleton<TimeAccelerationFilterSystem>
+public class TimeAccelerationFilterSystem : SingletonCom<TimeAccelerationFilterSystem>
 {
     [Header("滤镜设置")]
     [SerializeField]

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class TipsSystem : Singleton<TipsSystem>
+public class TipsSystem : SingletonCom<TipsSystem>
 {
     [Header("提示设置")]
     [SerializeField] private TipsUI tipsUIPrefab;
@@ -168,15 +168,4 @@ public class TipsSystem : Singleton<TipsSystem>
             tip.HideTip();
         }
     }
-}
-
-/// <summary>
-/// 提示类型
-/// </summary>
-public enum TipsType
-{
-    Info,       // 信息
-    Success,    // 成功
-    Warning,    // 警告
-    Error       // 错误
 }

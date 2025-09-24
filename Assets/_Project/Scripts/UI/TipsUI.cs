@@ -12,11 +12,6 @@ public class TipsUI : MonoBehaviour
     [SerializeField] private Image backgroundImage;
     [SerializeField] private Image iconImage;
 
-    [Header("颜色设置")]
-    [SerializeField] private Color infoColor = new Color(0.2f, 0.6f, 1f, 0.9f);
-    [SerializeField] private Color successColor = new Color(0.2f, 0.8f, 0.2f, 0.9f);
-    [SerializeField] private Color warningColor = new Color(1f, 0.6f, 0.2f, 0.9f);
-    [SerializeField] private Color errorColor = new Color(1f, 0.2f, 0.2f, 0.9f);
 
     private RectTransform rectTransform;
     private Vector3 originalPosition;
@@ -149,14 +144,14 @@ public class TipsUI : MonoBehaviour
         switch (tipsType)
         {
             case TipsType.Success:
-                return successColor;
+                return new Color(0.2f, 0.8f, 0.2f, 0.9f);
             case TipsType.Warning:
-                return warningColor;
+                return new Color(1f, 0.6f, 0.2f, 0.9f);
             case TipsType.Error:
-                return errorColor;
+                return new Color(1f, 0.2f, 0.2f, 0.9f);
             case TipsType.Info:
             default:
-                return infoColor;
+                return new Color(0.2f, 0.6f, 1f, 0.9f);
         }
     }
 
@@ -195,9 +190,9 @@ public class TipsUI : MonoBehaviour
         {
             currentAnimation = null;
             Debug.Log("TipsUI隐藏动画完成，准备回收");
-            if (TipsSystem.Instance != null)
+            if (TipsSystem.Ins != null)
             {
-                TipsSystem.Instance.RecycleTipsUI(this);
+                TipsSystem.Ins.RecycleTipsUI(this);
             }
             else
             {

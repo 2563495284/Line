@@ -2,17 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EEventCardType
-{
-    Bull,
-    Bear,
-    Neutral
-}
+
 
 /// <summary>
 /// 市场事件系统（多股市）：每隔 N 回合有概率对随机股票播报新闻并影响价格
 /// </summary>
-public class MarketEventSystem : Singleton<MarketEventSystem>
+public class MarketEventSystem : SingletonCom<MarketEventSystem>
 {
     [Header("触发回合配置（多股市）")]
     [SerializeField] private int roundInterval = 2; // 每隔 N 回合尝试触发
@@ -47,7 +42,7 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
     /// </summary>
     private void OnNextRoundTurnPostReaction(NextRoundTurnGA nextRound)
     {
-        if (!MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        if (!MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
         {
             ExecuteMarketEvents();
         }
@@ -58,7 +53,7 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
     /// </summary>
     private void OnMadeInHeavenExecutePostReaction(MadeInHeavenExecuteGA action)
     {
-        if (MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        if (MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
         {
             ExecuteMarketEvents();
         }
@@ -80,7 +75,7 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
 
     private void TryTriggerMarketNewsForRandomStock(EStockType stockType, float eventChance, float effectFactor)
     {
-        var market = MultiStockSystem.Instance.GetStockMarket(stockType);
+        var market = MultiStockSystem.Ins.GetStockMarket(stockType);
         if (market == null) return;
         if (Random.value > eventChance) return; // 本次不触发
 
@@ -93,7 +88,7 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
         ApplyPriceImpact(market.stockType, impactPercent);
 
         // 播报新闻
-        NewsSystem.Instance?.BroadcastMarketEvent(market.stockType, eventType);
+        NewsSystem.Ins?.BroadcastMarketEvent(market.stockType, eventType);
     }
 
     private EEventCardType SelectEventTypeByDeviation(float deviation)
@@ -124,14 +119,14 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
     private void ApplyPriceImpact(EStockType stockType, float percent)
     {
         // 将百分比影响应用到三个策略键，MultiStockSystem 的 performer 会读取其中一个键
-        var percentDict = new Dictionary<ECharacterStrategyType, float>
+        var percentDict = new Dictionary<EStrategyType, float>
         {
-            { ECharacterStrategyType.medium, percent },
-            { ECharacterStrategyType.aggressive, percent },
-            { ECharacterStrategyType.conservative, percent },
+            { EStrategyType.medium, percent },
+            { EStrategyType.aggressive, percent },
+            { EStrategyType.conservative, percent },
         };
 
-        var cv = NPCSystem.Instance.GetRandomNPCView();
+        var cv = NPCSystem.Ins.GetRandomNPCView();
         if (cv == null)
         {
             Debug.LogWarning("PlayerView 未就绪，价格影响未应用");
@@ -139,6 +134,6 @@ public class MarketEventSystem : Singleton<MarketEventSystem>
         }
 
         var ga = new ChangeStockPriceGA(cv, stockType, null, percentDict);
-        ActionSystem.Instance.Perform(ga);
+        ActionSystem.Ins.Perform(ga);
     }
 }

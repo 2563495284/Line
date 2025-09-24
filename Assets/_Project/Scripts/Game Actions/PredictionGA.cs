@@ -34,8 +34,3 @@ public class PredictionGA : GameAction
     }
 }
 
-public enum EPredictionType
-{
-    Rise, // 预测上涨
-    Fall, // 预测下跌
-}

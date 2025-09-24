@@ -34,8 +34,14 @@ MonoBehaviour:
         <TargetMode>k__BackingField:
           rid: -2
         <Effect>k__BackingField:
-          rid: 4153351484898541671
-    - rid: 4153351484898541671
-      type: {class: DealDamageEffect, ns: , asm: Assembly-CSharp}
+          rid: 5060532207965175809
+    - rid: 5060532207965175809
+      type: {class: ChangeStockPriceEffect, ns: , asm: Assembly-CSharp}
       data:
-        damageAmount: 5
+        changePriceDictionary:
+          keys: 
+          values: []
+        changePersentDictionary:
+          keys: 
+          values: []
+        markPoint: 0

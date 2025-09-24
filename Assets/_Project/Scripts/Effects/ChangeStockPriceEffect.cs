@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChangeStockPriceEffect : Effect
+public class ChangeStockPriceEffect : Effect2
 {
-    [SerializeField] private SerializableDictionary<ECharacterStrategyType, float> changePriceDictionary;
-    [SerializeField] private SerializableDictionary<ECharacterStrategyType, float> changePersentDictionary;
+    [SerializeField] private SerializableDictionary<EStrategyType, float> changePriceDictionary;
+    [SerializeField] private SerializableDictionary<EStrategyType, float> changePersentDictionary;
     [SerializeField] private bool markPoint = false;
     public override GameAction GetGameAction()
     {

@@ -128,7 +128,7 @@ public class PlayerView : CharacterView
 
     public override IEnumerator DrawCardAnimation(Card card)
     {
-        CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint.position, drawPilePoint.rotation);
+        CardView cardView = CardViewCreator.Ins.CreateCardView(card, drawPilePoint.position, drawPilePoint.rotation);
         cards.Add(cardView);
 
         yield return StartCoroutine(UpdateCardPositions(doTweenUpdatePositionDuration));
@@ -140,11 +140,11 @@ public class PlayerView : CharacterView
         {
             return; // 如果在冷却中，直接返回，不执行操作
         }
-        if (ActionSystem.Instance.IsProcessingQueue) return;
+        if (ActionSystem.Ins.IsProcessingQueue) return;
 
         // 执行原有逻辑
         NextRoundTurnGA nextRoundTurnGA = new();
-        ActionSystem.Instance.Perform(nextRoundTurnGA);
+        ActionSystem.Ins.Perform(nextRoundTurnGA);
 
         // 开始冷却
         StartButtonCooldown();
@@ -248,7 +248,6 @@ public class PlayerView : CharacterView
     /// </summary>
     private void UpdateButtonText(string text)
     {
-        return;
         var buttonText = nextRoundButton.GetComponentInChildren<UnityEngine.UI.Text>();
         if (buttonText != null)
         {

@@ -29,7 +29,7 @@ public class NewsHistoryItemUI : MonoBehaviour
     [SerializeField] private int maxContentLength = 50; // 内容最大长度
     [SerializeField] private float itemHeight = 200f; // 项目高度
 
-    private NewsHistoryItem currentItem;
+    private NewsItemData currentItem;
     private RectTransform rectTransform;
 
     private void Awake()
@@ -48,7 +48,7 @@ public class NewsHistoryItemUI : MonoBehaviour
     /// <summary>
     /// 初始化新闻项
     /// </summary>
-    public void Initialize(NewsHistoryItem item)
+    public void Initialize(NewsItemData item)
     {
         currentItem = item;
         UpdateDisplay();
@@ -144,7 +144,7 @@ public class NewsHistoryItemUI : MonoBehaviour
     /// <summary>
     /// 获取当前新闻项
     /// </summary>
-    public NewsHistoryItem GetCurrentItem()
+    public NewsItemData GetCurrentItem()
     {
         return currentItem;
     }

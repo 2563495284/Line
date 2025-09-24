@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DrawCardsEffect : Effect
+public class DrawCardsEffect : Effect2
 {
     [SerializeField] private int drawAmount;
 

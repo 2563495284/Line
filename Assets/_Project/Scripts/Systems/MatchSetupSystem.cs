@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchSetupSystem : Singleton<MatchSetupSystem>
+public class MatchSetupSystem : SingletonCom<MatchSetupSystem>
 {
     [SerializeField] private PlayerData playerData;
-    [SerializeField] private PerkData perkData;
     [SerializeField] private List<NPCData> npcDataList;
 
     private void Start()
@@ -16,14 +15,14 @@ public class MatchSetupSystem : Singleton<MatchSetupSystem>
 
     public void InitializeGame()
     {
-        MultiStockSystem.Instance.InitializeStockMarkets();
+        MultiStockSystem.Ins.InitializeStockMarkets();
 
-        NPCSystem.Instance.Setup(npcDataList);
+        NPCSystem.Ins.Setup(npcDataList);
 
-        PlayerAttributeSystem.Instance.Setup(playerData);
+        PlayerAttributeSystem.Ins.Setup(playerData);
 
-        DrawCardsGA drawCardsGA = new(playerData.initialDrawCount, PlayerAttributeSystem.Instance.playerView);
-        ActionSystem.Instance.Perform(drawCardsGA);
+        DrawCardsGA drawCardsGA = new(playerData.initialDrawCount, PlayerAttributeSystem.Ins.playerView);
+        ActionSystem.Ins.Perform(drawCardsGA);
     }
 
     /// <summary>

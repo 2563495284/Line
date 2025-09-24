@@ -23,6 +23,7 @@ MonoBehaviour:
     <Effect>k__BackingField:
       rid: 9019117340648800320
   <Mana>k__BackingField: 1
+  <Type>k__BackingField: 1
   references:
     version: 2
     RefIds:

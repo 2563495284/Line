@@ -5,5 +5,5 @@ using UnityEngine;
 public class AutoTargetEffect
 {
     [field: SerializeReference, SR] public TargetMode TargetMode { get; private set; } = new NoTM();
-    [field: SerializeReference, SR] public Effect Effect { get; private set; }
+    [field: SerializeReference, SR] public Effect2 Effect { get; private set; }
 }

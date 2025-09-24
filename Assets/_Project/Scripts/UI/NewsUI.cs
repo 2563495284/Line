@@ -205,7 +205,7 @@ public class NewsUI : MonoBehaviour
         currentAnimation.OnComplete(() =>
         {
             currentAnimation = null;
-            NewsSystem.Instance.RecycleNewsUI(this);
+            NewsSystem.Ins.RecycleNewsUI(this);
         });
     }
 

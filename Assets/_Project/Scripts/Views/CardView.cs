@@ -1,11 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using DG.Tweening;
-using Unity.VisualScripting;
 
 public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
@@ -41,71 +36,71 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanHover()) return;
+        if (!Interactions.Ins.PlayerCanHover()) return;
 
-        CardViewHoverSystem.Instance.Hide();
+        CardViewHoverSystem.Ins.Hide();
         wrapper.SetActive(true);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanHover()) return;
+        if (!Interactions.Ins.PlayerCanHover()) return;
 
         Vector3 pos = new(transform.position.x, cardHoverYOffset, 0);
-        CardViewHoverSystem.Instance.Show(Card, pos);
+        CardViewHoverSystem.Ins.Show(Card, pos);
         wrapper.SetActive(false);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (!Interactions.Ins.PlayerCanInteract()) return;
 
         if (Card.ManualTargetEffect != null)
         {
-            ManualTargetingSystem.Instance.StartTargeting(MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue));
+            ManualTargetingSystem.Ins.StartTargeting(MouseUtils.GetMouseWp(mousePositionZValue));
         }
         else
         {
-            Interactions.Instance.PlayerIsDragging = true;
+            Interactions.Ins.PlayerIsDragging = true;
             wrapper.SetActive(true);
-            CardViewHoverSystem.Instance.Hide();
+            CardViewHoverSystem.Ins.Hide();
             dragStartPosition = transform.position;
             dragStartRotation = transform.rotation;
-            transform.SetPositionAndRotation(MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue), Quaternion.Euler(0, 0, 0));
+            transform.SetPositionAndRotation(MouseUtils.GetMouseWp(mousePositionZValue), Quaternion.Euler(0, 0, 0));
         }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (!Interactions.Ins.PlayerCanInteract()) return;
 
         if (Card.ManualTargetEffect == null)
         {
             PlayCardOrResetPosition();
 
-            Interactions.Instance.PlayerIsDragging = false;
+            Interactions.Ins.PlayerIsDragging = false;
             return;
         }
-        LineView target = ManualTargetingSystem.Instance.EndTargeting(MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue));
+        LineView target = ManualTargetingSystem.Ins.EndTargeting(MouseUtils.GetMouseWp(mousePositionZValue));
         if (target == null)
         {
             return;
         }
-        if (!ManaSystem.Instance.HasEnoughMana(Card.Mana))
+        if (!ManaSystem.Ins.HasEnoughMana(Card.Mana))
         {
-            TipsSystem.Instance.ShowTip("能量不足");
+            TipsSystem.Ins.ShowTip("能量不足");
             return;
         }
-        PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Instance.playerView, target);
-        ActionSystem.Instance.Perform(playCardGA);
+        PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Ins.playerView, target);
+        ActionSystem.Ins.Perform(playCardGA);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (!Interactions.Ins.PlayerCanInteract()) return;
         if (Card.ManualTargetEffect != null) return;
 
-        transform.position = MouseUtils.GetMousePositionInWorldSpace(mousePositionZValue);
+        transform.position = MouseUtils.GetMouseWp(mousePositionZValue);
     }
 
     private bool CanPlayCard()
@@ -114,9 +109,9 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             return false;
         }
-        if (!ManaSystem.Instance.HasEnoughMana(Card.Mana))
+        if (!ManaSystem.Ins.HasEnoughMana(Card.Mana))
         {
-            TipsSystem.Instance.ShowTip("能量不足");
+            TipsSystem.Ins.ShowTip("能量不足");
             return false;
         }
         return true;
@@ -126,8 +121,8 @@ public class CardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (CanPlayCard())
         {
-            PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Instance.playerView);
-            ActionSystem.Instance.Perform(playCardGA);
+            PlayCardGA playCardGA = new(Card, PlayerAttributeSystem.Ins.playerView);
+            ActionSystem.Ins.Perform(playCardGA);
         }
         else
         {

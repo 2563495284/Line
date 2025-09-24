@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ManualTargetingSystem : Singleton<ManualTargetingSystem>
+public class ManualTargetingSystem : SingletonCom<ManualTargetingSystem>
 {
     [SerializeField] private ArrowView arrowView;
     [SerializeField] private LayerMask targetLayerMask;

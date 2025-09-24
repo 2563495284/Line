@@ -12,7 +12,7 @@ public class AttributeTooltipDisplay : MonoBehaviour
     [SerializeField] private GameObject tooltipItemPrefab;
 
     private List<AttributeTooltipItem> tooltipItems = new List<AttributeTooltipItem>();
-    private List<EPlayerAttributeType> currentHighlightedAttributes = new List<EPlayerAttributeType>();
+    private List<EAttrType> currentHighlightedAttributes = new List<EAttrType>();
     private Tween currentTween;
 
     private void Awake()
@@ -26,11 +26,11 @@ public class AttributeTooltipDisplay : MonoBehaviour
     /// <param name="attributeTypes">要显示的属性类型列表</param>
     /// <param name="highlightedAttributes">需要高亮的属性类型列表</param>
     /// <param name="worldPosition">世界坐标位置</param>
-    public void Show(List<EPlayerAttributeType> attributeTypes, List<EPlayerAttributeType> highlightedAttributes, Vector3 worldPosition)
+    public void Show(List<EAttrType> attributeTypes, List<EAttrType> highlightedAttributes, Vector3 worldPosition)
     {
         if (attributeTypes == null || attributeTypes.Count == 0) return;
 
-        currentHighlightedAttributes = highlightedAttributes ?? new List<EPlayerAttributeType>();
+        currentHighlightedAttributes = highlightedAttributes ?? new List<EAttrType>();
 
         // 清理现有项目
         ClearTooltipItems();
@@ -52,11 +52,11 @@ public class AttributeTooltipDisplay : MonoBehaviour
     /// <summary>
     /// 创建提示框项目
     /// </summary>
-    private void CreateTooltipItems(List<EPlayerAttributeType> attributeTypes)
+    private void CreateTooltipItems(List<EAttrType> attributeTypes)
     {
         if (tooltipItemPrefab == null || tooltipContainer == null) return;
 
-        var playerAttributes = PlayerAttributeSystem.Instance?.GetPlayerAttributes();
+        var playerAttributes = PlayerAttributeSystem.Ins?.GetPlayerAttributes();
         if (playerAttributes == null) return;
 
         foreach (var attributeType in attributeTypes)

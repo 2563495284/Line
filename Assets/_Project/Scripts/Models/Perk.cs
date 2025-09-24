@@ -41,7 +41,7 @@ public class Perk
             }
 
             GameAction perkEffectAction = autoTargetEffect.Effect.GetGameAction();
-            ActionSystem.Instance.AddReaction(perkEffectAction);
+            ActionSystem.Ins.AddReaction(perkEffectAction);
         }
     }
 }

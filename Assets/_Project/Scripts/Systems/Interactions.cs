@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Interactions : Singleton<Interactions>
+public class Interactions : SingletonCom<Interactions>
 {
     public bool PlayerIsDragging { get; set; } = false;
 

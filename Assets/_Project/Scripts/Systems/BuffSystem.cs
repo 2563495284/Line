@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Buff系统 - 管理所有Buff效果，包括杠杆Buff
 /// </summary>
-public class BuffSystem : Singleton<BuffSystem>
+public class BuffSystem : SingletonCom<BuffSystem>
 {
     [Header("杠杆Buff管理")]
     [SerializeField] private LeverageBuffData leverageBuff;
@@ -82,9 +82,9 @@ public class BuffSystem : Singleton<BuffSystem>
 
         if (showDebugInfo)
         {
-            Debug.Log($"杠杆Buff更新: {oldStacks}层 -> {leverageBuff.stackCount}层 | " +
-                     $"倍数: {oldMultiplier:F1}x -> {newMultiplier:F1}x | " +
-                     $"持续: {leverageBuff.remainingRounds}回合");
+            // Debug.Log($"杠杆Buff更新: {oldStacks}层 -> {leverageBuff.stackCount}层 | " +
+            //          $"倍数: {oldMultiplier:F1}x -> {newMultiplier:F1}x | " +
+            //          $"持续: {leverageBuff.remainingRounds}回合");
         }
 
         // 播放Buff获得动画
@@ -181,7 +181,7 @@ public class BuffSystem : Singleton<BuffSystem>
     public void AddTestLeverageBuff()
     {
         AddLeverageBuffGA testGA = new AddLeverageBuffGA(2, baseLeverageMultiplier, defaultLeverageDuration);
-        ActionSystem.Instance.Perform(testGA);
+        ActionSystem.Ins.Perform(testGA);
     }
 
     #endregion

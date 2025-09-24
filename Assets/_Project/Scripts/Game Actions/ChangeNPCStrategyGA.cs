@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class ChangeNPCStrategyGA : GameAction
 {
-    public ECharacterStrategyType StrategyType { get; set; }
+    public EStrategyType StrategyType { get; set; }
 
     public float ChangeProbability { get; set; }
 
-    public ChangeNPCStrategyGA(ECharacterStrategyType strategyType, float changeProbability)
+    public ChangeNPCStrategyGA(EStrategyType strategyType, float changeProbability)
     {
         StrategyType = strategyType;
         ChangeProbability = changeProbability;

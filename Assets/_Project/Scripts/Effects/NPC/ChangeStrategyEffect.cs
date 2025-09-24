@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChangeStrategyEffect : Effect
+public class ChangeStrategyEffect : Effect2
 {
-    [SerializeField] private ECharacterStrategyType strategyType;
+    [SerializeField] private EStrategyType strategyType;
 
     public override GameAction GetGameAction()
     {

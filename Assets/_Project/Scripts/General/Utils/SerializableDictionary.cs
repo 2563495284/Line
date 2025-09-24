@@ -5,8 +5,8 @@ using UnityEngine;
 [Serializable]
 public class SerializableDictionary<TKey, TValue>
 {
-    [SerializeField] private List<TKey> keys = new List<TKey>();
-    [SerializeField] private List<TValue> values = new List<TValue>();
+    public List<TKey> keys = new List<TKey>();
+    public List<TValue> values = new List<TValue>();
 
     public Dictionary<TKey, TValue> ToDictionary()
     {
@@ -20,10 +20,9 @@ public class SerializableDictionary<TKey, TValue>
         }
         return dictionary;
     }
-
     public TValue this[TKey key]
     {
-        get => ToDictionary()[key];
+        get => values[keys.IndexOf(key)];
         set => Add(key, value);
     }
 

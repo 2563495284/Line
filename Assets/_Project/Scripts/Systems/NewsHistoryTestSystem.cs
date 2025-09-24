@@ -75,9 +75,9 @@ public class NewsHistoryTestSystem : MonoBehaviour
         string title = GetTitleByType(newsType);
         string content = GetContentByType(newsType);
 
-        if (NewsSystem.Instance != null)
+        if (NewsSystem.Ins != null)
         {
-            NewsSystem.Instance.BroadcastNews(title, content, newsType, 5f);
+            NewsSystem.Ins.BroadcastNews(title, content, newsType, 5f);
             Debug.Log($"测试新闻类型: {newsType} - {title}");
         }
         else
@@ -143,7 +143,7 @@ public class NewsHistoryTestSystem : MonoBehaviour
     /// </summary>
     private void BatchTest()
     {
-        if (NewsSystem.Instance == null)
+        if (NewsSystem.Ins == null)
         {
             Debug.LogWarning("NewsSystem实例不存在");
             return;
@@ -169,7 +169,7 @@ public class NewsHistoryTestSystem : MonoBehaviour
     private System.Collections.IEnumerator DelayedNews(float delay, string title, string content, NewsType newsType)
     {
         yield return new WaitForSeconds(delay);
-        NewsSystem.Instance.BroadcastNews(title, content, newsType, 5f);
+        NewsSystem.Ins.BroadcastNews(title, content, newsType, 5f);
     }
 
     /// <summary>
@@ -195,9 +195,9 @@ public class NewsHistoryTestSystem : MonoBehaviour
     /// </summary>
     private void ClearHistory()
     {
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            NewsHistorySystem.Instance.ClearAllHistory();
+            NewsHistorySystem.Ins.ClearAllHistory();
             Debug.Log("已清除所有历史记录");
         }
         else
@@ -211,9 +211,9 @@ public class NewsHistoryTestSystem : MonoBehaviour
     /// </summary>
     private void ForceMerge()
     {
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            NewsHistorySystem.Instance.ForceMerge();
+            NewsHistorySystem.Ins.ForceMerge();
             Debug.Log("已强制触发新闻合并");
         }
         else
@@ -227,14 +227,14 @@ public class NewsHistoryTestSystem : MonoBehaviour
     /// </summary>
     private void OnGUI()
     {
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            GUI.Label(new Rect(10, 10, 400, 100), $"新闻历史系统状态:\n{NewsHistorySystem.Instance.GetAllHistory().Count}");
+            GUI.Label(new Rect(10, 10, 400, 100), $"新闻历史系统状态:\n{NewsHistorySystem.Ins.GetAllHistory().Count}");
         }
 
-        if (NewsSystem.Instance != null)
+        if (NewsSystem.Ins != null)
         {
-            string newsStatus = NewsSystem.Instance.GetStatusInfo();
+            string newsStatus = NewsSystem.Ins.GetStatusInfo();
             GUI.Label(new Rect(10, 120, 400, 100), $"新闻系统状态:\n{newsStatus}");
         }
     }

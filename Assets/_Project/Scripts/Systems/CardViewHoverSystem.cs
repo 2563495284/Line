@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
+public class CardViewHoverSystem : SingletonCom<CardViewHoverSystem>
 {
     [SerializeField] private CardView cardViewHover;
     [SerializeField] private AttributeTooltipDisplay attributeTooltipDisplay;

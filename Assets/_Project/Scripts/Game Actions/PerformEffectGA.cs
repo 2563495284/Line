@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class PerformEffectGA : GameAction
 {
-    public Effect Effect { get; set; }
+    public Effect2 Effect { get; set; }
 
-    public PerformEffectGA(Effect effect, CharacterView characterView, LineView targetLineView)
+    public PerformEffectGA(Effect2 effect, CharacterView characterView, LineView targetLineView)
     {
         Effect = effect;
         Effect.SetCharacterView(characterView);
         Effect.SetTargetLineView(targetLineView);
     }
-    public PerformEffectGA(Effect effect, CharacterView characterView)
+    public PerformEffectGA(Effect2 effect, CharacterView characterView)
     {
         Effect = effect;
         Effect.SetCharacterView(characterView);

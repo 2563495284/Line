@@ -41,13 +41,13 @@ public class MultiStockDisplay : MonoBehaviour
     /// </summary>
     private void InitializeStockDisplay()
     {
-        if (MultiStockSystem.Instance == null)
+        if (MultiStockSystem.Ins == null)
         {
             Debug.LogError("MultiStockSystem未找到！");
             return;
         }
 
-        var stockMarkets = MultiStockSystem.Instance.GetAllStockMarkets();
+        var stockMarkets = MultiStockSystem.Ins.GetAllStockMarkets();
 
         foreach (var market in stockMarkets)
         {
@@ -125,7 +125,7 @@ public class MultiStockDisplay : MonoBehaviour
     /// </summary>
     public void UpdateAllDisplays()
     {
-        if (MultiStockSystem.Instance == null) return;
+        if (MultiStockSystem.Ins == null) return;
 
         // 更新各个股票显示
         foreach (var displayItem in stockDisplayItems)
@@ -142,10 +142,10 @@ public class MultiStockDisplay : MonoBehaviour
     /// </summary>
     private void UpdateOverviewDisplay()
     {
-        if (MultiStockSystem.Instance == null) return;
+        if (MultiStockSystem.Ins == null) return;
 
-        float currentMoney = MultiStockSystem.Instance.GetCurrentMoney();
-        float totalAssets = MultiStockSystem.Instance.GetTotalAssetValue();
+        float currentMoney = MultiStockSystem.Ins.GetCurrentMoney();
+        float totalAssets = MultiStockSystem.Ins.GetTotalAssetValue();
 
         if (currentMoneyText != null)
         {

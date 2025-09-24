@@ -5,12 +5,6 @@ using UnityEngine;
 /// <summary>
 /// 股票市场类型
 /// </summary>
-public enum EStockType
-{
-    Oil,      // 石油
-    Steel,    // 钢铁
-    Cotton    // 棉花
-}
 
 /// <summary>
 /// 单个股市的数据
@@ -22,7 +16,6 @@ public class SingleStockMarketData
     public EStockType stockType;
     public string stockName;
     public string stockSymbol;
-    public Color themeColor = Color.white;
 
     [Header("价格信息")]
     public float currentPrice;
@@ -62,19 +55,16 @@ public class SingleStockMarketData
             case EStockType.Oil:
                 stockName = "石油";
                 stockSymbol = "OIL";
-                themeColor = new Color(0.2f, 0.2f, 0.2f); // 黑色
                 baseVolatility = 1.2f; // 石油波动较大
                 break;
             case EStockType.Steel:
                 stockName = "钢铁";
                 stockSymbol = "STL";
-                themeColor = new Color(0.7f, 0.7f, 0.7f); // 银灰色
                 baseVolatility = 0.8f; // 钢铁相对稳定
                 break;
             case EStockType.Cotton:
                 stockName = "棉花";
                 stockSymbol = "CTN";
-                themeColor = new Color(0.9f, 0.9f, 0.8f); // 米白色
                 baseVolatility = 1.0f; // 棉花中等波动
                 break;
         }

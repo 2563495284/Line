@@ -36,7 +36,7 @@ public class NewsHistoryUI : MonoBehaviour
     private Vector2 expandedSize;
 
     // 历史记录数据
-    private List<NewsHistoryItem> currentHistory = new List<NewsHistoryItem>();
+    private List<NewsItemData> currentHistory = new List<NewsItemData>();
 
     private void Awake()
     {
@@ -51,10 +51,10 @@ public class NewsHistoryUI : MonoBehaviour
     private void Start()
     {
         // 订阅历史记录更新事件
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            NewsHistorySystem.Instance.OnHistoryUpdated += OnHistoryUpdated;
-            NewsHistorySystem.Instance.OnMergeGroupCompleted += OnMergeGroupCompleted;
+            NewsHistorySystem.Ins.OnHistoryUpdated += OnHistoryUpdated;
+            NewsHistorySystem.Ins.OnMergeGroupCompleted += OnMergeGroupCompleted;
         }
 
         // 初始化显示
@@ -64,10 +64,10 @@ public class NewsHistoryUI : MonoBehaviour
     private void OnDestroy()
     {
         // 取消订阅事件
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            NewsHistorySystem.Instance.OnHistoryUpdated -= OnHistoryUpdated;
-            NewsHistorySystem.Instance.OnMergeGroupCompleted -= OnMergeGroupCompleted;
+            NewsHistorySystem.Ins.OnHistoryUpdated -= OnHistoryUpdated;
+            NewsHistorySystem.Ins.OnMergeGroupCompleted -= OnMergeGroupCompleted;
         }
     }
 
@@ -108,7 +108,7 @@ public class NewsHistoryUI : MonoBehaviour
             {
                 float initialY = startExpanded ? -headerHeight : 0;
                 contentRect.anchoredPosition = new Vector2(0, initialY);
-                Debug.Log($"设置内容区域初始位置: {contentRect.anchoredPosition}");
+                // Debug.Log($"设置内容区域初始位置: {contentRect.anchoredPosition}");
             }
         }
 
@@ -122,7 +122,7 @@ public class NewsHistoryUI : MonoBehaviour
                     new Vector2(200f, expandedSize.y - headerHeight) :
                     new Vector2(200f, 0);
                 scrollRectTransform.sizeDelta = initialSize;
-                Debug.Log($"设置ScrollRect初始尺寸: {scrollRectTransform.sizeDelta}");
+                // Debug.Log($"设置ScrollRect初始尺寸: {scrollRectTransform.sizeDelta}");
             }
         }
     }
@@ -132,35 +132,35 @@ public class NewsHistoryUI : MonoBehaviour
     /// </summary>
     private void SetupEventHandlers()
     {
-        Debug.Log("开始设置事件处理器...");
+        // Debug.Log("开始设置事件处理器...");
 
         if (clearButton != null)
         {
             clearButton.onClick.AddListener(OnClearButtonClicked);
-            Debug.Log("清除按钮事件已绑定");
+            // Debug.Log("清除按钮事件已绑定");
         }
         else
         {
-            Debug.LogWarning("清除按钮引用为空!");
+            // Debug.LogWarning("清除按钮引用为空!");
         }
 
         if (expandButton != null)
         {
             expandButton.onClick.AddListener(OnExpandButtonClicked);
-            Debug.Log("展开按钮事件已绑定");
+            // Debug.Log("展开按钮事件已绑定");
         }
         else
         {
-            Debug.LogWarning("展开按钮引用为空!");
+            // Debug.LogWarning("展开按钮引用为空!");
         }
 
-        Debug.Log("事件处理器设置完成");
+        // Debug.Log("事件处理器设置完成");
     }
 
     /// <summary>
     /// 历史记录更新事件处理
     /// </summary>
-    private void OnHistoryUpdated(List<NewsHistoryItem> history)
+    private void OnHistoryUpdated(List<NewsItemData> history)
     {
         currentHistory = history;
         RefreshDisplay();
@@ -172,7 +172,7 @@ public class NewsHistoryUI : MonoBehaviour
     private void OnMergeGroupCompleted()
     {
         // 可以在这里添加合并完成的特效
-        Debug.Log("新闻合并组完成，UI已更新");
+        // Debug.Log("新闻合并组完成，UI已更新");
     }
 
     /// <summary>
@@ -267,9 +267,9 @@ public class NewsHistoryUI : MonoBehaviour
     /// </summary>
     private void OnClearButtonClicked()
     {
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            NewsHistorySystem.Instance.ClearAllHistory();
+            NewsHistorySystem.Ins.ClearAllHistory();
         }
     }
 
@@ -278,9 +278,9 @@ public class NewsHistoryUI : MonoBehaviour
     /// </summary>
     private void OnExpandButtonClicked()
     {
-        Debug.Log($"展开按钮被点击! 当前状态: isExpanded={isExpanded}");
+        // Debug.Log($"展开按钮被点击! 当前状态: isExpanded={isExpanded}");
         isExpanded = !isExpanded;
-        Debug.Log($"状态已切换为: isExpanded={isExpanded}");
+        // Debug.Log($"状态已切换为: isExpanded={isExpanded}");
         UpdateUIState();
     }
 
@@ -296,14 +296,14 @@ public class NewsHistoryUI : MonoBehaviour
         float currentWidth = rectTransform.sizeDelta.x;
         Vector2 newSize = new Vector2(currentWidth, targetSize.y);
 
-        Debug.Log($"更新UI状态: 展开={isExpanded}, 当前尺寸={rectTransform.sizeDelta}, 目标尺寸={newSize}");
+        // Debug.Log($"更新UI状态: 展开={isExpanded}, 当前尺寸={rectTransform.sizeDelta}, 目标尺寸={newSize}");
 
         // 动画改变高度
         rectTransform.DOSizeDelta(newSize, expandDuration)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
-                Debug.Log($"UI状态更新完成: 最终尺寸={rectTransform.sizeDelta}");
+                // Debug.Log($"UI状态更新完成: 最终尺寸={rectTransform.sizeDelta}");
             });
 
         // 更新ScrollRect状态和尺寸
@@ -320,7 +320,7 @@ public class NewsHistoryUI : MonoBehaviour
             // 调整ScrollRect的尺寸
             AdjustScrollRectSize();
 
-            Debug.Log($"ScrollRect状态: 启用={scrollRect.enabled}, 垂直位置={scrollRect.verticalNormalizedPosition}");
+            // Debug.Log($"ScrollRect状态: 启用={scrollRect.enabled}, 垂直位置={scrollRect.verticalNormalizedPosition}");
         }
 
         // 调整内容区域位置
@@ -338,9 +338,9 @@ public class NewsHistoryUI : MonoBehaviour
     /// </summary>
     public void ManualRefresh()
     {
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            currentHistory = NewsHistorySystem.Instance.GetVisibleHistory();
+            currentHistory = NewsHistorySystem.Ins.GetVisibleHistory();
             RefreshDisplay();
         }
     }
@@ -367,28 +367,28 @@ public class NewsHistoryUI : MonoBehaviour
     /// </summary>
     public void CheckButtonStatus()
     {
-        Debug.Log("=== 按钮状态检查 ===");
-        Debug.Log($"isExpanded: {isExpanded}");
+        // Debug.Log("=== 按钮状态检查 ===");
+        // Debug.Log($"isExpanded: {isExpanded}");
 
-        if (expandButton != null)
-        {
-            Debug.Log($"展开按钮: 存在, 启用={expandButton.gameObject.activeInHierarchy}, 交互={expandButton.interactable}");
-        }
-        else
-        {
-            Debug.LogWarning("展开按钮: 引用为空!");
-        }
+        // if (expandButton != null)
+        // {
+        //     Debug.Log($"展开按钮: 存在, 启用={expandButton.gameObject.activeInHierarchy}, 交互={expandButton.interactable}");
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("展开按钮: 引用为空!");
+        // }
 
-        if (clearButton != null)
-        {
-            Debug.Log($"清除按钮: 存在, 启用={clearButton.gameObject.activeInHierarchy}, 交互={clearButton.interactable}");
-        }
-        else
-        {
-            Debug.LogWarning("清除按钮: 引用为空!");
-        }
+        // if (clearButton != null)
+        // {
+        //     Debug.Log($"清除按钮: 存在, 启用={clearButton.gameObject.activeInHierarchy}, 交互={clearButton.interactable}");
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("清除按钮: 引用为空!");
+        // }
 
-        Debug.Log("=== 按钮状态检查完成 ===");
+        // Debug.Log("=== 按钮状态检查完成 ===");
     }
 
     /// <summary>
@@ -416,10 +416,10 @@ public class NewsHistoryUI : MonoBehaviour
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
-                Debug.Log($"内容区域位置调整完成: {contentRect.anchoredPosition}");
+                // Debug.Log($"内容区域位置调整完成: {contentRect.anchoredPosition}");
             });
 
-        Debug.Log($"调整内容区域位置: 展开={isExpanded}, 从{currentPos}到{targetPos}");
+        // Debug.Log($"调整内容区域位置: 展开={isExpanded}, 从{currentPos}到{targetPos}");
     }
 
     /// <summary>
@@ -453,9 +453,9 @@ public class NewsHistoryUI : MonoBehaviour
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
-                Debug.Log($"ScrollRect尺寸调整完成: {scrollRectTransform.sizeDelta}");
+                // Debug.Log($"ScrollRect尺寸调整完成: {scrollRectTransform.sizeDelta}");
             });
 
-        Debug.Log($"调整ScrollRect尺寸: 展开={isExpanded}, 从{currentSize}到{targetSize}");
+        // Debug.Log($"调整ScrollRect尺寸: 展开={isExpanded}, 从{currentSize}到{targetSize}");
     }
 }

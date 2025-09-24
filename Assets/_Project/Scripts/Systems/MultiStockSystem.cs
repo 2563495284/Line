@@ -8,7 +8,7 @@ using Unity.Mathematics;
 /// <summary>
 /// 多股市管理系统
 /// </summary>
-public class MultiStockSystem : Singleton<MultiStockSystem>
+public class MultiStockSystem : SingletonCom<MultiStockSystem>
 {
     [Header("股市配置")]
     [SerializeField] private List<SingleStockMarketData> stockMarkets = new List<SingleStockMarketData>();
@@ -132,12 +132,12 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             // 使用ToList()避免在遍历时修改集合的异常
             foreach (var item in action.ChangePriceDictionary.ToList())
             {
-                action.ChangePriceDictionary[item.Key] = item.Value * PlayerAttributeSystem.Instance.GetStockInfluenceBonus();
+                action.ChangePriceDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockInfluenceBonus();
             }
             // 使用ToList()避免在遍历时修改集合的异常
             foreach (var item in action.ChangePricePersentDictionary.ToList())
             {
-                action.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Instance.GetStockInfluenceBonus();
+                action.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockInfluenceBonus();
             }
         }
         else if (action.characterView.CharacterType == ECharacterType.NPC)
@@ -145,12 +145,12 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             // 使用ToList()避免在遍历时修改集合的异常
             foreach (var item in action.ChangePriceDictionary.ToList())
             {
-                action.ChangePriceDictionary[item.Key] = item.Value * PlayerAttributeSystem.Instance.GetStockEnvironmentBonus();
+                action.ChangePriceDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockEnvironmentBonus();
             }
             // 使用ToList()避免在遍历时修改集合的异常
             foreach (var item in action.ChangePricePersentDictionary.ToList())
             {
-                action.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Instance.GetStockEnvironmentBonus();
+                action.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockEnvironmentBonus();
             }
         }
         var market = GetStockMarket(action.stockType);
@@ -161,7 +161,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         }
 
         float tempPrice = market.tempPrice;
-        ECharacterStrategyType characterStrategyType = action.characterView.StrategyType;
+        EStrategyType characterStrategyType = action.characterView.StrategyType;
         int index = (int)characterStrategyType;
         float changeStockPrice = 0;
         float changeStockPersentPrice = 0;
@@ -206,7 +206,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         }
 
         LineView lineView = GetLineView(action.StockType);
-        int amount = (int)math.floor(action.Amount * PlayerAttributeSystem.Instance.GetStockCourageBonus());
+        int amount = (int)math.floor(action.Amount * PlayerAttributeSystem.Ins.GetStockCourageBonus());
         int actualTradeAmount = 0;
         // 尽可能多地买卖模式
         if (amount > 0) // 买入意向
@@ -219,7 +219,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             {
                 if (showTradeDebugLogs)
                     Debug.LogWarning($"[MultiStockSystem] 资金不足，无法买入 {action.StockType} 股票。当前资金: {currentMoney:F2}，股价: {market.currentPrice:F2}");
-                TipsSystem.Instance.ShowTip("资金不足，无法买入股票");
+                TipsSystem.Ins.ShowTip("资金不足，无法买入股票");
                 Utils.ShakeCamera();
                 yield break;
             }
@@ -237,7 +237,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
             {
                 if (showTradeDebugLogs)
                     Debug.LogWarning($"[MultiStockSystem] 持有量不足，无法卖出 {action.StockType} 股票。当前持有: {market.playerHoldings} 股");
-                TipsSystem.Instance.ShowTip("持有量不足，无法卖出股票");
+                TipsSystem.Ins.ShowTip("持有量不足，无法卖出股票");
                 Utils.ShakeCamera();
                 yield break;
             }
@@ -260,10 +260,10 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
 
         // 执行交易
         ChangeStockGA changeStockGA = new ChangeStockGA(actualTradeAmount, action.StockType);
-        ActionSystem.Instance.Perform(changeStockGA);
+        ActionSystem.Ins.Perform(changeStockGA);
 
         ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-actualTradeAmount * market.currentPrice);
-        ActionSystem.Instance.Perform(changeMoneyGA);
+        ActionSystem.Ins.Perform(changeMoneyGA);
 
         // 设置视觉反馈
         if (actualTradeAmount > 0)
@@ -290,17 +290,17 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         {
             int buyStockCount = (int)Math.Floor(currentMoney / market.currentPrice);
             ChangeStockGA changeStockGA = new ChangeStockGA(buyStockCount, action.StockType);
-            ActionSystem.Instance.Perform(changeStockGA);
+            ActionSystem.Ins.Perform(changeStockGA);
             ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(-buyStockCount * market.currentPrice);
-            ActionSystem.Instance.Perform(changeMoneyGA);
+            ActionSystem.Ins.Perform(changeMoneyGA);
             lineView.SetPointState(PointState.Buy);
         }
         else
         {
             ChangeStockGA changeStockGA = new ChangeStockGA(-market.playerHoldings, action.StockType);
-            ActionSystem.Instance.Perform(changeStockGA);
+            ActionSystem.Ins.Perform(changeStockGA);
             ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(market.playerHoldings * market.currentPrice);
-            ActionSystem.Instance.Perform(changeMoneyGA);
+            ActionSystem.Ins.Perform(changeMoneyGA);
             lineView.SetPointState(PointState.Sell);
         }
         yield return null;
@@ -312,7 +312,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
     }
     private void StartMadeInHeavenPostReaction(MadeInHeavenExecuteGA action)
     {
-        if (MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        if (MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
         {
             UpdateStockPrice();
         }
@@ -320,7 +320,7 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
 
     private void NextRoundTurnPostReaction(NextRoundTurnGA action)
     {
-        if (!MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        if (!MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
         {
             UpdateStockPrice();
         }
@@ -344,13 +344,13 @@ public class MultiStockSystem : Singleton<MultiStockSystem>
         ChangeStockPriceGA changeStockPriceGA;
         if (action.Amount > 0)
         {
-            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Instance.playerView, action.StockType, PlayerAttributeSystem.Instance.ChangePriceDictionaryWhenBuy, PlayerAttributeSystem.Instance.ChangePricePersentDictionaryWhenBuy);
+            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Ins.playerView, action.StockType, PlayerAttributeSystem.Ins.ChangePriceDictionaryWhenBuy, PlayerAttributeSystem.Ins.ChangePricePersentDictionaryWhenBuy);
         }
         else
         {
-            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Instance.playerView, action.StockType, PlayerAttributeSystem.Instance.ChangePriceDictionaryWhenSell, PlayerAttributeSystem.Instance.ChangePricePersentDictionaryWhenSell);
+            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Ins.playerView, action.StockType, PlayerAttributeSystem.Ins.ChangePriceDictionaryWhenSell, PlayerAttributeSystem.Ins.ChangePricePersentDictionaryWhenSell);
         }
-        ActionSystem.Instance.Perform(changeStockPriceGA);
+        ActionSystem.Ins.Perform(changeStockPriceGA);
         yield return null;
     }
 

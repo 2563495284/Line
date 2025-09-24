@@ -27,6 +27,7 @@ MonoBehaviour:
     <Effect>k__BackingField:
       rid: 9019117340648800348
   <Mana>k__BackingField: 2
+  <Type>k__BackingField: 3
   references:
     version: 2
     RefIds:
@@ -41,6 +42,7 @@ MonoBehaviour:
         resourceCosts:
         - resourceType: 0
           stockType: 1
+          markPoint: 0
           stockAmount: 100
           attributeType: 0
           attributeAmount: 0

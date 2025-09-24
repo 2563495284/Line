@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class ChangeAttributeGA : GameAction
 {
-    public EPlayerAttributeType attributeType;
+    public EAttrType attributeType;
     public float attributeValue;
-    public ChangeAttributeGA(EPlayerAttributeType attributeType, float attributeValue)
+    public ChangeAttributeGA(EAttrType attributeType, float attributeValue)
     {
         this.attributeType = attributeType;
         this.attributeValue = attributeValue;

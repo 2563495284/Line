@@ -8,13 +8,13 @@ using UnityEngine;
 public class CheckAndConsumeResourceGA : GameAction
 {
     public List<ResourceCost> ResourceCosts { get; private set; }
-    public List<Effect> SuccessEffects { get; private set; }
+    public List<Effect2> SuccessEffects { get; private set; }
     public CharacterView CharacterView { get; private set; }
     public LineView TargetLineView { get; private set; }
 
     public CheckAndConsumeResourceGA(
         List<ResourceCost> resourceCosts,
-        List<Effect> successEffects,
+        List<Effect2> successEffects,
         CharacterView characterView,
         LineView targetLineView)
     {

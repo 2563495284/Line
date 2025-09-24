@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PredictEffect : Effect
+public class PredictEffect : Effect2
 {
     [Header("预测设置")]
     [SerializeField]

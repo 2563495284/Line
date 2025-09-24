@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 使用能量的效果
 /// </summary>
-public class ChangeManaEffect : Effect
+public class ChangeManaEffect : Effect2
 {
     [Header("能量消耗设置")]
     [SerializeField]

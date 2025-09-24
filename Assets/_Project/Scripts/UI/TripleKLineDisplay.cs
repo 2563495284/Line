@@ -90,10 +90,10 @@ public class TripleKLineDisplay : MonoBehaviour
     /// </summary>
     public void UpdateAllKLines()
     {
-        if (!isInitialized || MultiStockSystem.Instance == null)
+        if (!isInitialized || MultiStockSystem.Ins == null)
             return;
 
-        var stockMarkets = MultiStockSystem.Instance.GetAllStockMarkets();
+        var stockMarkets = MultiStockSystem.Ins.GetAllStockMarkets();
 
         foreach (var market in stockMarkets)
         {

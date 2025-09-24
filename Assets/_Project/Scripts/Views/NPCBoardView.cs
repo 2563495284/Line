@@ -14,11 +14,11 @@ public class NPCBoardView : MonoBehaviour
     public void AddNPC(NPCData npcData)
     {
 
-        NPCView npcView = NPCViewCreator.Instance.CreateNPCView(npcData, slot.position, slot.rotation);
+        NPCView npcView = NPCViewCreator.Ins.CreateNPCView(npcData, slot.position, slot.rotation);
         npcView.transform.parent = slot;
         //初始手牌
         DrawCardsGA drawCardsGA = new(npcData.initialDrawCount, npcView);
-        ActionSystem.Instance.Perform(drawCardsGA);
+        ActionSystem.Ins.Perform(drawCardsGA);
 
         NPCViews.Add(npcView);
     }

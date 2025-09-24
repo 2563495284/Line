@@ -12,7 +12,7 @@ public enum GameOutcome
 /// <summary>
 /// 游戏进度系统：跟踪回合、目标金额与胜负判定
 /// </summary>
-public class GameProgressSystem : Singleton<GameProgressSystem>
+public class GameProgressSystem : SingletonCom<GameProgressSystem>
 {
     [Header("目标设置")]
     [SerializeField] private int targetRounds = 100;
@@ -57,9 +57,9 @@ public class GameProgressSystem : Singleton<GameProgressSystem>
 
     private void EvaluateOutcome()
     {
-        if (MultiStockSystem.Instance == null) return;
+        if (MultiStockSystem.Ins == null) return;
 
-        float totalAsset = MultiStockSystem.Instance.GetTotalAssetValue();
+        float totalAsset = MultiStockSystem.Ins.GetTotalAssetValue();
         bool isWin = totalAsset >= targetTotalAsset;
         outcome = isWin ? GameOutcome.Win : GameOutcome.Lose;
 
@@ -74,10 +74,10 @@ public class GameProgressSystem : Singleton<GameProgressSystem>
     {
         // 检查所有必要的组件是否存在且未被销毁
         if (goalProgressUI == null || goalProgressUI.gameObject == null ||
-            MultiStockSystem.Instance == null || this == null)
+            MultiStockSystem.Ins == null || this == null)
             return;
 
-        float totalAsset = MultiStockSystem.Instance.GetTotalAssetValue();
+        float totalAsset = MultiStockSystem.Ins.GetTotalAssetValue();
         float progress = Mathf.Clamp01(totalAsset / targetTotalAsset);
         int daysLeft = Mathf.Max(0, targetRounds - currentRound);
         goalProgressUI.UpdateUI(totalAsset, targetTotalAsset, progress, daysLeft);
@@ -105,33 +105,33 @@ public class GameProgressSystem : Singleton<GameProgressSystem>
         }
 
         // 重置多股市系统
-        if (MultiStockSystem.Instance != null)
+        if (MultiStockSystem.Ins != null)
         {
-            MultiStockSystem.Instance.ResetSystem();
+            MultiStockSystem.Ins.ResetSystem();
         }
 
         // 重置玩家属性系统
-        if (PlayerAttributeSystem.Instance != null)
+        if (PlayerAttributeSystem.Ins != null)
         {
-            PlayerAttributeSystem.Instance.ResetSystem();
+            PlayerAttributeSystem.Ins.ResetSystem();
         }
 
         // 重置NPC系统
-        if (NPCSystem.Instance != null)
+        if (NPCSystem.Ins != null)
         {
-            NPCSystem.Instance.ResetSystem();
+            NPCSystem.Ins.ResetSystem();
         }
 
         // 重置Mana系统
-        if (ManaSystem.Instance != null)
+        if (ManaSystem.Ins != null)
         {
-            ManaSystem.Instance.ResetSystem();
+            ManaSystem.Ins.ResetSystem();
         }
 
         // 重置新闻系统
-        if (NewsSystem.Instance != null)
+        if (NewsSystem.Ins != null)
         {
-            NewsSystem.Instance.ClearAllNews();
+            NewsSystem.Ins.ClearAllNews();
         }
 
         // 等待一帧确保所有重置完成
@@ -147,9 +147,9 @@ public class GameProgressSystem : Singleton<GameProgressSystem>
     private void InitializeGame()
     {
         // 使用MatchSetupSystem重新初始化游戏
-        if (MatchSetupSystem.Instance != null)
+        if (MatchSetupSystem.Ins != null)
         {
-            MatchSetupSystem.Instance.InitializeGame();
+            MatchSetupSystem.Ins.InitializeGame();
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 交易特定股票的效果
 /// </summary>
-public class TradeSpecificStockEffect : Effect
+public class TradeSpecificStockEffect : Effect2
 {
     [Header("交易设置")]
     [SerializeField]

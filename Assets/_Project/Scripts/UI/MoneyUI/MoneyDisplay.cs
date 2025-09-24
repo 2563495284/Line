@@ -14,10 +14,6 @@ public class MoneyDisplay : MonoBehaviour
     public bool showChange = true;
     public float changeAnimationDuration = 0.5f;
 
-    [Header("颜色设置")]
-    public Color positiveChangeColor = Color.green;
-    public Color negativeChangeColor = Color.red;
-    public Color neutralColor = Color.white;
 
     [Header("动画设置")]
     public bool enableCountAnimation = true;
@@ -121,23 +117,22 @@ public class MoneyDisplay : MonoBehaviour
 
         if (changeText != null)
         {
-            string changeString = "";
-            Color changeColor = neutralColor;
-
+            string changeString;
+            Color changeColor;
             if (change > 0)
             {
                 changeString = $"+{change.ToString(moneyFormat)}";
-                changeColor = positiveChangeColor;
+                changeColor = Color.green;
             }
             else if (change < 0)
             {
                 changeString = change.ToString(moneyFormat);
-                changeColor = negativeChangeColor;
+                changeColor = Color.red;
             }
             else
             {
                 changeString = "0";
-                changeColor = neutralColor;
+                changeColor = Color.white;
             }
 
             changeText.text = changeString;
@@ -180,61 +175,4 @@ public class MoneyDisplay : MonoBehaviour
         }
     }
 
-    // 设置金钱格式
-    public void SetMoneyFormat(string format)
-    {
-        moneyFormat = format;
-        UpdateMoneyText();
-    }
-
-    // 设置是否显示变化
-    public void SetShowChange(bool show)
-    {
-        showChange = show;
-        if (changeText != null)
-        {
-            changeText.gameObject.SetActive(show);
-        }
-    }
-
-    // 设置是否启用计数动画
-    public void SetCountAnimation(bool enable)
-    {
-        enableCountAnimation = enable;
-    }
-
-    // 设置颜色
-    public void SetPositiveChangeColor(Color color)
-    {
-        positiveChangeColor = color;
-    }
-
-    public void SetNegativeChangeColor(Color color)
-    {
-        negativeChangeColor = color;
-    }
-
-    // 获取当前金钱
-    public float GetCurrentMoney()
-    {
-        return currentMoney;
-    }
-
-    // 获取金钱变化
-    public float GetMoneyChange()
-    {
-        return currentMoney - previousMoney;
-    }
-
-    // 格式化金钱显示（添加千位分隔符等）
-    public string FormatMoney(float amount)
-    {
-        return amount.ToString(moneyFormat);
-    }
-
-    // 检查是否有足够的金钱
-    public bool HasEnoughMoney(float requiredAmount)
-    {
-        return currentMoney >= requiredAmount;
-    }
 }

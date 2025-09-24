@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManaSystem : Singleton<ManaSystem>
+public class ManaSystem : SingletonCom<ManaSystem>
 {
     [SerializeField] private ManaUI manaUI;
 
@@ -69,14 +69,14 @@ public class ManaSystem : Singleton<ManaSystem>
     {
         //恢复能量
         RefillManaGA refillManaGA = new();
-        ActionSystem.Instance.AddReaction(refillManaGA);
+        ActionSystem.Ins.AddReaction(refillManaGA);
     }
     /// <summary>
     /// 获取每回合能量恢复数
     /// </summary>
     public int GetEnergyPerTurn()
     {
-        int wisdomBonus = (int)PlayerAttributeSystem.Instance.GetAttributeValue(EPlayerAttributeType.Wisdom);
+        int wisdomBonus = (int)PlayerAttributeSystem.Ins.GetAttributeValue(EAttrType.Wisdom);
         return baseEnergyPerTurn + wisdomBonus;
     }
 

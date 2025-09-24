@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 使用股票材料的效果
 /// </summary>
-public class UseStockMaterialEffect : Effect
+public class UseStockMaterialEffect : Effect2
 {
     [SerializeField]
     private EStockType materialType;

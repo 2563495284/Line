@@ -10,14 +10,14 @@ public class Card
     public string Title { get; private set; }
     public string Description { get; private set; }
     public string RichTextDescription { get; private set; }
-    public Effect ManualTargetEffect { get; private set; }
+    public Effect2 ManualTargetEffect { get; private set; }
     public List<AutoTargetEffect> OtherEffects { get; private set; }
     public Sprite Image { get; private set; }
 
     public int Mana { get; private set; }
 
     // 动态描述相关属性
-    public List<EPlayerAttributeType> ReferencedAttributes { get; private set; }
+    public List<EAttrType> ReferencedAttributes { get; private set; }
 
     /// <summary>
     /// Initialization of a new generic Card based on its ScriptableObject

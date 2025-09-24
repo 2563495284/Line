@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LeverageBuffEffect : Effect
+public class LeverageBuffEffect : Effect2
 {
     [Header("杠杆Buff设置")]
     [SerializeField]

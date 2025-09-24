@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 资源消耗系统 - 处理条件消耗效果
 /// </summary>
-public class ResourceConsumptionSystem : Singleton<ResourceConsumptionSystem>
+public class ResourceConsumptionSystem : SingletonCom<ResourceConsumptionSystem>
 {
     private void OnEnable()
     {
@@ -31,7 +31,7 @@ public class ResourceConsumptionSystem : Singleton<ResourceConsumptionSystem>
             {
                 // 资源不足，震动相机提示
                 Utils.ShakeCamera();
-                TipsSystem.Instance.ShowTip("资源不足");
+                TipsSystem.Ins.ShowTip("资源不足");
                 Debug.Log($"资源不足: {cost.GetDescription()}");
                 yield break;
             }
@@ -43,7 +43,7 @@ public class ResourceConsumptionSystem : Singleton<ResourceConsumptionSystem>
             var consumeAction = cost.GetConsumeAction();
             if (consumeAction != null)
             {
-                ActionSystem.Instance.Perform(consumeAction);
+                ActionSystem.Ins.Perform(consumeAction);
             }
         }
 
@@ -53,7 +53,7 @@ public class ResourceConsumptionSystem : Singleton<ResourceConsumptionSystem>
             effect.SetCharacterView(action.CharacterView);
             effect.SetTargetLineView(action.TargetLineView);
             var successAction = effect.GetGameAction();
-            ActionSystem.Instance.Perform(successAction);
+            ActionSystem.Ins.Perform(successAction);
         }
 
         yield return null;

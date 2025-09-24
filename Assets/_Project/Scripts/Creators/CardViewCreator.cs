@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardViewCreator : Singleton<CardViewCreator>
+public class CardViewCreator : SingletonCom<CardViewCreator>
 {
     [SerializeField] private CardView cardViewPrefab;
     [SerializeField] private float scaleDuration = 0.15f;

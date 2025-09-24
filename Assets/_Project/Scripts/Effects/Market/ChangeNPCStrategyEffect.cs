@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChangeNPCStrategyEffect : Effect
+public class ChangeNPCStrategyEffect : Effect2
 {
-    [SerializeField] private ECharacterStrategyType strategyType;
+    [SerializeField] private EStrategyType strategyType;
     [SerializeField] private float changeProbability;
 
 

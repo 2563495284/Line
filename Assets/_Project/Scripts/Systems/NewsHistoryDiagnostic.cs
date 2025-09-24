@@ -40,10 +40,10 @@ public class NewsHistoryDiagnostic : MonoBehaviour
     {
         Debug.Log("--- 检查新闻系统 ---");
 
-        if (NewsSystem.Instance != null)
+        if (NewsSystem.Ins != null)
         {
-            Debug.Log($"✓ NewsSystem实例存在，ID: {NewsSystem.Instance.GetInstanceID()}");
-            Debug.Log($"✓ NewsSystem状态: {NewsSystem.Instance.GetStatusInfo()}");
+            Debug.Log($"✓ NewsSystem实例存在，ID: {NewsSystem.Ins.GetInstanceID()}");
+            Debug.Log($"✓ NewsSystem状态: {NewsSystem.Ins.GetStatusInfo()}");
         }
         else
         {
@@ -58,14 +58,14 @@ public class NewsHistoryDiagnostic : MonoBehaviour
     {
         Debug.Log("--- 检查新闻历史记录系统 ---");
 
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            Debug.Log($"✓ NewsHistorySystem实例存在，ID: {NewsHistorySystem.Instance.GetInstanceID()}");
+            Debug.Log($"✓ NewsHistorySystem实例存在，ID: {NewsHistorySystem.Ins.GetInstanceID()}");
 
-            var allHistory = NewsHistorySystem.Instance.GetAllHistory();
+            var allHistory = NewsHistorySystem.Ins.GetAllHistory();
             Debug.Log($"✓ 总历史记录数量: {allHistory.Count}");
 
-            var visibleHistory = NewsHistorySystem.Instance.GetVisibleHistory();
+            var visibleHistory = NewsHistorySystem.Ins.GetVisibleHistory();
             Debug.Log($"✓ 可见历史记录数量: {visibleHistory.Count}");
         }
         else
@@ -103,10 +103,10 @@ public class NewsHistoryDiagnostic : MonoBehaviour
     {
         Debug.Log("--- 检查事件订阅 ---");
 
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
             // 尝试手动触发事件来测试订阅
-            var visibleHistory = NewsHistorySystem.Instance.GetVisibleHistory();
+            var visibleHistory = NewsHistorySystem.Ins.GetVisibleHistory();
             Debug.Log($"✓ 当前可见历史记录: {visibleHistory.Count} 条");
 
             if (visibleHistory.Count > 0)
@@ -123,12 +123,12 @@ public class NewsHistoryDiagnostic : MonoBehaviour
     {
         Debug.Log("=== 测试新闻播报 ===");
 
-        if (NewsSystem.Instance != null)
+        if (NewsSystem.Ins != null)
         {
             string testTitle = $"测试新闻 {System.DateTime.Now:HH:mm:ss}";
             string testContent = "这是一个测试新闻，用于验证历史记录系统是否正常工作。";
 
-            NewsSystem.Instance.BroadcastNews(testTitle, testContent, NewsType.Info, 5f);
+            NewsSystem.Ins.BroadcastNews(testTitle, testContent, NewsType.Info, 5f);
             Debug.Log($"已播报测试新闻: {testTitle}");
 
             // 延迟检查结果
@@ -147,9 +147,9 @@ public class NewsHistoryDiagnostic : MonoBehaviour
     {
         Debug.Log("=== 检查测试结果 ===");
 
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            var visibleHistory = NewsHistorySystem.Instance.GetVisibleHistory();
+            var visibleHistory = NewsHistorySystem.Ins.GetVisibleHistory();
             Debug.Log($"测试后可见历史记录数量: {visibleHistory.Count}");
 
             if (visibleHistory.Count > 0)
@@ -167,9 +167,9 @@ public class NewsHistoryDiagnostic : MonoBehaviour
     {
         Debug.Log("=== 清除所有历史记录 ===");
 
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            NewsHistorySystem.Instance.ClearAllHistory();
+            NewsHistorySystem.Ins.ClearAllHistory();
             Debug.Log("已清除所有历史记录");
         }
     }
@@ -211,9 +211,9 @@ public class NewsHistoryDiagnostic : MonoBehaviour
             "T键: 测试新闻播报\n" +
             "C键: 清除历史记录");
 
-        if (NewsHistorySystem.Instance != null)
+        if (NewsHistorySystem.Ins != null)
         {
-            var visibleHistory = NewsHistorySystem.Instance.GetVisibleHistory();
+            var visibleHistory = NewsHistorySystem.Ins.GetVisibleHistory();
             GUI.Label(new Rect(10, 140, 400, 50),
                 $"可见历史记录: {visibleHistory.Count} 条");
         }

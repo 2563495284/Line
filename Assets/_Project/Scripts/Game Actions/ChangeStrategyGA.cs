@@ -6,9 +6,9 @@ using UnityEngine;
 public class ChangeStrategyGA : GameAction
 {
     public CharacterView CharacterView { get; set; }
-    public ECharacterStrategyType StrategyType { get; set; }
+    public EStrategyType StrategyType { get; set; }
 
-    public ChangeStrategyGA(CharacterView characterView, ECharacterStrategyType strategyType)
+    public ChangeStrategyGA(CharacterView characterView, EStrategyType strategyType)
     {
         CharacterView = characterView;
         StrategyType = strategyType;

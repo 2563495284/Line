@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 预测系统 - 管理股价预测和延迟结算
 /// </summary>
-public class PredictionSystem : Singleton<PredictionSystem>
+public class PredictionSystem : SingletonCom<PredictionSystem>
 {
     [Header("预测管理")]
     [SerializeField] private List<PredictionData> activePredictions = new List<PredictionData>();
@@ -39,8 +39,8 @@ public class PredictionSystem : Singleton<PredictionSystem>
     /// </summary>
     private IEnumerator PredictionPerformer(PredictionGA predictionGA)
     {
-        float currentPrice = MultiStockSystem.Instance.GetStockMarket(predictionGA.StockType).currentPrice;
-        LineView lineView = MultiStockSystem.Instance.GetLineView(predictionGA.StockType);
+        float currentPrice = MultiStockSystem.Ins.GetStockMarket(predictionGA.StockType).currentPrice;
+        LineView lineView = MultiStockSystem.Ins.GetLineView(predictionGA.StockType);
         switch (predictionGA.PredictionType)
         {
             case EPredictionType.Rise:
@@ -75,7 +75,7 @@ public class PredictionSystem : Singleton<PredictionSystem>
 
     private void MadeInHeavenExecuteReaction(MadeInHeavenExecuteGA madeInHeavenExecuteGA)
     {
-        if (MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        if (MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
         {
             UpdatePredictionCountdown();
         }
@@ -83,7 +83,7 @@ public class PredictionSystem : Singleton<PredictionSystem>
 
     private void NextRoundTurnReaction(NextRoundTurnGA nextRoundTurnGA)
     {
-        if (!MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        if (!MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
         {
             UpdatePredictionCountdown();
         }
@@ -132,7 +132,7 @@ public class PredictionSystem : Singleton<PredictionSystem>
     {
         if (prediction.isResolved) return;
 
-        float currentPrice = MultiStockSystem.Instance.GetStockMarket(prediction.stockType).currentPrice;
+        float currentPrice = MultiStockSystem.Ins.GetStockMarket(prediction.stockType).currentPrice;
         bool wasCorrect = prediction.CheckPrediction(currentPrice);
 
         prediction.isResolved = true;
@@ -145,14 +145,14 @@ public class PredictionSystem : Singleton<PredictionSystem>
         if (moneyChange != 0)
         {
             ChangeMoneyGA changeMoneyGA = new ChangeMoneyGA(moneyChange);
-            ActionSystem.Instance.Perform(changeMoneyGA);
+            ActionSystem.Ins.Perform(changeMoneyGA);
         }
 
         // 执行股票变化
         if (stockChange != 0)
         {
             ChangeStockGA changeStockGA = new ChangeStockGA(stockChange, prediction.stockType);
-            ActionSystem.Instance.Perform(changeStockGA);
+            ActionSystem.Ins.Perform(changeStockGA);
         }
 
         string result = wasCorrect ? "正确" : "错误";
@@ -160,7 +160,7 @@ public class PredictionSystem : Singleton<PredictionSystem>
         string moneyAction = wasCorrect ? "获得" : "失去";
         string stockAction = wasCorrect ? "获得" : "失去";
 
-        NewsSystem.Instance.BroadcastPrediction(
+        NewsSystem.Ins.BroadcastPrediction(
             $"预测{direction} - {result}!",
             $"初始价格: {prediction.initialPrice:F2} -> 当前价格: {currentPrice:F2} | " +
             (moneyChange == 0 ? "" : $"{moneyAction} {Mathf.Abs(moneyChange):F2} 金币 | ") +

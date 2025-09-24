@@ -1,13 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 /// <summary>
 /// 玩家属性系统
 /// </summary>
-public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
+public class PlayerAttributeSystem : SingletonCom<PlayerAttributeSystem>
 {
     [SerializeField] public PlayerView playerView;
     [SerializeField] public PlayerAttributeDisplay playerAttributeDisplay;
@@ -17,10 +16,10 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
 
     [Header("摸牌系统")]
     [SerializeField] private int baseCardsPerTurn = 5;
-    public Dictionary<ECharacterStrategyType, float> ChangePricePersentDictionaryWhenBuy;
-    public Dictionary<ECharacterStrategyType, float> ChangePriceDictionaryWhenBuy;
-    public Dictionary<ECharacterStrategyType, float> ChangePricePersentDictionaryWhenSell;
-    public Dictionary<ECharacterStrategyType, float> ChangePriceDictionaryWhenSell;
+    public Dictionary<EStrategyType, float> ChangePricePersentDictionaryWhenBuy;
+    public Dictionary<EStrategyType, float> ChangePriceDictionaryWhenBuy;
+    public Dictionary<EStrategyType, float> ChangePricePersentDictionaryWhenSell;
+    public Dictionary<EStrategyType, float> ChangePriceDictionaryWhenSell;
 
     protected override void Awake()
     {
@@ -127,7 +126,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     /// <summary>
     /// 获取属性值
     /// </summary>
-    public float GetAttributeValue(EPlayerAttributeType attributeType)
+    public float GetAttributeValue(EAttrType attributeType)
     {
         return playerAttributes.GetAttributeValue(attributeType);
     }
@@ -137,7 +136,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     /// </summary>
     public int GetCardsPerTurn()
     {
-        int socialBonus = (int)GetAttributeValue(EPlayerAttributeType.Social);
+        int socialBonus = (int)GetAttributeValue(EAttrType.Social);
         return baseCardsPerTurn + socialBonus;
     }
     /// <summary>
@@ -145,22 +144,22 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     /// </summary>
     public float GetStockInfluenceBonus()
     {
-        float charisma = GetAttributeValue(EPlayerAttributeType.Charisma);
-        charisma = math.min(10, charisma);
+        float charisma = GetAttributeValue(EAttrType.Charisma);
+        charisma = Mathf.Min(10, charisma);
         return 1 + charisma * 10f / 100f;
     }
     public float GetStockEnvironmentBonus()
     {
-        float fanaticism = GetAttributeValue(EPlayerAttributeType.Fanaticism);
-        float calmness = GetAttributeValue(EPlayerAttributeType.Calmness);
+        float fanaticism = GetAttributeValue(EAttrType.Fanaticism);
+        float calmness = GetAttributeValue(EAttrType.Calmness);
         float effect = fanaticism - calmness;
-        effect = math.clamp(effect, -30, 30);
+        effect = Mathf.Clamp(effect, -30, 30);
         float bonus = 1 + effect * 2f / 100f;
-        return math.max(0.2f, bonus);
+        return Mathf.Max(0.2f, bonus);
     }
     public float GetStockCourageBonus()
     {
-        return 1 + GetAttributeValue(EPlayerAttributeType.Courage) * 10f / 100f;
+        return 1 + GetAttributeValue(EAttrType.Courage) * 10f / 100f;
     }
     #endregion
 
@@ -168,18 +167,18 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     private void NextRoundTurnPreReaction(NextRoundTurnGA nextRoundTurnGA)
     {
         DiscardAllCardsGA discardAllCardsGA = new();
-        ActionSystem.Instance.AddReaction(discardAllCardsGA);
+        ActionSystem.Ins.AddReaction(discardAllCardsGA);
     }
 
     private void NextRoundTurnPostReaction(NextRoundTurnGA nextRoundTurnGA)
     {
         DrawCardsGA drawCardsGA = new(GetCardsPerTurn(), playerView);
-        ActionSystem.Instance.AddReaction(drawCardsGA);
+        ActionSystem.Ins.AddReaction(drawCardsGA);
         // 摸牌
         int cardsToDraw = GetCardsPerTurn();
 
-        ChangeAttributeGA changeAttributeGA = new(EPlayerAttributeType.Social, -1f);
-        ActionSystem.Instance.AddReaction(changeAttributeGA);
+        ChangeAttributeGA changeAttributeGA = new(EAttrType.Social, -1f);
+        ActionSystem.Ins.AddReaction(changeAttributeGA);
 
 
         //刷新信息
@@ -191,13 +190,13 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
     {
         // 检查所有必要的组件是否仍然有效
         if (playerView == null || playerView.gameObject == null ||
-            MultiStockSystem.Instance == null || this == null)
+            MultiStockSystem.Ins == null || this == null)
             return;
 
-        playerView.UpdateMoneyText(MultiStockSystem.Instance.GetCurrentMoney());
+        playerView.UpdateMoneyText(MultiStockSystem.Ins.GetCurrentMoney());
         foreach (var stockType in Enum.GetValues(typeof(EStockType)))
         {
-            playerView.UpdateStockText((EStockType)stockType, MultiStockSystem.Instance.GetStockHoldings((EStockType)stockType));
+            playerView.UpdateStockText((EStockType)stockType, MultiStockSystem.Ins.GetStockHoldings((EStockType)stockType));
         }
         playerView.UpdateAllDisplays();
 

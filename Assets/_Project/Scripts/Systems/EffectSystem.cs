@@ -19,7 +19,7 @@ public class EffectSystem : MonoBehaviour
     private IEnumerator PerformEffectPerformer(PerformEffectGA performEffectGA)
     {
         GameAction effectAction = performEffectGA.Effect.GetGameAction();
-        ActionSystem.Instance.AddReaction(effectAction);
+        ActionSystem.Ins.AddReaction(effectAction);
         yield return null;
     }
     #endregion

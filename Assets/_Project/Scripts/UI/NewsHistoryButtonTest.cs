@@ -79,9 +79,9 @@ public class NewsHistoryButtonTest : MonoBehaviour
         {
             Debug.Log("找到NewsHistoryUI，尝试清除历史...");
 
-            if (NewsHistorySystem.Instance != null)
+            if (NewsHistorySystem.Ins != null)
             {
-                NewsHistorySystem.Instance.ClearAllHistory();
+                NewsHistorySystem.Ins.ClearAllHistory();
                 Debug.Log("已清除所有历史记录");
             }
             else

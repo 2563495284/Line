@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCSystem : Singleton<NPCSystem>
+public class NPCSystem : SingletonCom<NPCSystem>
 {
     public List<NPCView> NPCs => npcBoardView.NPCViews;
 
@@ -52,7 +52,7 @@ public class NPCSystem : Singleton<NPCSystem>
     /// </summary>
     private void NextRoundTurnPreReaction(NextRoundTurnGA action)
     {
-        if (!MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        if (!MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
         {
             ExecuteNPCActions();
         }
@@ -63,7 +63,7 @@ public class NPCSystem : Singleton<NPCSystem>
     /// </summary>
     private void MadeInHeavenExecutePreReaction(MadeInHeavenExecuteGA action)
     {
-        if (MadeInHeavenSystem.Instance.IsMadeInHeavenActive)
+        if (MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
         {
             ExecuteNPCActions();
         }
@@ -95,14 +95,14 @@ public class NPCSystem : Singleton<NPCSystem>
             {
                 int randomIndex = UnityEngine.Random.Range(0, npc.hand.Count);
                 Card cardToPlay = npc.hand[randomIndex];
-                PlayCardGA playCardGA = new(cardToPlay, npc, MultiStockSystem.Instance.GetLineViewRandom());
-                ActionSystem.Instance.AddReaction(playCardGA);
+                PlayCardGA playCardGA = new(cardToPlay, npc, MultiStockSystem.Ins.GetLineViewRandom());
+                ActionSystem.Ins.AddReaction(playCardGA);
             }
             else
             {
                 Debug.Log($"NPC {npc.name} 补牌");
                 DrawCardsGA drawCardsGA = new(npc.MaxHandSize, npc);
-                ActionSystem.Instance.AddReaction(drawCardsGA);
+                ActionSystem.Ins.AddReaction(drawCardsGA);
             }
         }
     }

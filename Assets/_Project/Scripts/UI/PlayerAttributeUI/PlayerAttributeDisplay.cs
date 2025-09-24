@@ -31,13 +31,13 @@ public class PlayerAttributeDisplay : MonoBehaviour
     /// </summary>
     private void InitializeAttributeDisplay()
     {
-        if (PlayerAttributeSystem.Instance == null)
+        if (PlayerAttributeSystem.Ins == null)
         {
             Debug.LogError("PlayerAttributeSystem未找到！");
             return;
         }
 
-        var playerAttributes = PlayerAttributeSystem.Instance.GetPlayerAttributes();
+        var playerAttributes = PlayerAttributeSystem.Ins.GetPlayerAttributes();
 
         foreach (var attribute in playerAttributes.attributes)
         {
@@ -77,7 +77,7 @@ public class PlayerAttributeDisplay : MonoBehaviour
     /// </summary>
     public void UpdateAllDisplays()
     {
-        if (PlayerAttributeSystem.Instance == null) return;
+        if (PlayerAttributeSystem.Ins == null) return;
 
         // 更新各个属性显示
         foreach (var displayItem in attributeDisplayItems)
@@ -94,19 +94,19 @@ public class PlayerAttributeDisplay : MonoBehaviour
     /// </summary>
     private void UpdateStatusDisplay()
     {
-        if (PlayerAttributeSystem.Instance == null) return;
+        if (PlayerAttributeSystem.Ins == null) return;
 
         // 更新摸牌数显示
         if (cardsPerTurnText != null)
         {
-            int cardsPerTurn = PlayerAttributeSystem.Instance.GetCardsPerTurn();
+            int cardsPerTurn = PlayerAttributeSystem.Ins.GetCardsPerTurn();
             cardsPerTurnText.text = $"每回合摸牌: {cardsPerTurn}";
         }
 
         // 更新总属性点显示
         if (totalPointsText != null)
         {
-            var playerAttributes = PlayerAttributeSystem.Instance.GetPlayerAttributes();
+            var playerAttributes = PlayerAttributeSystem.Ins.GetPlayerAttributes();
             totalPointsText.text = $"总属性点: {playerAttributes.totalAttributePoints}";
         }
     }

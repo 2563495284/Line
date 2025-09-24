@@ -9,8 +9,8 @@ public class PlayerData : CharacterData
     [field: SerializeField] public float doTweenScaleDuration { get; private set; }
     [field: SerializeField] public float doTweenMoveDuration { get; private set; }
 
-    [SerializeField] public SerializableDictionary<ECharacterStrategyType, float> changePricePersentDictionaryWhenBuy;
-    [SerializeField] public SerializableDictionary<ECharacterStrategyType, float> changePriceDictionaryWhenBuy;
-    [SerializeField] public SerializableDictionary<ECharacterStrategyType, float> changePricePersentDictionaryWhenSell;
-    [SerializeField] public SerializableDictionary<ECharacterStrategyType, float> changePriceDictionaryWhenSell;
+    [SerializeField] public SerializableDictionary<EStrategyType, float> changePricePersentDictionaryWhenBuy;
+    [SerializeField] public SerializableDictionary<EStrategyType, float> changePriceDictionaryWhenBuy;
+    [SerializeField] public SerializableDictionary<EStrategyType, float> changePricePersentDictionaryWhenSell;
+    [SerializeField] public SerializableDictionary<EStrategyType, float> changePriceDictionaryWhenSell;
 }

@@ -7,14 +7,14 @@ using SerializeReferenceEditor;
 /// 条件消耗效果 - 在执行主效果前检查并消耗资源
 /// </summary>
 [System.Serializable]
-public class ConditionalCostEffect : Effect
+public class ConditionalCostEffect : Effect2
 {
 
     [Header("消耗配置")]
     [SerializeField] private List<ResourceCost> resourceCosts = new List<ResourceCost>();
 
     [Header("成功后执行的效果")]
-    [SerializeReference, SR] private List<Effect> successEffects = new List<Effect>();
+    [SerializeReference, SR] private List<Effect2> successEffects = new List<Effect2>();
 
     public override GameAction GetGameAction()
     {
@@ -43,7 +43,7 @@ public class ResourceCost
     [SerializeField] public int stockAmount;
 
     // 属性相关
-    [SerializeField] public EPlayerAttributeType attributeType;
+    [SerializeField] public EAttrType attributeType;
     [SerializeField] public float attributeAmount;
 
     /// <summary>
@@ -54,9 +54,9 @@ public class ResourceCost
         switch (resourceType)
         {
             case ResourceType.Stock:
-                return MultiStockSystem.Instance.GetStockHoldings(stockType) >= stockAmount;
+                return MultiStockSystem.Ins.GetStockHoldings(stockType) >= stockAmount;
             case ResourceType.Attribute:
-                return PlayerAttributeSystem.Instance.GetAttributeValue(attributeType) >= attributeAmount;
+                return PlayerAttributeSystem.Ins.GetAttributeValue(attributeType) >= attributeAmount;
             default:
                 return false;
         }
@@ -105,16 +105,16 @@ public class ResourceCost
         }
     }
 
-    private string GetAttributeName(EPlayerAttributeType type)
+    private string GetAttributeName(EAttrType type)
     {
         switch (type)
         {
-            case EPlayerAttributeType.Social: return "社交";
-            case EPlayerAttributeType.Wisdom: return "智慧";
-            case EPlayerAttributeType.Charisma: return "魅力";
-            case EPlayerAttributeType.Courage: return "勇气";
-            case EPlayerAttributeType.Calmness: return "冷静";
-            case EPlayerAttributeType.Fanaticism: return "狂热";
+            case EAttrType.Social: return "社交";
+            case EAttrType.Wisdom: return "智慧";
+            case EAttrType.Charisma: return "魅力";
+            case EAttrType.Courage: return "勇气";
+            case EAttrType.Calmness: return "冷静";
+            case EAttrType.Fanaticism: return "狂热";
             default: return "";
         }
     }

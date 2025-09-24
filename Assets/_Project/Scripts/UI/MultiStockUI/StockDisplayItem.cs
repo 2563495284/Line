@@ -17,10 +17,6 @@ public class StockDisplayItem : MonoBehaviour
     [SerializeField] private Button buyButton;
     [SerializeField] private Button sellButton;
 
-    [Header("颜色设置")]
-    [SerializeField] private Color positiveColor = Color.green;
-    [SerializeField] private Color negativeColor = Color.red;
-    [SerializeField] private Color neutralColor = Color.white;
 
     private SingleStockMarketData marketData;
 
@@ -42,7 +38,7 @@ public class StockDisplayItem : MonoBehaviour
         // 设置主题颜色
         if (backgroundImage != null)
         {
-            backgroundImage.color = marketData.themeColor;
+            backgroundImage.color = Color.white;
         }
 
         // 设置按钮事件
@@ -105,8 +101,8 @@ public class StockDisplayItem : MonoBehaviour
             changeText.text = $"{changeSymbol}{changePercent:F1}%";
 
             // 设置颜色
-            Color textColor = changePercent > 0 ? positiveColor :
-                             changePercent < 0 ? negativeColor : neutralColor;
+            Color textColor = changePercent > 0 ? Color.green :
+                             changePercent < 0 ? Color.red : Color.white;
             changeText.color = textColor;
         }
     }
@@ -136,10 +132,10 @@ public class StockDisplayItem : MonoBehaviour
     /// </summary>
     private void BuyStock(int amount)
     {
-        if (MultiStockSystem.Instance == null) return;
+        if (MultiStockSystem.Ins == null) return;
 
         var tradeGA = new TradeSpecificStockGA(marketData.stockType, amount);
-        ActionSystem.Instance.Perform(tradeGA);
+        ActionSystem.Ins.Perform(tradeGA);
     }
 
     /// <summary>
@@ -147,58 +143,14 @@ public class StockDisplayItem : MonoBehaviour
     /// </summary>
     private void SellStock(int amount)
     {
-        if (MultiStockSystem.Instance == null) return;
+        if (MultiStockSystem.Ins == null) return;
 
         var tradeGA = new TradeSpecificStockGA(marketData.stockType, -amount);
-        ActionSystem.Instance.Perform(tradeGA);
+        ActionSystem.Ins.Perform(tradeGA);
     }
 
-    /// <summary>
-    /// 买入10股
-    /// </summary>
-    [ContextMenu("买入10股")]
-    public void BuyStock10()
-    {
-        BuyStock(10);
-    }
 
-    /// <summary>
-    /// 卖出10股
-    /// </summary>
-    [ContextMenu("卖出10股")]
-    public void SellStock10()
-    {
-        SellStock(10);
-    }
 
-    /// <summary>
-    /// 全部买入
-    /// </summary>
-    [ContextMenu("全部买入")]
-    public void BuyAllAffordable()
-    {
-        if (MultiStockSystem.Instance == null) return;
-
-        float availableMoney = MultiStockSystem.Instance.GetCurrentMoney();
-        int maxBuyAmount = Mathf.FloorToInt(availableMoney / marketData.currentPrice);
-
-        if (maxBuyAmount > 0)
-        {
-            BuyStock(maxBuyAmount);
-        }
-    }
-
-    /// <summary>
-    /// 全部卖出
-    /// </summary>
-    [ContextMenu("全部卖出")]
-    public void SellAll()
-    {
-        if (marketData.playerHoldings > 0)
-        {
-            SellStock(marketData.playerHoldings);
-        }
-    }
 
     #endregion
 }

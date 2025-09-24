@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 自动系统管理器 - 管理天堂制造等自动执行功能
 /// </summary>
-public class MadeInHeavenSystem : Singleton<MadeInHeavenSystem>
+public class MadeInHeavenSystem : SingletonCom<MadeInHeavenSystem>
 {
     [Header("天堂制造设置")]
     [SerializeField] private float defaultAutoInterval = 3.0f; // 默认自动执行间隔
@@ -53,9 +53,9 @@ public class MadeInHeavenSystem : Singleton<MadeInHeavenSystem>
         {
             Card card = new Card(cardData);
 
-            PlayCardGA playCardGA = new(card, PlayerAttributeSystem.Instance.playerView);
-            PlayerAttributeSystem.Instance.playerView.DoManualTargetEffect(playCardGA);
-            PlayerAttributeSystem.Instance.playerView.DoAutoTargetEffect(playCardGA);
+            PlayCardGA playCardGA = new(card, PlayerAttributeSystem.Ins.playerView);
+            PlayerAttributeSystem.Ins.playerView.DoManualTargetEffect(playCardGA);
+            PlayerAttributeSystem.Ins.playerView.DoAutoTargetEffect(playCardGA);
         }
     }
 
@@ -65,9 +65,9 @@ public class MadeInHeavenSystem : Singleton<MadeInHeavenSystem>
         {
             Card card = new Card(cardData);
 
-            PlayCardGA playCardGA = new(card, PlayerAttributeSystem.Instance.playerView);
-            PlayerAttributeSystem.Instance.playerView.DoManualTargetEffect(playCardGA);
-            PlayerAttributeSystem.Instance.playerView.DoAutoTargetEffect(playCardGA);
+            PlayCardGA playCardGA = new(card, PlayerAttributeSystem.Ins.playerView);
+            PlayerAttributeSystem.Ins.playerView.DoManualTargetEffect(playCardGA);
+            PlayerAttributeSystem.Ins.playerView.DoAutoTargetEffect(playCardGA);
         }
     }
 
@@ -90,7 +90,7 @@ public class MadeInHeavenSystem : Singleton<MadeInHeavenSystem>
 
         // 发送启动天堂制造GA - 这会让系统切换订阅
         StartMadeInHeavenGA startGA = new StartMadeInHeavenGA(currentAutoInterval);
-        ActionSystem.Instance.Perform(startGA);
+        ActionSystem.Ins.Perform(startGA);
 
         StartMadeInHeavenInternal(interval);
     }
@@ -128,11 +128,11 @@ public class MadeInHeavenSystem : Singleton<MadeInHeavenSystem>
     public void StopMadeInHeaven()
     {
         if (!isMadeInHeavenActive) return;
-        if (ActionSystem.Instance == null) return;
+        if (ActionSystem.Ins == null) return;
 
         // 发送结束天堂制造GA - 这会让系统恢复订阅
         EndMadeInHeavenGA endGA = new EndMadeInHeavenGA();
-        ActionSystem.Instance.Perform(endGA);
+        ActionSystem.Ins.Perform(endGA);
 
         StopMadeInHeavenInternal();
     }
@@ -209,7 +209,7 @@ public class MadeInHeavenSystem : Singleton<MadeInHeavenSystem>
 
             // 创建并执行天堂制造GA
             MadeInHeavenExecuteGA executeGA = new MadeInHeavenExecuteGA();
-            ActionSystem.Instance.Perform(executeGA);
+            ActionSystem.Ins.Perform(executeGA);
 
             if (showDebugLogs)
             {

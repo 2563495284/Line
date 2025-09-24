@@ -1,11 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-public enum ECharacterStrategyType
-{
-    medium,
-    aggressive,
-    conservative,
-}
 [CreateAssetMenu(menuName = "Data/NPC")]
 public class NPCData : CharacterData
 {

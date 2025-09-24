@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class ActionSystem : Singleton<ActionSystem>
+public class ActionSystem : SingletonCom<ActionSystem>
 {
 
     private static Dictionary<Type, List<Action<GameAction>>> preSubs = new();
@@ -33,7 +34,6 @@ public class ActionSystem : Singleton<ActionSystem>
         else
             performers.Add(type, wrappedPerformer);
     }
-
     public static void DetachPerformer<T>() where T : GameAction
     {
         Type type = typeof(T);
@@ -101,6 +101,7 @@ public class ActionSystem : Singleton<ActionSystem>
         while (actionQueue.Count > 0)
         {
             ActionRequest request = actionQueue.Dequeue();
+            Debug.Log(request.action.GetType().Name);
             yield return Flow(request.action, request.onFinished);
         }
 

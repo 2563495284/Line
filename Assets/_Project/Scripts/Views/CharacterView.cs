@@ -24,7 +24,7 @@ public abstract class CharacterView : MonoBehaviour
 
     public ECharacterType CharacterType { get; private set; }
 
-    public ECharacterStrategyType StrategyType { get; private set; }
+    public EStrategyType StrategyType { get; private set; }
 
     /// <summary>
     /// 初始化NPC的卡牌系统
@@ -86,7 +86,7 @@ public abstract class CharacterView : MonoBehaviour
         if (playCardGA.Card.ManualTargetEffect != null)
         {
             PerformEffectGA performEffectGA = new(playCardGA.Card.ManualTargetEffect, this, playCardGA.LineViewTarget);
-            ActionSystem.Instance.AddReaction(performEffectGA);
+            ActionSystem.Ins.AddReaction(performEffectGA);
         }
     }
 
@@ -95,11 +95,11 @@ public abstract class CharacterView : MonoBehaviour
         foreach (AutoTargetEffect effectWrapper in playCardGA.Card.OtherEffects)
         {
             PerformEffectGA performEffectGA = new(effectWrapper.Effect, this);
-            ActionSystem.Instance.AddReaction(performEffectGA);
+            ActionSystem.Ins.AddReaction(performEffectGA);
         }
     }
 
-    public virtual void ChangeStrategy(ECharacterStrategyType strategyType)
+    public virtual void ChangeStrategy(EStrategyType strategyType)
     {
         StrategyType = strategyType;
         Debug.Log($"NPC {name} 策略改变为 {strategyType}");

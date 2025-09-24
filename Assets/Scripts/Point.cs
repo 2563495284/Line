@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using JetBrains.Annotations;
 
 // 点位状态枚举，使用2的幂次方便于位运算
 [System.Flags]
@@ -94,7 +93,6 @@ public class Point : MonoBehaviour
         pointIndex = index;
         isDefaultVisible = defaultVisible;
 
-        Debug.Log($"RefreshPriceLabel: Point {index}, 价格: {price:F2}, 默认显示: {defaultVisible}");
 
         // 更新价格标签文本
         if (priceLabel != null)
@@ -112,7 +110,6 @@ public class Point : MonoBehaviour
         {
             // 如果默认显示，或者鼠标悬停且启用了悬停显示
             bool shouldShow = isDefaultVisible || (isHovered && showOnHover);
-            Debug.Log($"UpdatePriceLabelVisibility: Point {pointIndex}, 默认显示: {isDefaultVisible}, 悬停: {isHovered}, 悬停显示: {showOnHover}, 最终显示: {shouldShow}");
             priceLabel.gameObject.SetActive(shouldShow);
         }
     }
@@ -134,7 +131,7 @@ public class Point : MonoBehaviour
     // 设置状态（直接赋值）
     public void SetState(PointState newState)
     {
-        currentState = newState;
+        currentState |= newState;
         UpdateVisualState();
     }
 
@@ -371,6 +368,5 @@ public class Point : MonoBehaviour
 
         // 不重置isDefaultVisible，让RefreshPriceLabel来设置
 
-        Debug.Log($"Point {pointIndex} 状态已重置");
     }
 }

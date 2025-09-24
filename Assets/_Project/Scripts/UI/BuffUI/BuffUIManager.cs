@@ -7,7 +7,7 @@ using DG.Tweening;
 /// <summary>
 /// Buff UI管理器 - 管理所有Buff的UI显示
 /// </summary>
-public class BuffUIManager : Singleton<BuffUIManager>
+public class BuffUIManager : SingletonCom<BuffUIManager>
 {
     [Header("UI容器")]
     [SerializeField] private Transform buffContainer;
@@ -87,7 +87,7 @@ public class BuffUIManager : Singleton<BuffUIManager>
         {
             GameObject itemObj = Instantiate(buffItemPrefab, buffContainer);
             BuffDisplayItem displayItem = itemObj.GetComponent<BuffDisplayItem>();
-            
+
             if (displayItem != null)
             {
                 buffDisplayItems.Add(displayItem);
@@ -143,13 +143,13 @@ public class BuffUIManager : Singleton<BuffUIManager>
     /// <summary>
     /// 更新所有Buff显示
     /// </summary>
-    public void UpdateAllBuffDisplays()
+    private void UpdateAllBuffDisplays()
     {
         List<BuffUIData> activeBuffs = CollectActiveBuffs();
-        
+
         // 更新显示
         UpdateBuffItems(activeBuffs);
-        
+
         // 控制容器可见性
         UpdateContainerVisibility(activeBuffs.Count > 0);
 
@@ -167,9 +167,9 @@ public class BuffUIManager : Singleton<BuffUIManager>
         List<BuffUIData> buffs = new List<BuffUIData>();
 
         // 收集杠杆Buff
-        if (BuffSystem.Instance != null && BuffSystem.Instance.HasLeverageBuff)
+        if (BuffSystem.Ins != null && BuffSystem.Ins.HasLeverageBuff)
         {
-            BuffUIData leverageData = BuffUIData.FromLeverageBuff(BuffSystem.Instance.LeverageBuff);
+            BuffUIData leverageData = BuffUIData.FromLeverageBuff(BuffSystem.Ins.LeverageBuff);
             if (leverageData.isActive)
             {
                 buffs.Add(leverageData);
@@ -189,13 +189,13 @@ public class BuffUIManager : Singleton<BuffUIManager>
     {
         // 重置所有显示项
         Dictionary<string, BuffDisplayItem> newActiveItems = new Dictionary<string, BuffDisplayItem>();
-        
+
         // 为每个活跃Buff分配显示项
         for (int i = 0; i < activeBuffs.Count && i < buffDisplayItems.Count; i++)
         {
             BuffUIData buffData = activeBuffs[i];
             BuffDisplayItem displayItem = buffDisplayItems[i];
-            
+
             displayItem.UpdateBuff(buffData);
             newActiveItems[buffData.buffName] = displayItem;
         }
@@ -239,7 +239,7 @@ public class BuffUIManager : Singleton<BuffUIManager>
     {
         gameObject.SetActive(true);
         canvasGroup.DOFade(1f, containerFadeInDuration).SetEase(Ease.OutQuad);
-        
+
         if (showDebugInfo)
         {
             Debug.Log("BuffUIManager: 显示Buff容器");
@@ -254,7 +254,7 @@ public class BuffUIManager : Singleton<BuffUIManager>
         canvasGroup.DOFade(0f, containerFadeOutDuration)
             .SetEase(Ease.InQuad)
             .OnComplete(() => gameObject.SetActive(false));
-            
+
         if (showDebugInfo)
         {
             Debug.Log("BuffUIManager: 隐藏Buff容器");
@@ -277,27 +277,12 @@ public class BuffUIManager : Singleton<BuffUIManager>
     /// <summary>
     /// 获取指定Buff的显示项
     /// </summary>
-    public BuffDisplayItem GetBuffDisplayItem(string buffName)
+    private BuffDisplayItem GetBuffDisplayItem(string buffName)
     {
         activeBuffItems.TryGetValue(buffName, out BuffDisplayItem item);
         return item;
     }
 
-    /// <summary>
-    /// 播放Buff获得动画
-    /// </summary>
-    public void PlayBuffGainedAnimation(string buffName)
-    {
-        BuffDisplayItem item = GetBuffDisplayItem(buffName);
-        if (item != null)
-        {
-            // 这里可以播放特殊的获得动画
-            if (showDebugInfo)
-            {
-                Debug.Log($"BuffUIManager: 播放Buff获得动画 - {buffName}");
-            }
-        }
-    }
 
     /// <summary>
     /// 播放Buff失效动画
@@ -308,7 +293,7 @@ public class BuffUIManager : Singleton<BuffUIManager>
         if (item != null)
         {
             item.PlayDisappearAnimation();
-            
+
             if (showDebugInfo)
             {
                 Debug.Log($"BuffUIManager: 播放Buff失效动画 - {buffName}");
@@ -316,13 +301,6 @@ public class BuffUIManager : Singleton<BuffUIManager>
         }
     }
 
-    /// <summary>
-    /// 设置更新间隔
-    /// </summary>
-    public void SetUpdateInterval(float interval)
-    {
-        updateInterval = Mathf.Max(0.1f, interval);
-    }
 
     /// <summary>
     /// 获取当前显示的Buff数量
@@ -334,54 +312,4 @@ public class BuffUIManager : Singleton<BuffUIManager>
 
     #endregion
 
-    #region Debug Methods
-
-    /// <summary>
-    /// 测试显示杠杆Buff
-    /// </summary>
-    [ContextMenu("测试显示杠杆Buff")]
-    public void TestShowLeverageBuff()
-    {
-        if (BuffSystem.Instance != null)
-        {
-            // 添加测试杠杆Buff
-            BuffSystem.Instance.AddTestLeverageBuff();
-            
-            // 立即刷新显示
-            RefreshDisplay();
-        }
-    }
-
-    /// <summary>
-    /// 测试隐藏所有Buff
-    /// </summary>
-    [ContextMenu("测试隐藏所有Buff")]
-    public void TestHideAllBuffs()
-    {
-        if (BuffSystem.Instance != null)
-        {
-            BuffSystem.Instance.ClearAllBuffs();
-            RefreshDisplay();
-        }
-    }
-
-    /// <summary>
-    /// 打印当前状态
-    /// </summary>
-    [ContextMenu("打印UI状态")]
-    public void PrintUIStatus()
-    {
-        Debug.Log($"=== BuffUIManager状态 ===");
-        Debug.Log($"活跃Buff数量: {activeBuffItems.Count}");
-        Debug.Log($"容器可见: {gameObject.activeInHierarchy}");
-        Debug.Log($"容器透明度: {canvasGroup.alpha}");
-        Debug.Log($"更新间隔: {updateInterval}秒");
-        
-        foreach (var kvp in activeBuffItems)
-        {
-            Debug.Log($"- {kvp.Key}: {kvp.Value.gameObject.activeInHierarchy}");
-        }
-    }
-
-    #endregion
 }

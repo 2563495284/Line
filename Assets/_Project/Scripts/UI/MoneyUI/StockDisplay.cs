@@ -52,7 +52,7 @@ public class StockDisplay : MonoBehaviour
     {
         previousStock = currentStock;
         currentStock = newStock;
-        StockPrice.text = "当前价格: " + MultiStockSystem.Instance.GetStockMarket(stockType).currentPrice;
+        StockPrice.text = "当前价格: " + MultiStockSystem.Ins.GetStockMarket(stockType).currentPrice;
 
         if (enableCountAnimation)
         {

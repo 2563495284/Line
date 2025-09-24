@@ -6,11 +6,11 @@ using UnityEngine;
 /// <summary>
 /// 使用能量的效果
 /// </summary>
-public class ChangeAttributeEffect : Effect
+public class ChangeAttributeEffect : Effect2
 {
     [Header("属性消耗设置")]
     [SerializeField]
-    private EPlayerAttributeType attributeType;
+    private EAttrType attributeType;
 
     [SerializeField]
     private float attributeValue;
