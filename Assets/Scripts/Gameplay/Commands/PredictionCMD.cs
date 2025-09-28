@@ -8,7 +8,7 @@ public class PredictionCMD : LevelCommand
     public int PenaltyStockAmount { get; set; }
     public int DelayRounds { get; set; }
 
-    public EStockType StockType { get; set; }
+    public int StockId { get; set; }
 
     public PredictionCMD(
         EPredictionType predictionType,
@@ -16,7 +16,7 @@ public class PredictionCMD : LevelCommand
         int rewardStockAmount,
         float penaltyMoneyAmount,
         int penaltyStockAmount,
-        EStockType stockType,
+        int stockType,
         int delayRounds
     )
     {
@@ -26,7 +26,7 @@ public class PredictionCMD : LevelCommand
         PenaltyMoneyAmount = penaltyMoneyAmount;
         PenaltyStockAmount = penaltyStockAmount;
         DelayRounds = delayRounds;
-        StockType = stockType;
+        StockId = stockType;
     }
 }
 

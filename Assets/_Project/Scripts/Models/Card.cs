@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using GameConfig;
 
 [System.Serializable]
 public class Card
@@ -17,7 +18,7 @@ public class Card
     public int Mana { get; private set; }
 
     // 动态描述相关属性
-    public List<EAttrType> ReferencedAttributes { get; private set; }
+    public List<AttrType> ReferencedAttributes { get; private set; }
 
     /// <summary>
     /// Initialization of a new generic Card based on its ScriptableObject

@@ -131,7 +131,7 @@ public class Point : MonoBehaviour
     // 设置状态（直接赋值）
     public void SetState(PointState newState)
     {
-        currentState |= newState;
+        currentState = newState;
         UpdateVisualState();
     }
 
@@ -238,41 +238,6 @@ public class Point : MonoBehaviour
         }
     }
 
-    // 便捷方法：添加买入状态
-    public void AddBuyState() => AddState(PointState.Buy);
-
-    // 便捷方法：添加卖出状态
-    public void AddSellState() => AddState(PointState.Sell);
-
-    // 便捷方法：添加看多状态
-    public void AddBullishState() => AddState(PointState.Bullish);
-
-    // 便捷方法：添加看空状态
-    public void AddBearishState() => AddState(PointState.Bearish);
-
-    // 便捷方法：移除买入状态
-    public void RemoveBuyState() => RemoveState(PointState.Buy);
-
-    // 便捷方法：移除卖出状态
-    public void RemoveSellState() => RemoveState(PointState.Sell);
-
-    // 便捷方法：移除看多状态
-    public void RemoveBullishState() => RemoveState(PointState.Bullish);
-
-    // 便捷方法：移除看空状态
-    public void RemoveBearishState() => RemoveState(PointState.Bearish);
-
-    // 便捷方法：设置买入状态（清除其他状态）
-    public void SetBuyState() => SetState(PointState.Buy);
-
-    // 便捷方法：设置卖出状态（清除其他状态）
-    public void SetSellState() => SetState(PointState.Sell);
-
-    // 便捷方法：设置看多状态（清除其他状态）
-    public void SetBullishState() => SetState(PointState.Bullish);
-
-    // 便捷方法：设置看空状态（清除其他状态）
-    public void SetBearishState() => SetState(PointState.Bearish);
 
     // 鼠标进入事件
     void OnMouseEnter()
@@ -310,28 +275,6 @@ public class Point : MonoBehaviour
         originalSize = size; // 保存原始大小
     }
 
-    // 公共方法：设置价格标签颜色
-    public void SetLabelColor(Color color)
-    {
-        if (priceLabel != null)
-        {
-            priceLabel.color = color;
-        }
-    }
-
-    // 公共方法：强制显示/隐藏价格标签
-    public void SetLabelVisible(bool visible)
-    {
-        if (priceLabel != null)
-        {
-            priceLabel.gameObject.SetActive(visible);
-        }
-    }
-
-    // 公共方法：获取点信息
-    public float GetPrice() => originalPrice;
-    public int GetIndex() => pointIndex;
-    public bool IsHovered() => isHovered;
 
     /// <summary>
     /// 重置Point状态（用于对象池复用）

@@ -1,0 +1,23 @@
+{
+    "1": {
+        "id": 1,
+        "stockName": "石油",
+        "symbol": "oil",
+        "baseVolatility": 1,
+        "originPrice": 100
+    },
+    "2": {
+        "id": 2,
+        "stockName": "钢铁",
+        "symbol": "steel",
+        "baseVolatility": 1,
+        "originPrice": 100
+    },
+    "3": {
+        "id": 3,
+        "stockName": "棉花",
+        "symbol": "cotton",
+        "baseVolatility": 1,
+        "originPrice": 100
+    }
+}

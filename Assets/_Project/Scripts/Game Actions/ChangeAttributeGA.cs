@@ -1,13 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using GameConfig;
 
 public class ChangeAttributeGA : GameAction
 {
-    public EAttrType attributeType;
+    public AttrType attributeType;
     public float attributeValue;
-    public ChangeAttributeGA(EAttrType attributeType, float attributeValue)
+    public ChangeAttributeGA(AttrType attributeType, float attributeValue)
     {
         this.attributeType = attributeType;
         this.attributeValue = attributeValue;

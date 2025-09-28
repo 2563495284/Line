@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameConfig;
 
 /// <summary>
 /// 玩家属性系统
@@ -126,7 +127,7 @@ public class PlayerAttributeSystem : SingletonCom<PlayerAttributeSystem>
     /// <summary>
     /// 获取属性值
     /// </summary>
-    public float GetAttributeValue(EAttrType attributeType)
+    public float GetAttributeValue(AttrType attributeType)
     {
         return playerAttributes.GetAttributeValue(attributeType);
     }
@@ -136,7 +137,7 @@ public class PlayerAttributeSystem : SingletonCom<PlayerAttributeSystem>
     /// </summary>
     public int GetCardsPerTurn()
     {
-        int socialBonus = (int)GetAttributeValue(EAttrType.Social);
+        int socialBonus = (int)GetAttributeValue(AttrType.Social);
         return baseCardsPerTurn + socialBonus;
     }
     /// <summary>
@@ -144,14 +145,14 @@ public class PlayerAttributeSystem : SingletonCom<PlayerAttributeSystem>
     /// </summary>
     public float GetStockInfluenceBonus()
     {
-        float charisma = GetAttributeValue(EAttrType.Charisma);
+        float charisma = GetAttributeValue(AttrType.Charisma);
         charisma = Mathf.Min(10, charisma);
         return 1 + charisma * 10f / 100f;
     }
     public float GetStockEnvironmentBonus()
     {
-        float fanaticism = GetAttributeValue(EAttrType.Fanaticism);
-        float calmness = GetAttributeValue(EAttrType.Calmness);
+        float fanaticism = GetAttributeValue(AttrType.Fanaticism);
+        float calmness = GetAttributeValue(AttrType.Calmness);
         float effect = fanaticism - calmness;
         effect = Mathf.Clamp(effect, -30, 30);
         float bonus = 1 + effect * 2f / 100f;
@@ -159,7 +160,7 @@ public class PlayerAttributeSystem : SingletonCom<PlayerAttributeSystem>
     }
     public float GetStockCourageBonus()
     {
-        return 1 + GetAttributeValue(EAttrType.Courage) * 10f / 100f;
+        return 1 + GetAttributeValue(AttrType.Courage) * 10f / 100f;
     }
     #endregion
 
@@ -177,7 +178,7 @@ public class PlayerAttributeSystem : SingletonCom<PlayerAttributeSystem>
         // 摸牌
         int cardsToDraw = GetCardsPerTurn();
 
-        ChangeAttributeGA changeAttributeGA = new(EAttrType.Social, -1f);
+        ChangeAttributeGA changeAttributeGA = new(AttrType.Social, -1f);
         ActionSystem.Ins.AddReaction(changeAttributeGA);
 
 

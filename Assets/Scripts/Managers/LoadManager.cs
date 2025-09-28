@@ -214,7 +214,7 @@ public class LoadManager : Singleton<LoadManager>
             foreach (var field in fieldInfos)
             {
                 // 排除key字段，只获取资源路径字段
-                if (field.FieldType == typeof(string) && field.Name != "key")
+                if (field.FieldType == typeof(string) && field.Name != "Key")
                 {
                     string pathValue = field.GetValue(null) as string;
                     if (!string.IsNullOrEmpty(pathValue))
@@ -248,6 +248,19 @@ public class LoadManager : Singleton<LoadManager>
         }
 
         Debug.LogWarning($"未找到资源: 文件夹={folderName}, 路径={resourceKey}");
+        return null;
+    }
+
+    public T GetResByName<T>(string folderName, string name) where T : UnityEngine.Object
+    {
+        if (_resourceCache.TryGetValue(folderName, out var folderResources))
+        {
+            List<string> keys = folderResources.Keys.ToList();
+            int idx = keys.FindIndex(e => e.EndsWith(name));
+            if (idx >= 0)
+                return folderResources[keys[idx]] as T;
+        }
+        Debug.LogWarning($"未找到资源: 文件夹={folderName}, 文件名={name}");
         return null;
     }
 

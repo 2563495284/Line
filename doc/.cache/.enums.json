@@ -1,0 +1,105 @@
+{
+    "CardType": [
+        {
+            "key": "Unknown",
+            "value": 0,
+            "annotation": "无"
+        },
+        {
+            "key": "Trade",
+            "value": 1,
+            "annotation": "交易卡"
+        },
+        {
+            "key": "Futures",
+            "value": 2,
+            "annotation": "期货卡"
+        },
+        {
+            "key": "Operate",
+            "value": 3,
+            "annotation": "操盘卡"
+        },
+        {
+            "key": "Empowerment",
+            "value": 4,
+            "annotation": "赋能卡"
+        }
+    ],
+    "ReleaseMode": [
+        {
+            "key": "NoTarget",
+            "value": 0,
+            "annotation": "不指定目标"
+        },
+        {
+            "key": "TargetToStock",
+            "value": 1,
+            "annotation": "指定股票目标"
+        }
+    ],
+    "ItemType": [
+        {
+            "key": "None",
+            "value": 0,
+            "annotation": "无"
+        },
+        {
+            "key": "Ore",
+            "value": 1,
+            "annotation": "矿物 "
+        },
+        {
+            "key": "Torch",
+            "value": 2,
+            "annotation": "火炬"
+        },
+        {
+            "key": "Device",
+            "value": 3,
+            "annotation": "设备"
+        },
+        {
+            "key": "Pickaxe",
+            "value": 4,
+            "annotation": "镐"
+        },
+        {
+            "key": "Backpack",
+            "value": 5,
+            "annotation": "背包"
+        }
+    ],
+    "AttrType": [
+        {
+            "key": "Social",
+            "value": 1,
+            "annotation": "社交"
+        },
+        {
+            "key": "Wisdom",
+            "value": 2,
+            "annotation": "智慧"
+        },
+        {
+            "key": "Charisma",
+            "value": 3,
+            "annotation": "魅力"
+        },
+        {
+            "key": "Courage",
+            "value": 4,
+            "annotation": "勇气"
+        },
+        {
+            "key": "Calmness",
+            "value": 5,
+            "annotation": "冷静"
+        },
+        {
+            "key": "Fanaticism",
+            "value": 6,
+            "annotation": "狂热"
+        }
+    ]
+}

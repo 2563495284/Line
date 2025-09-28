@@ -1,0 +1,211 @@
+{
+    "1001": {
+        "id": 1001,
+        "faceImg": "buy_in",
+        "title": "买入",
+        "desc": "买入200{勇气}",
+        "releaseMode": 1,
+        "manaCost": 1,
+        "cardType": 1,
+        "effects": [],
+        "effectsWithTarget": "[Trade/200]"
+    },
+    "1002": {
+        "id": 1002,
+        "faceImg": "sell_out",
+        "title": "卖出",
+        "desc": "卖出200{勇气}",
+        "releaseMode": 1,
+        "manaCost": 1,
+        "cardType": 1,
+        "effects": [],
+        "effectsWithTarget": "[Trade/-200]"
+    },
+    "2001": {
+        "id": 2001,
+        "faceImg": "bullish",
+        "title": "看涨",
+        "desc": "三个交易日后，其价格如果上涨获得10000金币，如果下跌则失去100材料",
+        "releaseMode": 1,
+        "manaCost": 1,
+        "cardType": 2,
+        "effects": [],
+        "effectsWithTarget": "[Predict/1/10000/0/0/-100/3]"
+    },
+    "2002": {
+        "id": 2002,
+        "faceImg": "bearish",
+        "title": "看跌",
+        "desc": "三个交易日后，其价格如果下跌获得其100材料，上涨则扣10000金币",
+        "releaseMode": 1,
+        "manaCost": 1,
+        "cardType": 2,
+        "effects": [],
+        "effectsWithTarget": "[Predict/0/0/100/-10000/0/3]"
+    },
+    "2003": {
+        "id": 2003,
+        "faceImg": "hedge",
+        "title": "避险",
+        "desc": "五个交易日后，其价格如果下跌获得其100份",
+        "releaseMode": 1,
+        "manaCost": 2,
+        "cardType": 2,
+        "effects": [],
+        "effectsWithTarget": "[Predict/0/0/100/0/0/5]"
+    },
+    "3001": {
+        "id": 3001,
+        "faceImg": "suppress",
+        "title": "打压",
+        "desc": "失去1[魅力]、降低其价格0.03{魅力}",
+        "releaseMode": 1,
+        "manaCost": 1,
+        "cardType": 3,
+        "effects": "[Attr/3/-1]",
+        "effectsWithTarget": "[Price/-0.03]"
+    },
+    "3002": {
+        "id": 3002,
+        "faceImg": "accuse",
+        "title": "指责",
+        "desc": "降低其价格0.03{魅力}",
+        "releaseMode": 1,
+        "manaCost": 2,
+        "cardType": 3,
+        "effects": [],
+        "effectsWithTarget": "[Price/-0.03]"
+    },
+    "3003": {
+        "id": 3003,
+        "faceImg": "praise",
+        "title": "称赞",
+        "desc": "抬高其价格0.03{魅力}",
+        "releaseMode": 1,
+        "manaCost": 2,
+        "cardType": 3,
+        "effects": [],
+        "effectsWithTarget": "[Price/0.03]"
+    },
+    "3004": {
+        "id": 3004,
+        "faceImg": "go_long",
+        "title": "做多",
+        "desc": "抬高其价格0.01{魅力}",
+        "releaseMode": 1,
+        "manaCost": 1,
+        "cardType": 3,
+        "effects": [],
+        "effectsWithTarget": "[Price/0.01]"
+    },
+    "3005": {
+        "id": 3005,
+        "faceImg": "go_short",
+        "title": "做空",
+        "desc": "降低其价格0.01{魅力}",
+        "releaseMode": 1,
+        "manaCost": 1,
+        "cardType": 3,
+        "effects": [],
+        "effectsWithTarget": "[Price/-0.01]"
+    },
+    "4001": {
+        "id": 4001,
+        "faceImg": "coffee",
+        "title": "咖啡",
+        "desc": "获得2点能量、2点[狂热]",
+        "releaseMode": 0,
+        "manaCost": 0,
+        "cardType": 4,
+        "effects": "[Mana/2,Attr/6/2]",
+        "effectsWithTarget": []
+    },
+    "4002": {
+        "id": 4002,
+        "faceImg": "execite",
+        "title": "亢奋",
+        "desc": "获得1[狂热]，1[勇气]",
+        "releaseMode": 0,
+        "manaCost": 0,
+        "cardType": 4,
+        "effects": "[Attr/6/1,Attr/4/1]",
+        "effectsWithTarget": []
+    },
+    "4003": {
+        "id": 4003,
+        "faceImg": "inquire_about",
+        "title": "打探",
+        "desc": "打探信息，抽取两张卡牌",
+        "releaseMode": 0,
+        "manaCost": 1,
+        "cardType": 4,
+        "effects": "[Draw/2]",
+        "effectsWithTarget": []
+    },
+    "4004": {
+        "id": 4004,
+        "faceImg": "courage",
+        "title": "胆识",
+        "desc": "获得2[勇气]",
+        "releaseMode": 0,
+        "manaCost": 1,
+        "cardType": 4,
+        "effects": "[Attr/4/2]",
+        "effectsWithTarget": []
+    },
+    "4005": {
+        "id": 4005,
+        "faceImg": "spending",
+        "title": "演讲",
+        "desc": "获得3[社交]",
+        "releaseMode": 0,
+        "manaCost": 1,
+        "cardType": 4,
+        "effects": "[Attr/1/3]",
+        "effectsWithTarget": []
+    },
+    "4006": {
+        "id": 4006,
+        "faceImg": "calm",
+        "title": "静待其变",
+        "desc": "获得1[冷静]，3[勇气]",
+        "releaseMode": 0,
+        "manaCost": 3,
+        "cardType": 4,
+        "effects": "[Attr/4/3,Attr/5/1]",
+        "effectsWithTarget": []
+    },
+    "4007": {
+        "id": 4007,
+        "faceImg": "spending",
+        "title": "出手阔绰",
+        "desc": "消耗100石油，获得2[魅力]，1[社交]",
+        "releaseMode": 0,
+        "manaCost": 2,
+        "cardType": 4,
+        "effects": "[Holding/1/-100,Attr/3/2,Attr/1/1]",
+        "effectsWithTarget": []
+    },
+    "4008": {
+        "id": 4008,
+        "faceImg": "hone",
+        "title": "磨练",
+        "desc": "消耗100钢铁，获得3[勇气]、1[冷静]",
+        "releaseMode": 0,
+        "manaCost": 2,
+        "cardType": 4,
+        "effects": "[Holding/2/-100,Attr/4/3,Attr/5/1]",
+        "effectsWithTarget": []
+    },
+    "4009": {
+        "id": 4009,
+        "faceImg": "awaken",
+        "title": "悟道",
+        "desc": "石油，钢铁，棉花各消耗100，获得1[智慧]，1[魅力]",
+        "releaseMode": 0,
+        "manaCost": 2,
+        "cardType": 4,
+        "effects": "[Holding/1/-100,Holding/2/-100,Holding/3/-100,Attr/2/1,Attr/3/1]",
+        "effectsWithTarget": []
+    }
+}

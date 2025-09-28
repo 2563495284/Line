@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Globalization;
 using Unity.Mathematics;
+using GameConfig;
 
 /// <summary>
 /// 卡牌描述系统 - 处理动态数值和高亮显示
@@ -11,28 +12,28 @@ using Unity.Mathematics;
 public static class CardDescriptionSystem
 {
     // 属性标记的正则表达式模式
-    private static readonly Dictionary<EAttrType, string> AttributePatterns = new Dictionary<EAttrType, string>
+    private static readonly Dictionary<AttrType, string> AttributePatterns = new Dictionary<AttrType, string>
     {
-        { EAttrType.Charisma, @"\[魅力\]" },
-        { EAttrType.Courage, @"\[勇气\]" },
-        { EAttrType.Wisdom, @"\[智慧\]" },
-        { EAttrType.Social, @"\[社交\]" },
-        { EAttrType.Calmness, @"\[冷静\]" },
-        { EAttrType.Fanaticism, @"\[狂热\]" }
+        { AttrType.Charisma, @"\[魅力\]" },
+        { AttrType.Courage, @"\[勇气\]" },
+        { AttrType.Wisdom, @"\[智慧\]" },
+        { AttrType.Social, @"\[社交\]" },
+        { AttrType.Calmness, @"\[冷静\]" },
+        { AttrType.Fanaticism, @"\[狂热\]" }
     };
 
     // 数值+属性组合的正则表达式模式（如：1{魅力}%）
     private static readonly string NumberAttributePattern = @"(\d+(?:\.\d+)?)\{([^}]+)\}?";
 
     // 属性名称映射
-    private static readonly Dictionary<EAttrType, string> AttributeNames = new Dictionary<EAttrType, string>
+    private static readonly Dictionary<AttrType, string> AttributeNames = new Dictionary<AttrType, string>
     {
-        { EAttrType.Charisma, "魅力" },
-        { EAttrType.Courage, "勇气" },
-        { EAttrType.Wisdom   , "智慧" },
-        { EAttrType.Social, "社交" },
-        { EAttrType.Calmness, "冷静" },
-        { EAttrType.Fanaticism, "狂热" }
+        { AttrType.Charisma, "魅力" },
+        { AttrType.Courage, "勇气" },
+        { AttrType.Wisdom   , "智慧" },
+        { AttrType.Social, "社交" },
+        { AttrType.Calmness, "冷静" },
+        { AttrType.Fanaticism, "狂热" }
     };
 
     /// <summary>
@@ -42,7 +43,7 @@ public static class CardDescriptionSystem
     {
         public string processedDescription;           // 处理后的描述文本
         public string richTextDescription;          // 富文本格式的描述（用于显示）
-        public List<EAttrType> referencedAttributes; // 引用的属性类型
+        public List<AttrType> referencedAttributes; // 引用的属性类型
     }
 
     /// <summary>
@@ -57,7 +58,7 @@ public static class CardDescriptionSystem
         {
             processedDescription = originalDescription,
             richTextDescription = originalDescription,
-            referencedAttributes = new List<EAttrType>()
+            referencedAttributes = new List<AttrType>()
         };
 
         if (string.IsNullOrEmpty(originalDescription))
@@ -118,7 +119,7 @@ public static class CardDescriptionSystem
     /// <summary>
     /// 根据属性名称获取属性类型
     /// </summary>
-    private static EAttrType? GetAttributeTypeByName(string attributeName)
+    private static AttrType? GetAttributeTypeByName(string attributeName)
     {
         foreach (var kvp in AttributeNames)
         {
@@ -136,14 +137,14 @@ public static class CardDescriptionSystem
         string attributeName = match.Groups[2].Value; // 属性名称（如：魅力）
 
         // 查找对应的属性类型
-        EAttrType? attributeType = GetAttributeTypeByName(attributeName);
+        AttrType? attributeType = GetAttributeTypeByName(attributeName);
         if (!attributeType.HasValue)
         {
             return richText;
         }
         switch (attributeType)
         {
-            case EAttrType.Courage:
+            case AttrType.Courage:
                 int baseValueCourage = int.Parse(match.Groups[1].Value); // 基础数值（如：1）
                 // 勇气影响：每点勇气增加10%效果
                 // 获取属性值
@@ -154,7 +155,7 @@ public static class CardDescriptionSystem
 
                 string basePatternCourage = Regex.Escape(fullMatch);
                 return Regex.Replace(richText, basePatternCourage, $"<color=#FF0000><b>{finalValueCourage}</b></color>");
-            case EAttrType.Charisma:
+            case AttrType.Charisma:
                 float baseValueCharisma = float.Parse(match.Groups[1].Value); // 基础数值（如：1）
                 // 魅力影响，每层10%
                 // 获取属性值
@@ -172,9 +173,9 @@ public static class CardDescriptionSystem
     /// <summary>
     /// 获取卡牌引用的所有属性类型
     /// </summary>
-    public static List<EAttrType> GetReferencedAttributes(string description)
+    public static List<AttrType> GetReferencedAttributes(string description)
     {
-        var referencedAttributes = new List<EAttrType>();
+        var referencedAttributes = new List<AttrType>();
 
         if (string.IsNullOrEmpty(description))
             return referencedAttributes;
@@ -184,7 +185,7 @@ public static class CardDescriptionSystem
         foreach (Match match in numberAttributeMatches)
         {
             string attributeName = match.Groups[2].Value;
-            EAttrType? attributeType = GetAttributeTypeByName(attributeName);
+            AttrType? attributeType = GetAttributeTypeByName(attributeName);
             if (attributeType.HasValue && !referencedAttributes.Contains(attributeType.Value))
             {
                 referencedAttributes.Add(attributeType.Value);
@@ -206,7 +207,7 @@ public static class CardDescriptionSystem
     /// <summary>
     /// 检查描述中是否包含指定属性
     /// </summary>
-    public static bool ContainsAttribute(string description, EAttrType attributeType)
+    public static bool ContainsAttribute(string description, AttrType attributeType)
     {
         if (string.IsNullOrEmpty(description) || !AttributePatterns.ContainsKey(attributeType))
             return false;
@@ -217,7 +218,7 @@ public static class CardDescriptionSystem
     /// <summary>
     /// 获取属性在描述中的所有匹配位置
     /// </summary>
-    public static List<int> GetAttributePositions(string description, EAttrType attributeType)
+    public static List<int> GetAttributePositions(string description, AttrType attributeType)
     {
         var positions = new List<int>();
 

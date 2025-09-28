@@ -45,11 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originActived: 1
-  mana: {fileID: 0}
-  attrViewCom: {fileID: 0}
-  nextRoundButton: {fileID: 0}
-  moneyText: {fileID: 0}
-  changeText: {fileID: 0}
+  canvasOrder: 1
+  hudComPrefab: {fileID: 7091384214638271979, guid: 198fd0c56f9d4af4b98d1dad3646dac8, type: 3}
   moneyFormat: N0
   showChange: 1
   changeAnimationDuration: 0.5

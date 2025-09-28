@@ -47,34 +47,34 @@ public class MarketEvent_System : LevelSystem
     {
         roundCounter++;
         if (roundCounter % Cfg.roundInterval != 0) return;
-        TryTriggerMarketNewsForRandomStock(EStockType.Oil, 0.8f, 0.3f);
-        TryTriggerMarketNewsForRandomStock(EStockType.Steel, 0.6f, 0.5f);
-        TryTriggerMarketNewsForRandomStock(EStockType.Cotton, 0.3f, 0.7f);
+        TryTriggerMarketNewsForRandomStock(1, 0.8f, 0.3f);
+        TryTriggerMarketNewsForRandomStock(2, 0.6f, 0.5f);
+        TryTriggerMarketNewsForRandomStock(3, 0.3f, 0.7f);
     }
 
     #endregion
 
-    private void TryTriggerMarketNewsForRandomStock(EStockType stockType, float eventChance, float effectFactor)
+    private void TryTriggerMarketNewsForRandomStock(int stockId, float eventChance, float effectFactor)
     {
-        var stock = Data.GetStockModel(stockType);
+        var stock = Data.GetStockModel(stockId);
         if (stock == null) return;
         if (UnityEngine.Random.Range(0, 1) > eventChance) return; // 本次不触发
 
         // 根据相对初始价格的偏离选择事件方向
-        float deviation = (stock.price - stock.Cfg.initialPrice) / Mathf.Max(1e-5f, stock.Cfg.initialPrice);
+        float deviation = (stock.price - stock.Cfg.OriginPrice) / Mathf.Max(1e-5f, stock.Cfg.OriginPrice);
         EEventCardType eventType = SelectEventTypeByDeviation(deviation);
 
         // 应用价格影响
         float impactPercent = GetImpactPercentByEvent(eventType) * effectFactor;
-        ApplyPriceImpact(stock.type, impactPercent);
+        ApplyPriceImpact(stock.stockId, impactPercent);
 
 
         // 标题包含品类名
-        string stockName = MultiStockSystem.Ins?.GetStockMarket(stockType)?.stockName ?? stockType.ToString();
+        string stockName = MultiStockSystem.Ins?.GetStockMarket((EStockType)stockId)?.stockName ?? stockId.ToString();
         string title = $"新闻 - {stockName}";
 
         // 内容依据品类与事件类型
-        string content = OilMarketMessages.GetRandomMessage(stockType, eventType);
+        string content = OilMarketMessages.GetRandomMessage((EStockType)stockId, eventType);
         Data.newsHistories.Add(new NewsItemData()
         {
             id = Guid.NewGuid().ToString(),
@@ -119,24 +119,9 @@ public class MarketEvent_System : LevelSystem
         return MUtils.RandF(range.x, range.y);
     }
 
-    private void ApplyPriceImpact(EStockType stockType, float percent)
+    private void ApplyPriceImpact(int stockId, float percent)
     {
-        // 将百分比影响应用到三个策略键，MultiStockSystem 的 performer 会读取其中一个键
-        var percentDict = new Dictionary<EStrategyType, float>
-        {
-            { EStrategyType.medium, percent },
-            { EStrategyType.aggressive, percent },
-            { EStrategyType.conservative, percent },
-        };
-
-        var cv = NPCSystem.Ins.GetRandomNPCView();
-        if (cv == null)
-        {
-            Debug.LogWarning("PlayerView 未就绪，价格影响未应用");
-            return;
-        }
-
-        var CMD = new ChangeStockPriceCMD(cv, stockType, null, percentDict);
+        var CMD = new ChangePricePercentCMD(percent, stockId, false, false);
         Ctrl.AddCMD(CMD);
     }
 

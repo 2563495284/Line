@@ -23,7 +23,10 @@ public abstract class LevelView : MonoBehaviour
     {
         GM.Ins.Level.AddCMD(cmd);
     }
-
+    protected void ExeCMD(LevelCommand cmd)
+    {
+        GM.Ins.Level.ExeCMDAsync(cmd);
+    }
     protected void Register(string key, Action act)
     {
         Ctrl.On(key, act);

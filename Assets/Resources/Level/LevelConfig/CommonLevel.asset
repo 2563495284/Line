@@ -12,26 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 079d625307f6de4488c1967036dae9f5, type: 3}
   m_Name: CommonLevel
   m_EditorClassIdentifier: 
-  playerData: {fileID: 0}
-  npcDataList: []
-  financialData: {fileID: 0}
+  initialDrawCount: 5
+  cardCfgIds: a60f0000a50f0000a50f0000a40f0000a40f0000a20f0000a20f0000a90f0000a90f0000a80f0000a80f0000a70f0000a70f0000bd0b0000bd0b0000bd0b0000bc0b0000bc0b0000bc0b0000d1070000d1070000d2070000d2070000a30f0000a30f0000a30f0000e9030000e9030000e9030000e9030000e9030000e9030000e9030000e9030000e9030000e9030000ea030000ea030000ea030000ea030000ea030000ea030000ea030000ea030000ea030000ea030000bb0b0000bb0b0000d3070000d3070000b90b0000b90b0000ba0b0000ba0b0000a10f0000a10f0000bc0b0000bc0b0000a30f0000a30f0000
+  maxHandNum: 10
   targetRounds: 100
   targetTotalAsset: 3000000
   showDebugInfo: 0
-  leverageBuff:
-    stackCount: 0
-    multiplier: 0
-    remainingRounds: 0
-    maxStacks: 0
-    canRefresh: 0
-  maxLeverageStacks: 10
-  baseLeverageMultiplier: 2
-  defaultLeverageDuration: 3
   baseManaPerTurn: 3
   maxMana: 999
   baseCardsPerTurn: 5
-  maxPriceHistoryCnt: 40
-  roundInterval: 2
   bullImpactPercentRange: {x: 1, y: 4}
   neutralImpactPercentRange: {x: -0.1, y: 0.1}
   bearImpactPercentRange: {x: -4, y: -1}
+  roundInterval: 2

@@ -1,55 +1,34 @@
 using System;
 using System.Collections.Generic;
+using GameConfig;
 
 public class StockModel : IEffectReceiver
 {
-    public EStockType type;
+    public int stockId;
     public float price = 100;
     public int holding = 200;//持股数量
     public float volatility = 1f; //当前波动性
     public List<float> priceHistory = new();
     public float tempPrice;
-    private readonly int maxPriceHistory;
-    public StockConfigItem Cfg => Global.Ins.GetStockCfg(type);
+    public StockConfigItem Cfg => Config.StockConfig.Get(stockId);
     public float minPrice = 1;
     public float maxPrice = 1000;
-    public StockModel(LevelConfig cfg, EStockType type)
+    public StockModel(int stockId)
     {
-        this.type = type;
-        maxPriceHistory = cfg.maxPriceHistoryCnt;
-        price = Cfg.initialPrice;
-        volatility = Cfg.baseVolatility;
+        this.stockId = stockId;
+        price = Cfg.OriginPrice;
+        volatility = Cfg.BaseVolatility;
         holding = 200;
         priceHistory = new() { price };
-        tempPrice = price;
-
     }
-    public void UpdatePrice(float price)
+    public void GrowPrice(float newPrice)
     {
-        tempPrice = Math.Clamp(price, minPrice, maxPrice);
-    }
-    public void MarkPrice()
-    {
-        price = tempPrice;
-
+        price = Math.Clamp(newPrice, 1, 1000);
         // 更新历史记录
         priceHistory.Add(price);
-        if (priceHistory.Count > maxPriceHistory)
+        if (priceHistory.Count > Global.Ins.maxPriceHistoryCnt)
         {
             priceHistory.RemoveAt(0);
-        }
-    }
-    public float PriceChangePercent
-    {
-        get
-        {
-            if (priceHistory.Count < 2) return 0f;
-
-            float previousPrice = priceHistory[priceHistory.Count - 2];
-            if (previousPrice == 0) return 0f;
-
-            return (price - previousPrice) / previousPrice * 100f;
-
         }
     }
 }

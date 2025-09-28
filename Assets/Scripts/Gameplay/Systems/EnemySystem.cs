@@ -12,7 +12,7 @@ public class EnemySystem : LevelSystem
     }
     public override void EnableSystem()
     {
-        Ctrl.BindPerformer<ChangeStrategyCMD>(ChangeStrategyPerformer);
+        Ctrl.BindProcessor<ChangeStrategyCMD>(ChangeStrategyProcessor);
         Ctrl.AddRection<NextRoundTurnCMD>(NextRoundTurnPreReaction, ReactionTiming.PRE);
     }
     public override void DisableSystem()
@@ -22,7 +22,8 @@ public class EnemySystem : LevelSystem
     }
 
 
-    private IEnumerator ChangeStrategyPerformer(ChangeStrategyCMD changeStrategyCMD)
+    [TraceableCoroutine("EnemyChangeStrategy")]
+    private IEnumerator ChangeStrategyProcessor(ChangeStrategyCMD changeStrategyCMD)
     {
         changeStrategyCMD.Target.curStrategy = changeStrategyCMD.StrategyType;
         yield return null;
@@ -39,7 +40,7 @@ public class EnemySystem : LevelSystem
             {
                 int randomIndex = UnityEngine.Random.Range(0, enemy.handCards.Count);
                 CardModel cardToPlay = enemy.handCards[randomIndex];
-                EnemyPlayCardCMD playCardCMD = new(cardToPlay);
+                EnemyPlayCardCMD playCardCMD = new(cardToPlay, enemy);
                 Ctrl.ExeCMD(playCardCMD);
             }
             else

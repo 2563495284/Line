@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using GameConfig;
 public class ManaSystem : SingletonCom<ManaSystem>
 {
     [SerializeField] private ManaUI manaUI;
@@ -76,7 +77,7 @@ public class ManaSystem : SingletonCom<ManaSystem>
     /// </summary>
     public int GetEnergyPerTurn()
     {
-        int wisdomBonus = (int)PlayerAttributeSystem.Ins.GetAttributeValue(EAttrType.Wisdom);
+        int wisdomBonus = (int)PlayerAttributeSystem.Ins.GetAttributeValue(AttrType.Wisdom);
         return baseEnergyPerTurn + wisdomBonus;
     }
 

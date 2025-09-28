@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using GameConfig;
 using UnityEngine;
 using UnityEngine.Splines;
 public interface ICardEffectTarget
@@ -32,37 +33,42 @@ public class CardDeckView : LevelView
     [SerializeField] private Transform discardPilePoint;
 
     private Coroutine arrangeCor = null;
-    public CardCom GetCard(CardModel data)
+    public CardCom NewCard(CardModel data)
     {
         CardCom newCard = cardPrefab.OPGet(cardFolder).GetComponent<CardCom>();
         newCard.Init(data.cardId);
         newCard.inputAction += CardInputHandler;
         return newCard;
     }
+    public CardCom GetCard(CardModel data)
+    {
+        return cards.Find(e => e.cardId == data.cardId);
+    }
     public void RecycleCard(CardCom com)
     {
         com.inputAction -= CardInputHandler;
         com.gameObject.OPPush();
     }
+    int cnt = 0;
     private void CardInputHandler(CardComEventArgs args)
     {
-        if (GM.Ins.Level.IsInPerform) return;
+        // if (GM.Ins.Level.IsInPerform) return;
         switch (args.inputType)
         {
             case CardInputType.MouseDown:
-                AddCMD(new SelectCardCMD(args.target.cardData, MUtils.GetMouseWp()));
+                ExeCMD(new SelectCardCMD(args.target.cardData, MUtils.GetMouseWp()));
                 break;
             case CardInputType.MouseDrag:
-                AddCMD(new DragCardCMD(args.target.cardData, MUtils.GetMouseWp()));
+                ExeCMD(new DragCardCMD(args.target.cardData, MUtils.GetMouseWp()));
                 break;
             case CardInputType.MouseUp:
-                AddCMD(new ReleaseCardCMD(args.target.cardData));
+                ExeCMD(new ReleaseCardCMD(args.target.cardData));
                 break;
             case CardInputType.MouseEnter:
-                AddCMD(new PreviewCardCMD(args.target.cardData));
+                ExeCMD(new PreviewCardCMD(args.target.cardData));
                 break;
             case CardInputType.MouseExit:
-                AddCMD(new CancelPreviewCardCMD(args.target.cardData));
+                ExeCMD(new CancelPreviewCardCMD(args.target.cardData));
                 break;
         }
     }
@@ -106,11 +112,11 @@ public class CardDeckView : LevelView
 
     private void OnDraggingCard(DragCardArgs args)
     {
-        if (args.card.Cfg.releaseType == ECardReleaseType.NoTarget)
+        if (args.card.Cfg.ReleaseMode == ReleaseMode.NoTarget)
         {
             GetCard(args.card).transform.position = args.worldPos;
         }
-        else if (args.card.Cfg.releaseType == ECardReleaseType.TargetToStock)
+        else if (args.card.Cfg.ReleaseMode == ReleaseMode.TargetToStock)
         {
             arrowView.SetWorldPos(args.worldPos);
         }
@@ -126,7 +132,7 @@ public class CardDeckView : LevelView
     private void OnStartDragCard(DragCardArgs args)
     {
         CardCom card = GetCard(args.card);
-        if (args.card.Cfg.releaseType == ECardReleaseType.TargetToStock)
+        if (args.card.Cfg.ReleaseMode == ReleaseMode.TargetToStock)
         {
             arrowView.Show(args.worldPos);
         }
@@ -153,14 +159,16 @@ public class CardDeckView : LevelView
         coverCard.gameObject.SetActive(true);
         CardCom com = GetCard(args.card);
         com.HideWrapper();
-        coverCard.transform.position = new(com.transform.position.x, -2, 0);
+        coverCard.transform.position = new(com.transform.position.x, -2, -6);
+        com.transform.position = new Vector3(com.transform.position.x, com.transform.position.y, -5);
     }
 
     private void OnCancelPreviewCard(PreviewCardArgs args)
     {
         CardCom com = GetCard(args.card);
-        com.HideWrapper();
+        com.ShowWrapper();
         coverCard.gameObject.SetActive(false);
+        com.transform.position = new Vector3(com.transform.position.x, com.transform.position.y, GetZOffset(Data.handCards.FindIndex(e => e == args.card)).z);
     }
 
     private void OnUpdatePlayerAttr()
@@ -193,11 +201,15 @@ public class CardDeckView : LevelView
             Vector3 forward = spline.EvaluateTangent(p);
             Vector3 up = spline.EvaluateUpVector(p);
             Quaternion rotation = Quaternion.LookRotation(-up, Vector3.Cross(-up, forward).normalized);
-            cards[i].transform.DOMove(splinePosition + transform.position + cardPositionOffset * i * Vector3.back, duration);
+            cards[i].transform.DOMove(splinePosition + cardFolder.position + GetZOffset(i), duration);
             cards[i].transform.DORotate(rotation.eulerAngles, duration);
         }
         yield return new WaitForSeconds(duration);
         arrangeCor = null;
+    }
+    private Vector3 GetZOffset(int index)
+    {
+        return cardPositionOffset * index * Vector3.back;
     }
     /// <summary>
     /// 出示卡牌
@@ -229,7 +241,7 @@ public class CardDeckView : LevelView
         cardView.transform.DOScale(Vector3.zero, tweenTime);
         Tween tween = cardView.transform.DOMove(discardPilePoint.position, tweenTime);
         yield return tween.WaitForCompletion();
-        cardView.gameObject.OPPush();
+        RecycleCard(cardView);
     }
     private IEnumerator DiscardCards()
     {
@@ -254,9 +266,8 @@ public class CardDeckView : LevelView
 
     private IEnumerator DrawCardAnimation(CardModel card)
     {
-        CardCom cardView = cardPrefab.OPGet(cardFolder).GetComponent<CardCom>();
+        CardCom cardView = NewCard(card);
         cards.Add(cardView);
-        cardView.Init(card.cardId);
         if (arrangeCor != null)
             StopCoroutine(arrangeCor);
         arrangeCor = StartCoroutine(UpdateCardPositions(arrangeTime));

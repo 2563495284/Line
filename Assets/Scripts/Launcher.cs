@@ -1,3 +1,4 @@
+using GameConfig;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,10 +12,12 @@ public class Launcher : MonoBehaviour
     }
     private void Start()
     {
+        Config.Init(ResPath.configs.Config);
         GM.Ins.EnterGame();
     }
     private void Update()
     {
         TM.OnUpdate();
+        GM.Ins.OnUpdate();
     }
 }

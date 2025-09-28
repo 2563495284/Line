@@ -54,6 +54,7 @@
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\SRDrawer.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\SRDrawerOptions.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\SRActions\InstanceClassSRAction.cs" />
+    <Compile Include="Assets\Editor\ProjectSearch.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\NameService.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\MissingTypesValidator\SRMissingTypesValidator.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\Settings\SRDuplicateMode.cs" />

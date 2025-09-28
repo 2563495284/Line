@@ -4,7 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Unity.Mathematics;
-
+public enum EStockType
+{
+    Oil,
+    Steel,
+    Cotton
+}
 /// <summary>
 /// 多股市管理系统
 /// </summary>
@@ -153,7 +158,7 @@ public class MultiStockSystem : SingletonCom<MultiStockSystem>
                 action.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockEnvironmentBonus();
             }
         }
-        var market = GetStockMarket(action.stockType);
+        var market = GetStockMarket((EStockType)action.stockType);
         if (market == null)
         {
             Debug.LogError($"未找到股票类型: {action.stockType}");
@@ -162,7 +167,6 @@ public class MultiStockSystem : SingletonCom<MultiStockSystem>
 
         float tempPrice = market.tempPrice;
         EStrategyType characterStrategyType = action.characterView.StrategyType;
-        int index = (int)characterStrategyType;
         float changeStockPrice = 0;
         float changeStockPersentPrice = 0;
         action.ChangePriceDictionary.TryGetValue(characterStrategyType, out changeStockPrice);
@@ -180,7 +184,7 @@ public class MultiStockSystem : SingletonCom<MultiStockSystem>
         market.UpdatePrice(tempPrice);
         if (action.MarkPoint)
         {
-            LineView lineView = GetLineView(action.stockType);
+            LineView lineView = GetLineView((EStockType)action.stockType);
             if (tempPrice > market.currentPrice)
             {
                 lineView.SetPointState(PointState.Bullish);
@@ -344,11 +348,11 @@ public class MultiStockSystem : SingletonCom<MultiStockSystem>
         ChangeStockPriceGA changeStockPriceGA;
         if (action.Amount > 0)
         {
-            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Ins.playerView, action.StockType, PlayerAttributeSystem.Ins.ChangePriceDictionaryWhenBuy, PlayerAttributeSystem.Ins.ChangePricePersentDictionaryWhenBuy);
+            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Ins.playerView, (int)action.StockType, PlayerAttributeSystem.Ins.ChangePriceDictionaryWhenBuy, PlayerAttributeSystem.Ins.ChangePricePersentDictionaryWhenBuy);
         }
         else
         {
-            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Ins.playerView, action.StockType, PlayerAttributeSystem.Ins.ChangePriceDictionaryWhenSell, PlayerAttributeSystem.Ins.ChangePricePersentDictionaryWhenSell);
+            changeStockPriceGA = new ChangeStockPriceGA(PlayerAttributeSystem.Ins.playerView, (int)action.StockType, PlayerAttributeSystem.Ins.ChangePriceDictionaryWhenSell, PlayerAttributeSystem.Ins.ChangePricePersentDictionaryWhenSell);
         }
         ActionSystem.Ins.Perform(changeStockPriceGA);
         yield return null;

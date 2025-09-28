@@ -26,7 +26,6 @@ public class LineView : MonoBehaviour
     [SerializeField] private int maxPoints = 30;
 
     [Header("背景设置")]
-    [SerializeField] private Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.8f);
     [SerializeField] private GameObject background;
 
     [Header("股票信息显示")]
@@ -57,7 +56,7 @@ public class LineView : MonoBehaviour
     private Dictionary<int, PointState> pointStates = new Dictionary<int, PointState>();
 
     // 股票信息
-    private EStockType stockType;
+    private int stockType;
     private string stockName;
     private Color themeColor;
 
@@ -65,8 +64,7 @@ public class LineView : MonoBehaviour
 
     #region 公共属性
 
-    public EStockType StockType => stockType;
-    public float ViewPrice => prices.Count > 0 ? prices[prices.Count - 1] : 0;
+    public int StockType => stockType;
 
     #endregion
 
@@ -129,7 +127,7 @@ public class LineView : MonoBehaviour
     /// </summary>
     public void SetStockInfo(EStockType type, string name, Color color)
     {
-        stockType = type;
+        stockType = (int)type;
         stockName = name;
         themeColor = color;
         InitializeStockDisplay();
@@ -474,42 +472,13 @@ public class LineView : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 获取指定点的状态
-    /// </summary>
-    public PointState GetPointState(int index)
-    {
-        return pointStates.ContainsKey(index) ? pointStates[index] : PointState.None;
-    }
 
-    /// <summary>
-    /// 获取最新点的状态
-    /// </summary>
-    public PointState GetLatestPointState()
-    {
-        return prices.Count > 0 ? GetPointState(prices.Count - 1) : PointState.None;
-    }
 
-    /// <summary>
-    /// 清除指定点的状态
-    /// </summary>
-    public void ClearPointState(int index)
-    {
-        if (pointStates.ContainsKey(index))
-        {
-            pointStates.Remove(index);
-
-            if (index < pointObjects.Count && pointObjects[index] != null)
-            {
-                pointObjects[index].GetComponent<Point>().ClearState();
-            }
-        }
-    }
 
     /// <summary>
     /// 清除所有点的状态
     /// </summary>
-    public void ClearAllPointStates()
+    private void ClearAllPointStates()
     {
         pointStates.Clear();
 
@@ -522,42 +491,7 @@ public class LineView : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 获取所有有状态的点的索引
-    /// </summary>
-    public List<int> GetPointsWithStates()
-    {
-        return new List<int>(pointStates.Keys);
-    }
 
-    /// <summary>
-    /// 调试方法：打印所有点的状态信息
-    /// </summary>
-    public void DebugPointStates()
-    {
-        Debug.Log($"=== 点状态调试信息 ===");
-        Debug.Log($"总点数: {prices.Count}");
-        Debug.Log($"点对象数: {pointObjects.Count}");
-        Debug.Log($"保存的状态数: {pointStates.Count}");
-
-        foreach (var kvp in pointStates)
-        {
-            Debug.Log($"点 {kvp.Key}: 状态 = {kvp.Value}");
-        }
-
-        for (int i = 0; i < pointObjects.Count; i++)
-        {
-            if (pointObjects[i] != null)
-            {
-                Point point = pointObjects[i].GetComponent<Point>();
-                if (point != null)
-                {
-                    Debug.Log($"点对象 {i}: 当前状态 = {point.GetCurrentState()}");
-                }
-            }
-        }
-        Debug.Log($"========================");
-    }
 
     #endregion
 

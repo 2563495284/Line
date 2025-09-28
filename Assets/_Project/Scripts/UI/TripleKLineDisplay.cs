@@ -127,29 +127,11 @@ public class TripleKLineDisplay : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 添加新价格点
-    /// </summary>
-    public void AddNewPricePoint(EStockType stockType, float newPrice)
-    {
-        if (lineViewMap.TryGetValue(stockType, out LineView lineView) && lineView != null)
-        {
-            lineView.SetNewPrice(newPrice);
-        }
-    }
 
     #endregion
 
     #region Public Interface
 
-    /// <summary>
-    /// 手动刷新所有显示
-    /// </summary>
-    [ContextMenu("刷新所有K线")]
-    public void RefreshAllDisplays()
-    {
-        UpdateAllKLines();
-    }
 
     /// <summary>
     /// 获取指定股票的LineView
@@ -191,36 +173,6 @@ public class TripleKLineDisplay : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 设置中心位置
-    /// </summary>
-    public void SetCenterPosition(Vector3 newCenter)
-    {
-        centerPosition = newCenter;
-    }
-
-    /// <summary>
-    /// 设置间距
-    /// </summary>
-    public void SetSpacing(float newSpacing)
-    {
-        spacing = newSpacing;
-    }
-
-    /// <summary>
-    /// 清空所有K线图
-    /// </summary>
-    [ContextMenu("清空所有K线")]
-    public void ClearAllKLines()
-    {
-        foreach (var lineView in lineViewMap.Values)
-        {
-            if (lineView != null)
-            {
-                lineView.ClearChart();
-            }
-        }
-    }
 
     #endregion
 

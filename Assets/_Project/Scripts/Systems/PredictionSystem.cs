@@ -39,8 +39,8 @@ public class PredictionSystem : SingletonCom<PredictionSystem>
     /// </summary>
     private IEnumerator PredictionPerformer(PredictionGA predictionGA)
     {
-        float currentPrice = MultiStockSystem.Ins.GetStockMarket(predictionGA.StockType).currentPrice;
-        LineView lineView = MultiStockSystem.Ins.GetLineView(predictionGA.StockType);
+        float currentPrice = MultiStockSystem.Ins.GetStockMarket((EStockType)predictionGA.StockType).currentPrice;
+        LineView lineView = MultiStockSystem.Ins.GetLineView((EStockType)predictionGA.StockType);
         switch (predictionGA.PredictionType)
         {
             case EPredictionType.Rise:
@@ -132,7 +132,7 @@ public class PredictionSystem : SingletonCom<PredictionSystem>
     {
         if (prediction.isResolved) return;
 
-        float currentPrice = MultiStockSystem.Ins.GetStockMarket(prediction.stockType).currentPrice;
+        float currentPrice = MultiStockSystem.Ins.GetStockMarket((EStockType)prediction.stockId).currentPrice;
         bool wasCorrect = prediction.CheckPrediction(currentPrice);
 
         prediction.isResolved = true;
@@ -151,7 +151,7 @@ public class PredictionSystem : SingletonCom<PredictionSystem>
         // 执行股票变化
         if (stockChange != 0)
         {
-            ChangeStockGA changeStockGA = new ChangeStockGA(stockChange, prediction.stockType);
+            ChangeStockGA changeStockGA = new ChangeStockGA(stockChange, (EStockType)prediction.stockId);
             ActionSystem.Ins.Perform(changeStockGA);
         }
 

@@ -174,36 +174,4 @@ public class TripleKLineCreator : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 在场景中查找现有的LineView并组装
-    /// </summary>
-    [ContextMenu("组装现有LineView")]
-    public void AssembleExistingLineViews()
-    {
-        LineView[] existingLineViews = FindObjectsOfType<LineView>();
-
-        if (existingLineViews.Length < 3)
-        {
-            Debug.LogWarning("场景中的LineView少于3个，无法组装三K线系统");
-            return;
-        }
-
-        // 创建TripleKLineDisplay容器
-        GameObject container = new GameObject("TripleKLineDisplay");
-        container.transform.position = centerPosition;
-
-        TripleKLineDisplay tripleDisplay = container.AddComponent<TripleKLineDisplay>();
-
-        // 分配前三个LineView
-        if (existingLineViews.Length >= 3)
-        {
-            existingLineViews[0].SetStockInfo(EStockType.Oil, "石油", Color.white);
-            existingLineViews[1].SetStockInfo(EStockType.Steel, "钢铁", Color.white);
-            existingLineViews[2].SetStockInfo(EStockType.Cotton, "棉花", Color.white);
-
-            tripleDisplay.SetLineViewReferences(existingLineViews[0], existingLineViews[1], existingLineViews[2]);
-
-            Debug.Log("现有LineView组装完成！");
-        }
-    }
 }

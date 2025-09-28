@@ -14,7 +14,7 @@ public class TradeSpecificStockEffect : Effect2
 
     public override GameAction GetGameAction()
     {
-        TradeSpecificStockGA tradeSpecificStockGA = new(targetLineView.StockType, tradeAmount);
+        TradeSpecificStockGA tradeSpecificStockGA = new((EStockType)targetLineView.StockType, tradeAmount);
         return tradeSpecificStockGA;
     }
 }

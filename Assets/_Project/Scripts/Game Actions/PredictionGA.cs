@@ -12,7 +12,7 @@ public class PredictionGA : GameAction
     public int PenaltyStockAmount { get; set; }
     public int DelayRounds { get; set; }
 
-    public EStockType StockType { get; set; }
+    public int StockType { get; set; }
 
     public PredictionGA(
         EPredictionType predictionType,
@@ -20,7 +20,7 @@ public class PredictionGA : GameAction
         int rewardStockAmount,
         float penaltyMoneyAmount,
         int penaltyStockAmount,
-        EStockType stockType,
+        int stockType,
         int delayRounds
     )
     {

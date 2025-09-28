@@ -133,7 +133,7 @@ public class MarketEventSystem : SingletonCom<MarketEventSystem>
             return;
         }
 
-        var ga = new ChangeStockPriceGA(cv, stockType, null, percentDict);
+        var ga = new ChangeStockPriceGA(cv, (int)stockType, null, percentDict);
         ActionSystem.Ins.Perform(ga);
     }
 }

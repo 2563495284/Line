@@ -1,6 +1,7 @@
 using SerializeReferenceEditor;
 using System.Collections.Generic;
 using UnityEngine;
+using GameConfig;
 [CreateAssetMenu(menuName = "Data/Card")]
 public class CardData : ScriptableObject
 {

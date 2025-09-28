@@ -52,12 +52,12 @@ MonoBehaviour:
     - rid: 3
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
-        attributeType: 2
+        attributeType: 3
         attributeValue: 2
     - rid: 4
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
-        attributeType: 0
+        attributeType: 1
         attributeValue: 1
     - rid: 9019117340648800341
       type: {class: NoTM, ns: , asm: Assembly-CSharp}

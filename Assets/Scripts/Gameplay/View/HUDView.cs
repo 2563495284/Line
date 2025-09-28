@@ -16,8 +16,9 @@ public class HUDView : LevelView
     private float previousMoney = 0;
     private Coroutine changeAnimationCoroutine;
     private Coroutine countAnimationCoroutine;
-    void Awake()
+    protected override void OnInit()
     {
+        base.OnInit();
         com = Instantiate(hudComPrefab).GetComponent<HUDCom>();
         AddCanvasCom(com.gameObject);
         com.nextRoundButton.onClick.AddListener(OnNextRoundButtonClick);

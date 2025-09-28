@@ -1,20 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using GameConfig;
 
 /// <summary>
 /// 玩家属性类型
 /// </summary>
-public enum EAttrType
-{
-    Social,     // 社交
-    Wisdom,     // 智慧
-    Charisma,    // 魅力
-    Courage,     // 勇气
-    Calmness,     // 冷静
-    Fanaticism     // 狂热
-}
 
 /// <summary>
 /// 单个属性数据
@@ -23,7 +14,7 @@ public enum EAttrType
 public class PlayerAttributeData
 {
     [Header("基础信息")]
-    public EAttrType attributeType;
+    public AttrType attributeType;
     public string attributeName;
     public string description;
     public Sprite icon;
@@ -31,7 +22,7 @@ public class PlayerAttributeData
     [Header("数值信息")]
     public float currentValue;
     public float originValue;
-    public PlayerAttributeData(EAttrType type)
+    public PlayerAttributeData(AttrType type)
     {
         attributeType = type;
         SetupAttributeInfo();
@@ -44,32 +35,32 @@ public class PlayerAttributeData
     {
         switch (attributeType)
         {
-            case EAttrType.Social://基础的
+            case AttrType.Social://基础的
                 attributeName = "社交";
                 description = "每回合摸牌数+1，每回合失去1";
                 currentValue = 0f;
                 break;
-            case EAttrType.Wisdom://中级
+            case AttrType.Wisdom://中级
                 attributeName = "智慧";
                 description = "每回合能量恢复+1";
                 currentValue = 0f;
                 break;
-            case EAttrType.Charisma://中级
+            case AttrType.Charisma://中级
                 attributeName = "魅力";
                 description = "玩家影响力+10%";
                 currentValue = 0f;
                 break;
-            case EAttrType.Courage://基础
+            case AttrType.Courage://基础
                 attributeName = "勇气";
                 description = "玩家交易数量+10%";
                 currentValue = 0f;
                 break;
-            case EAttrType.Calmness://中性
+            case AttrType.Calmness://中性
                 attributeName = "冷静";
                 description = "环境对市场价格影响-2%";
                 currentValue = 0f;
                 break;
-            case EAttrType.Fanaticism://中性
+            case AttrType.Fanaticism://中性
                 attributeName = "狂热";
                 description = "环境对市场价格影响+2%";
                 currentValue = 0f;
@@ -120,7 +111,7 @@ public class PlayerAttributesData
     {
         attributes.Clear();
 
-        foreach (EAttrType attributeType in Enum.GetValues(typeof(EAttrType)))
+        foreach (AttrType attributeType in Enum.GetValues(typeof(AttrType)))
         {
             attributes.Add(new PlayerAttributeData(attributeType));
         }
@@ -130,7 +121,7 @@ public class PlayerAttributesData
     /// <summary>
     /// 获取指定属性
     /// </summary>
-    public PlayerAttributeData GetAttribute(EAttrType type)
+    public PlayerAttributeData GetAttribute(AttrType type)
     {
         return attributes.Find(attr => attr.attributeType == type);
     }
@@ -138,7 +129,7 @@ public class PlayerAttributesData
     /// <summary>
     /// 获取属性值
     /// </summary>
-    public float GetAttributeValue(EAttrType type)
+    public float GetAttributeValue(AttrType type)
     {
         var attribute = GetAttribute(type);
         return attribute?.currentValue ?? 0f;

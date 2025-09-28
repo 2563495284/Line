@@ -32,10 +32,16 @@ public class CardCom : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
         CardModel data = cardData;
         if (data == null)
             return;
-        title.text = data.Cfg.title;
-        mana.text = data.Cfg.manaCost.ToString();
+        title.text = data.Cfg.Title;
+        mana.text = data.Cfg.ManaCost.ToString();
         description.text = data.RichTextDesc ?? data.Desc;
-        imageSR.sprite = data.Cfg.image;
+        Texture2D tex = LoadManager.Ins.GetResByName<Texture2D>("Level", data.Cfg.FaceImg);
+        Sprite sprite = Sprite.Create(
+                        tex,
+                        new Rect(0, 0, tex.width, tex.height),
+                        new Vector2(0.5f, 0.5f) // 中心点，(0.5,0.5)表示中心
+                    );
+        imageSR.sprite = sprite;
     }
     public void ShowWrapper()
     {
@@ -71,7 +77,6 @@ public class CardCom : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
     public void OnPointerEnter(PointerEventData eventData)
     {
         inputAction.Invoke(GetInputArgs(CardInputType.MouseEnter));
-
     }
 
     public void OnPointerExit(PointerEventData eventData)

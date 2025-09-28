@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+using GameConfig;
 /// <summary>
 /// 属性提示框显示系统
 /// </summary>
@@ -12,7 +13,7 @@ public class AttributeTooltipDisplay : MonoBehaviour
     [SerializeField] private GameObject tooltipItemPrefab;
 
     private List<AttributeTooltipItem> tooltipItems = new List<AttributeTooltipItem>();
-    private List<EAttrType> currentHighlightedAttributes = new List<EAttrType>();
+    private List<AttrType> currentHighlightedAttributes = new List<AttrType>();
     private Tween currentTween;
 
     private void Awake()
@@ -26,11 +27,11 @@ public class AttributeTooltipDisplay : MonoBehaviour
     /// <param name="attributeTypes">要显示的属性类型列表</param>
     /// <param name="highlightedAttributes">需要高亮的属性类型列表</param>
     /// <param name="worldPosition">世界坐标位置</param>
-    public void Show(List<EAttrType> attributeTypes, List<EAttrType> highlightedAttributes, Vector3 worldPosition)
+    public void Show(List<AttrType> attributeTypes, List<AttrType> highlightedAttributes, Vector3 worldPosition)
     {
         if (attributeTypes == null || attributeTypes.Count == 0) return;
 
-        currentHighlightedAttributes = highlightedAttributes ?? new List<EAttrType>();
+        currentHighlightedAttributes = highlightedAttributes ?? new List<AttrType>();
 
         // 清理现有项目
         ClearTooltipItems();
@@ -52,7 +53,7 @@ public class AttributeTooltipDisplay : MonoBehaviour
     /// <summary>
     /// 创建提示框项目
     /// </summary>
-    private void CreateTooltipItems(List<EAttrType> attributeTypes)
+    private void CreateTooltipItems(List<AttrType> attributeTypes)
     {
         if (tooltipItemPrefab == null || tooltipContainer == null) return;
 

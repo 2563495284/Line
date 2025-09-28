@@ -1,4 +1,6 @@
 using System.Collections;
+using GameConfig;
+using UnityEngine;
 
 public class InputHandleSystem : LevelSystem
 {
@@ -11,13 +13,13 @@ public class InputHandleSystem : LevelSystem
     private ICardEffectTarget cardTarget = null;
     public override void EnableSystem()
     {
-        Ctrl.BindPerformer<SelectCardCMD>(PerformSelectCard);
-        Ctrl.BindPerformer<DragCardCMD>(PerformDragCard);
-        Ctrl.BindPerformer<ReleaseCardCMD>(PerformReleaseCard);
-        Ctrl.BindPerformer<PreviewCardCMD>(PerformPreviewCard);
-        Ctrl.BindPerformer<CancelPreviewCardCMD>(PerformCancelPreviewCard);
-        Ctrl.BindPerformer<SelectCardTargetCMD>(PerformSelectTarget);
-        Ctrl.BindPerformer<CancelSelectTargetCMD>(PerformCancelSelectTarget);
+        Ctrl.BindProcessor<SelectCardCMD>(SelectCardProcessor);
+        Ctrl.BindProcessor<DragCardCMD>(DragCardProcessor);
+        Ctrl.BindProcessor<ReleaseCardCMD>(ReleaseCardProcessor);
+        Ctrl.BindProcessor<PreviewCardCMD>(PreviewCardProcessor);
+        Ctrl.BindProcessor<CancelPreviewCardCMD>(CancelPreviewCardProcessor);
+        Ctrl.BindProcessor<SelectCardTargetCMD>(SelectTargetProcessor);
+        Ctrl.BindProcessor<CancelSelectTargetCMD>(CancelSelectTargetProcessor);
     }
     public override void DisableSystem()
     {
@@ -30,7 +32,8 @@ public class InputHandleSystem : LevelSystem
         Ctrl.UnbindPerformer<CancelSelectTargetCMD>();
 
     }
-    private IEnumerator PerformSelectCard(SelectCardCMD cmd)
+    [TraceableCoroutine("SelectCard")]
+    private IEnumerator SelectCardProcessor(SelectCardCMD cmd)
     {
         if (!allowInput)
             yield break;
@@ -40,10 +43,7 @@ public class InputHandleSystem : LevelSystem
             case ECardSelectState.Ready:
                 selectCard = cmd.card;
                 if (previewCard != null)
-                {
-                    Ctrl.Notify(NotifyConst.CancelPreviewCard, new PreviewCardArgs { card = cmd.card, });
-                    previewCard = null;
-                }
+                    yield return Ctrl.ExeCMD(new CancelPreviewCardCMD(previewCard));
                 Ctrl.Notify(NotifyConst.StartDragCard, new DragCardArgs
                 {
                     card = cmd.card,
@@ -56,7 +56,8 @@ public class InputHandleSystem : LevelSystem
         }
         yield return null;
     }
-    private IEnumerator PerformDragCard(DragCardCMD cmd)
+    [TraceableCoroutine("DragCard")]
+    private IEnumerator DragCardProcessor(DragCardCMD cmd)
     {
         if (!allowInput)
             yield break;
@@ -69,36 +70,33 @@ public class InputHandleSystem : LevelSystem
         });
         yield return null;
     }
-    private IEnumerator PerformReleaseCard(ReleaseCardCMD cmd)
+    [TraceableCoroutine("ReleaseCard")]
+    private IEnumerator ReleaseCardProcessor(ReleaseCardCMD cmd)
     {
         if (selectCard == null || !allowInput)
             yield break;
-        if (cmd.card.Cfg.releaseType == ECardReleaseType.TargetToStock && cardTarget == null)
+        Ctrl.Notify(NotifyConst.CancelSelectCard, new DragCardArgs { card = selectCard });
+        if (cmd.card.Cfg.ReleaseMode == ReleaseMode.TargetToStock && cardTarget == null)
         {
-            Ctrl.Notify(NotifyConst.TipsCardReleaseFail, new TipsCardReleaseFailArgs { card = cmd.card, target = null, failState = ECardReleaseState.LackTarget });
+            //TODO lackTarget
         }
         else
         {
-            if (cmd.card.Cfg.releaseType == ECardReleaseType.NoTarget)
+            if (cmd.card.Cfg.ReleaseMode == ReleaseMode.NoTarget)
             {
                 yield return Ctrl.ExeCMD(new PlayCardCMD(cmd.card, null));
             }
             else
             {
+                Ctrl.Notify(NotifyConst.CancelSelectCardTarget, new CardTargetArgs { card = selectCard, target = cardTarget });
                 yield return Ctrl.ExeCMD(new PlayCardCMD(cmd.card, cardTarget.GetReceiver()));
             }
         }
-        CancelSelectCurrent();
+        selectCard = null;
         yield return null;
     }
-    private void CancelSelectCurrent()
-    {
-        if (selectCard == null)
-            return;
-        Ctrl.Notify(NotifyConst.CancelSelectCard, new DragCardArgs { card = selectCard });
-        selectCard = null;
-    }
-    private IEnumerator PerformPreviewCard(PreviewCardCMD cmd)
+    [TraceableCoroutine("PreviewCard")]
+    private IEnumerator PreviewCardProcessor(PreviewCardCMD cmd)
     {
         if (!allowInput)
             yield break;
@@ -108,10 +106,9 @@ public class InputHandleSystem : LevelSystem
         {
             Ctrl.Notify(NotifyConst.CancelPreviewCard, new PreviewCardArgs
             {
-                card = cmd.card
+                card = previewCard
             });
         }
-
         previewCard = cmd.card;
         Ctrl.Notify(NotifyConst.PreviewCard, new PreviewCardArgs
         {
@@ -119,9 +116,10 @@ public class InputHandleSystem : LevelSystem
         });
         yield return null;
     }
-    private IEnumerator PerformCancelPreviewCard(CancelPreviewCardCMD cmd)
+    [TraceableCoroutine("CancelPreviewCard")]
+    private IEnumerator CancelPreviewCardProcessor(CancelPreviewCardCMD cmd)
     {
-        if (previewCard != null && cmd.card != previewCard)
+        if (previewCard != null && cmd.card != previewCard || !allowInput)
             yield break;
         previewCard = null;
         Ctrl.Notify(NotifyConst.CancelPreviewCard, new PreviewCardArgs
@@ -131,26 +129,32 @@ public class InputHandleSystem : LevelSystem
 
         yield return null;
     }
-    private IEnumerator PerformSelectTarget(SelectCardTargetCMD cmd)
+    [TraceableCoroutine("SelectTarget")]
+    private IEnumerator SelectTargetProcessor(SelectCardTargetCMD cmd)
     {
         if (selectCard == null || !allowInput)
             yield break;
         if (cardTarget != null)
+        {
             Ctrl.Notify(NotifyConst.CancelSelectCardTarget, new CardTargetArgs
             {
                 card = selectCard,
-                target = cmd.target
+                target = cardTarget
             });
+            cardTarget.CancelPreviewEffect();
+        }
         cardTarget = cmd.target;
         Ctrl.Notify(NotifyConst.SelectCardTarget, new CardTargetArgs
         {
             card = selectCard,
             target = cmd.target
         });
+        cardTarget.PreviewEffect();
         yield return null;
     }
 
-    private IEnumerator PerformCancelSelectTarget(CancelSelectTargetCMD cmd)
+    [TraceableCoroutine("CancelSelectTarget")]
+    private IEnumerator CancelSelectTargetProcessor(CancelSelectTargetCMD cmd)
     {
         if (selectCard == null || !allowInput)
             yield break;

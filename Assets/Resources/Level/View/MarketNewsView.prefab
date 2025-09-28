@@ -45,5 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originActived: 1
-  newsPopupCom: {fileID: 0}
-  newsHistoryList: {fileID: 0}
+  canvasOrder: 4
+  newsPopupComPrefab: {fileID: 4143403899404827660, guid: 149006d2f4bfc4f40a5b9f788cc520d3, type: 3}
+  newsHistoryListPrefab: {fileID: 2956167883124637790, guid: ef5c4b24471e1284e953d9c05eef6527, type: 3}

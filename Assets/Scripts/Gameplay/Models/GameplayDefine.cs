@@ -21,7 +21,8 @@ public class LevelSystem
 }
 public class LevelCommand
 {
-
+    //只允许CommandCtrlProxy修改！
+    public int executeIndex = 0;
     private List<LevelCommand> subCmds = new();
     /// <summary>
     /// 运行时生成的LevelCommand

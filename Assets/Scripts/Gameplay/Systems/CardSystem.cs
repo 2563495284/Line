@@ -1,4 +1,5 @@
 using DG.Tweening;
+using GameConfig;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,9 +13,9 @@ public class Card_System : LevelSystem
     }
     public override void EnableSystem()
     {
-        Ctrl.BindPerformer<DrawCardsCMD>(DrawCardsPerformer);
-        Ctrl.BindPerformer<PlayCardCMD>(PlayCardPerformer);
-        Ctrl.BindPerformer<EnemyPlayCardCMD>(EnemyPlayCardPerformer);
+        Ctrl.BindProcessor<DrawCardsCMD>(DrawCardsProcessor);
+        Ctrl.BindProcessor<PlayCardCMD>(PlayCardProcessor);
+        Ctrl.BindProcessor<EnemyPlayCardCMD>(EnemyPlayCardProcessor);
 
     }
     public override void DisableSystem()
@@ -26,8 +27,8 @@ public class Card_System : LevelSystem
     }
 
     #region Performers
-
-    private IEnumerator DrawCardsPerformer(DrawCardsCMD cmd)
+    [TraceableCoroutine("DrawCards")]
+    private IEnumerator DrawCardsProcessor(DrawCardsCMD cmd)
     {
         Func<int> GetNumInDraws = () => Data.drawCards.Count;
         int drawRemain = cmd.num;
@@ -41,6 +42,7 @@ public class Card_System : LevelSystem
             drawRemain -= actualDraw;
             List<CardModel> targetCards = new();
             while (actualDraw-- > 0) targetCards.Add(Data.drawCards.Dequeue());
+            Data.handCards = Data.handCards.Concat(targetCards).ToList();
             yield return Ctrl.RequestPerform(PerformRequest.DrawCards, new DeckOPArgs(targetCards));
             if (fullTips)
             {
@@ -63,33 +65,29 @@ public class Card_System : LevelSystem
 
     }
 
-    private IEnumerator PlayCardPerformer(PlayCardCMD cmd)
+    [TraceableCoroutine("PlayCard")]
+    private IEnumerator PlayCardProcessor(PlayCardCMD cmd)
     {
         CardModel card = cmd.card;
 
 
         yield return Ctrl.RequestPerform(PerformRequest.Play_PresentCard, new PlayCardArgs(card, cmd.receiver));
         yield return Ctrl.RequestPerform(PerformRequest.Play_EffectCard, new PlayCardArgs(card, cmd.receiver));
-        foreach (CardEffectWithTarget effectWrapper in card.Cfg.effectsWithTarget)
-        {
-            yield return effectWrapper.effect.Run(card, cmd.receiver);
-        }
-        foreach (CardEffect effectWrapper in card.Cfg.effects)
-        {
-            yield return effectWrapper.effect.Run(card);
-        }
+        if (card.Cfg.ReleaseMode == ReleaseMode.NoTarget)
+            yield return card.Execute(cmd.card);
+        else
+            yield return card.Execute(cmd.card, cmd.receiver);
+        yield return Ctrl.ExeCMD(new ChangeManaCMD(-cmd.card.Cfg.ManaCost));
         yield return Ctrl.RequestPerform(PerformRequest.Play_DiscardCard, new PlayCardArgs(card, cmd.receiver));
         Data.handCards.Remove(card);
         Data.discardCards.Enqueue(card);
 
     }
-    private IEnumerator EnemyPlayCardPerformer(EnemyPlayCardCMD cmd)
+    [TraceableCoroutine("EnemyDrawCard")]
+    private IEnumerator EnemyPlayCardProcessor(EnemyPlayCardCMD cmd)
     {
         CardModel card = cmd.card;
-        foreach (CardEffect effectWrapper in card.Cfg.effects)
-        {
-            yield return effectWrapper.effect.Run(card);
-        }
+        yield return card.Execute(cmd.enemy);
     }
     #endregion
 }

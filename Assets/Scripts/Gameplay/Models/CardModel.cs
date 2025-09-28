@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GameConfig;
 public interface ICardHolder
 {
 
@@ -19,26 +21,44 @@ public enum ECardReleaseState
 
 }
 [Serializable]
-public class CardModel : IEffectEmitter
+public class CardModel : IEffectEmitter, IIndexableElement<int>
 {
     public int cfgId;
     public int cardId;
-    public ICardHolder owner;
-    public CardConfigItem Cfg => Global.Ins.GetCardCfg(cfgId);
-    public string Desc => CardUtils.ProcessCardDescription(Cfg.desc).processedDescription;
-    public string RichTextDesc => CardUtils.ProcessCardDescription(Cfg.desc).richTextDescription;
-    public List<EAttrType> attrs => CardUtils.ProcessCardDescription(Cfg.desc).referencedAttributes;
+    public CardConfigItem Cfg => Config.CardConfig.Get(cfgId);
+    public string Desc => CardUtils.ProcessCardDescription(Cfg.Desc).processedDescription;
+    public string RichTextDesc => CardUtils.ProcessCardDescription(Cfg.Desc).richTextDescription;
+    public List<AttrType> attrs => CardUtils.ProcessCardDescription(Cfg.Desc).referencedAttributes;
+    private List<Effect> cardEffects = new();
+    private List<EffectWithTarget> cardEffectsWithTarget = new();
     public ECardSelectState GetCardStateInRound()
     {
-        if (GM.LevelData.mana < Cfg.manaCost)
+        if (GM.LevelData.mana < Cfg.ManaCost)
             return ECardSelectState.LackMana;
         else
-            return Cfg.effects.All(e => e.effect.CanBeEffect(GM.LevelData)) ? ECardSelectState.Ready : ECardSelectState.LackRes;
+            return cardEffects.All(e => e.CanBeEffect(GM.LevelData)) ? ECardSelectState.Ready : ECardSelectState.LackRes;
     }
-    public CardModel(int cfgId, ICardHolder owner)
+    public CardModel(int cfgId)
     {
         cardId = LevelController.CardCNT++;
         this.cfgId = cfgId;
-        this.owner = owner;
+        cardEffects = EffectFactory.GetEffects<Effect>(Cfg.Effects);
+        cardEffectsWithTarget = EffectFactory.GetEffects<EffectWithTarget>(Cfg.EffectsWithTarget);
+    }
+    public IEnumerator Execute(IEffectEmitter from)
+    {
+        for (int i = 0; i < cardEffects.Count; i++)
+            yield return cardEffects[i].Run(from);
+    }
+    public IEnumerator Execute(IEffectEmitter from, IEffectReceiver target)
+    {
+        yield return Execute(from);
+        for (int i = 0; i < cardEffectsWithTarget.Count; i++)
+            yield return cardEffectsWithTarget[i].Run(from, target);
+    }
+
+    public int GetKey()
+    {
+        return cardId;
     }
 }

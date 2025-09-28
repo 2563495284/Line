@@ -2,12 +2,15 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GM : Singleton<GM>
 {
     public LevelController Level { get; private set; }
     public ViewController View { get; private set; }
     public static LevelModel LevelData => Ins.Level.model;
+
+    public bool IsTrackCoroutine => UIManager.Ins.console.isTrackCoroutine;
     public void EnterGame()
     {
         UIManager.Ins.LoadingUI("Level", () =>
@@ -29,10 +32,12 @@ public class GM : Singleton<GM>
     }
     public void StartLevel(LevelRoot systemRoot, LevelRoot viewRoot)
     {
-        Level = new LevelController(null, systemRoot);
+        LevelConfig commonCfg = LoadManager.Ins.GetRes<LevelConfig>("Level", ResPath.Level.CommonLevel);
+        Level = new LevelController(commonCfg, systemRoot);
         View = new ViewController(viewRoot);
         Level.OnEnter();
         View.OnEnter();
+        Level.OnStart();
     }
     public void ExitLevel()
     {
@@ -40,5 +45,9 @@ public class GM : Singleton<GM>
         View.OnExit();
         Level = null;
         View = null;
+    }
+    public void OnUpdate()
+    {
+
     }
 }

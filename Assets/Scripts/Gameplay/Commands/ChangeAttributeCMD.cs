@@ -1,9 +1,10 @@
 
+using GameConfig;
 public class ChangeAttributeCMD : LevelCommand
 {
-    public EAttrType type;
+    public AttrType type;
     public float val;
-    public ChangeAttributeCMD(EAttrType attributeType, float attributeValue)
+    public ChangeAttributeCMD(AttrType attributeType, float attributeValue)
     {
         this.type = attributeType;
         this.val = attributeValue;

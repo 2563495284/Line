@@ -4,148 +4,91 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Unity.Mathematics;
+using GameConfig;
 
 /// <summary>
 /// 多股市管理系统
 /// </summary>
+class PriceChangeFactor
+{
+    //比例变化值
+    public float percent = 0;
+    //增量变化值
+    public float increment = 0;
+}
 public class StockSystem : LevelSystem
 {
 
     private bool IsShowTradeDebugLogs => Cfg.showDebugInfo;
 
 
-
+    private Dictionary<int, PriceChangeFactor> stockPriceFactorMap = new();
     // 当前资金状态
     private float currentMoney;
 
     public StockSystem(LevelController ctrl) : base(ctrl)
     {
+        stockPriceFactorMap = new();
+        Config.StockConfig.list.ToList().ForEach(e => stockPriceFactorMap.Add(e.Id, new()));
     }
     public override void EnableSystem()
     {
-        if (Cfg.financialData != null)
-            currentMoney = 200000f;
-        else
-            currentMoney = Cfg.financialData.InitialMoney;
-        Ctrl.BindPerformer<ChangeStockPriceCMD>(ChangeStockPricePerformer);
-        Ctrl.BindPerformer<TradeSpecificStockCMD>(TradeSpecificStockPerformer);
-
-        //改变金币
-        Ctrl.BindPerformer<ChangeMoneyCMD>(ChangeMoneyPerformer);
-        //改变股票数量
-        Ctrl.BindPerformer<ChangeStockCMD>(ChangeStockPerformer);
-
+        currentMoney = 200000f;
+        Ctrl.BindProcessor<ChangePricePercentCMD>(ChangePricePercentProcessor);
+        Ctrl.BindProcessor<ChangePriceIncrementCMD>(ChangePriceIncrementProcessor);
+        Ctrl.BindProcessor<TradeSpecificStockCMD>(TradeSpecificStockProcessor);
+        Ctrl.BindProcessor<ChangeMoneyCMD>(ChangeMoneyProcessor);
+        Ctrl.BindProcessor<ChangeHoldingCMD>(ChangeStockHoldingProcessor);
         Ctrl.AddRection<NextRoundTurnCMD>(NextRoundTurnPostReaction, ReactionTiming.POST);
-
-
         Ctrl.Notify(NotifyConst.UpdateStockChart);
     }
     public override void DisableSystem()
     {
-
-        Ctrl.UnbindPerformer<ChangeStockPriceCMD>();
+        Ctrl.UnbindPerformer<ChangePricePercentCMD>();
+        Ctrl.UnbindPerformer<ChangePriceIncrementCMD>();
         Ctrl.UnbindPerformer<TradeSpecificStockCMD>();
-
-        //改变金币
         Ctrl.UnbindPerformer<ChangeMoneyCMD>();
-        //改变股票数量
-        Ctrl.UnbindPerformer<ChangeStockCMD>();
-
+        Ctrl.UnbindPerformer<ChangeHoldingCMD>();
         Ctrl.RemoveRection<NextRoundTurnCMD>(NextRoundTurnPostReaction, ReactionTiming.POST);
     }
 
 
-    #region Price Management
-
-    /// <summary>
-    /// 刷新所有股票价格
-    /// </summary>
-    private void RefreshAllStockPrices()
-    {
-        foreach (var stock in Data.stocks)
-        {
-            stock.MarkPrice();
-        }
-        Ctrl.Notify(NotifyConst.UpdateStockChart);
-    }
-
-    #endregion
 
     #region GameAction Performers
-
-    /// <summary>
-    /// 处理股票价格上涨
-    /// </summary>
-    private IEnumerator ChangeStockPricePerformer(ChangeStockPriceCMD cmd)
+    [TraceableCoroutine("ChangePricePercent")]
+    private IEnumerator ChangePricePercentProcessor(ChangePricePercentCMD cmd)
     {
-        if (cmd.characterView.CharacterType == ECharacterType.Player)
-        {
-            // 使用ToList()避免在遍历时修改集合的异常
-            foreach (var item in cmd.ChangePriceDictionary.ToList())
-            {
-                cmd.ChangePriceDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockInfluenceBonus();
-            }
-            // 使用ToList()避免在遍历时修改集合的异常
-            foreach (var item in cmd.ChangePricePersentDictionary.ToList())
-            {
-                cmd.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockInfluenceBonus();
-            }
-        }
-        else if (cmd.characterView.CharacterType == ECharacterType.NPC)
-        {
-            // 使用ToList()避免在遍历时修改集合的异常
-            foreach (var item in cmd.ChangePriceDictionary.ToList())
-            {
-                cmd.ChangePriceDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockEnvironmentBonus();
-            }
-            // 使用ToList()避免在遍历时修改集合的异常
-            foreach (var item in cmd.ChangePricePersentDictionary.ToList())
-            {
-                cmd.ChangePricePersentDictionary[item.Key] = item.Value * PlayerAttributeSystem.Ins.GetStockEnvironmentBonus();
-            }
-        }
-        var market = GetStockMarket(cmd.stockType);
-        if (market == null)
-        {
-            Debug.LogError($"未找到股票类型: {cmd.stockType}");
-            yield break;
-        }
-
-        float tempPrice = market.tempPrice;
-        EStrategyType characterStrategyType = cmd.characterView.StrategyType;
-        cmd.ChangePriceDictionary.TryGetValue(characterStrategyType, out float changeStockPrice);
-        cmd.ChangePricePersentDictionary.TryGetValue(characterStrategyType, out float changeStockPersentPrice);
-        // 计算新的价格
-        float priceIncrease = changeStockPrice;
-        priceIncrease += Mathf.Round(tempPrice * changeStockPersentPrice) / 100f;
-
-        tempPrice = Mathf.Round((tempPrice + priceIncrease) * 100f) / 100f;
-
-        // 限制价格范围并保留两位小数
-        tempPrice = Mathf.Round(Mathf.Clamp(tempPrice, market.minPrice, market.maxPrice) * 100f) / 100f;
-
-        // 更新价格历史
-        market.UpdatePrice(tempPrice);
-        if (cmd.MarkPoint)
-        {
+        stockPriceFactorMap[cmd.stockId].percent += cmd.percent * (cmd.isFromPlayer ? Data.PlayerInfluenceToPrice : Data.EnvInfluenceToPrice);
+        if (cmd.isMarkPoint)
             Ctrl.Notify(NotifyConst.SetPointState, new SetPointStateArgs()
             {
-                stockType = cmd.stockType,
-                state = tempPrice > market.price ? PointState.Bullish : PointState.Bearish
+                stockId = cmd.stockId,
+                state = cmd.percent > 0 ? PointState.Bullish : PointState.Bearish
             });
-        }
-        Debug.Log($"NPC {cmd.characterView.name} 投资策略: {characterStrategyType} 价格: {tempPrice:F2} -> {tempPrice:F2} ({priceIncrease:F2})");
-        yield return null;
+        yield break;
+    }
+    [TraceableCoroutine("ChangePriceIncrement")]
+    private IEnumerator ChangePriceIncrementProcessor(ChangePriceIncrementCMD cmd)
+    {
+        stockPriceFactorMap[cmd.stockId].increment += cmd.increment * (cmd.isFromPlayer ? Data.PlayerInfluenceToPrice : Data.EnvInfluenceToPrice);
+        if (cmd.isMarkPoint)
+            Ctrl.Notify(NotifyConst.SetPointState, new SetPointStateArgs()
+            {
+                stockId = cmd.stockId,
+                state = cmd.increment > 0 ? PointState.Bullish : PointState.Bearish
+            });
+        yield break;
     }
     /// <summary>
     /// 处理特定股票交易（支持尽可能多地买卖模式）
     /// </summary>
-    private IEnumerator TradeSpecificStockPerformer(TradeSpecificStockCMD cmd)
+    [TraceableCoroutine("TradeStock")]
+    private IEnumerator TradeSpecificStockProcessor(TradeSpecificStockCMD cmd)
     {
-        var market = GetStockMarket(cmd.StockType);
+        var market = Data.GetStockModel(cmd.StockId);
         if (market == null)
         {
-            Debug.LogError($"未找到股票类型: {cmd.StockType}");
+            Debug.LogError($"未找到股票类型: {cmd.StockId}");
             yield break;
         }
 
@@ -161,14 +104,14 @@ public class StockSystem : LevelSystem
             if (actualTradeAmount <= 0)
             {
                 if (IsShowTradeDebugLogs)
-                    Debug.LogWarning($"[MultiStockSystem] 资金不足，无法买入 {cmd.StockType} 股票。当前资金: {currentMoney:F2}，股价: {market.price:F2}");
+                    Debug.LogWarning($"[MultiStockSystem] 资金不足，无法买入 {cmd.StockId} 股票。当前资金: {currentMoney:F2}，股价: {market.price:F2}");
                 TipsSystem.Ins.ShowTip("资金不足，无法买入股票");
                 Utils.ShakeCamera();
                 yield break;
             }
 
             if (IsShowTradeDebugLogs)
-                Debug.Log($"[MultiStockSystem] 买入 {cmd.StockType}: 请求 {amount} 股，实际买入 {actualTradeAmount} 股 (最大化模式)");
+                Debug.Log($"[MultiStockSystem] 买入 {cmd.StockId}: 请求 {amount} 股，实际买入 {actualTradeAmount} 股 (最大化模式)");
         }
         else // 卖出意向
         {
@@ -179,14 +122,14 @@ public class StockSystem : LevelSystem
             if (actualTradeAmount >= 0)
             {
                 if (IsShowTradeDebugLogs)
-                    Debug.LogWarning($"[MultiStockSystem] 持有量不足，无法卖出 {cmd.StockType} 股票。当前持有: {market.holding} 股");
+                    Debug.LogWarning($"[MultiStockSystem] 持有量不足，无法卖出 {cmd.StockId} 股票。当前持有: {market.holding} 股");
                 TipsSystem.Ins.ShowTip("持有量不足，无法卖出股票");
                 Utils.ShakeCamera();
                 yield break;
             }
 
             if (IsShowTradeDebugLogs)
-                Debug.Log($"[MultiStockSystem] 卖出 {cmd.StockType}: 请求卖出 {-amount} 股，实际卖出 {-actualTradeAmount} 股 (最大化模式)");
+                Debug.Log($"[MultiStockSystem] 卖出 {cmd.StockId}: 请求卖出 {-amount} 股，实际卖出 {-actualTradeAmount} 股 (最大化模式)");
         }
         // // 传统固定数量交易模式
         // if (!CanTradeStock(action.StockType, action.Amount))
@@ -202,7 +145,7 @@ public class StockSystem : LevelSystem
         //     Debug.Log($"[MultiStockSystem] 交易 {action.StockType}: {actualTradeAmount} 股 (固定数量模式)");
 
         // 执行交易
-        ChangeStockCMD changeStockCMD = new ChangeStockCMD(actualTradeAmount, cmd.StockType);
+        ChangeHoldingCMD changeStockCMD = new ChangeHoldingCMD(actualTradeAmount, cmd.StockId);
         Ctrl.ExeCMD(changeStockCMD);
 
         ChangeMoneyCMD changeMoneyCMD = new ChangeMoneyCMD(-actualTradeAmount * market.price);
@@ -210,107 +153,46 @@ public class StockSystem : LevelSystem
 
         Ctrl.Notify(NotifyConst.SetPointState, new SetPointStateArgs()
         {
-            stockType = cmd.StockType,
+            stockId = cmd.StockId,
             state = actualTradeAmount > 0 ? PointState.Buy : PointState.Sell
         });
 
         yield return null;
     }
-    private void UpdateStockPrice()
-    {
-        RefreshAllStockPrices();
-        Ctrl.Notify(NotifyConst.UpdateStockChart);
-    }
 
     private void NextRoundTurnPostReaction(NextRoundTurnCMD action)
     {
-        if (!MadeInHeavenSystem.Ins.IsMadeInHeavenActive)
+        foreach (var stock in Data.stocks)
         {
-            UpdateStockPrice();
+            int stockId = stock.stockId;
+            float price = stock.price;
+            PriceChangeFactor factor = stockPriceFactorMap[stockId];
+            float newPrice = (price + factor.increment) * (1 + factor.percent);
+            stock.GrowPrice(newPrice);
         }
+        Ctrl.Notify(NotifyConst.UpdateStockChart);
     }
-    private IEnumerator ChangeMoneyPerformer(ChangeMoneyCMD action)
+    [TraceableCoroutine("ChangeMoney")]
+    private IEnumerator ChangeMoneyProcessor(ChangeMoneyCMD action)
     {
         currentMoney += action.Amount;
         currentMoney = Mathf.Max(0, currentMoney);
         yield return null;
     }
 
-    private IEnumerator ChangeStockPerformer(ChangeStockCMD cmd)
+    [TraceableCoroutine("ChangeHolding")]
+    private IEnumerator ChangeStockHoldingProcessor(ChangeHoldingCMD cmd)
     {
-        var market = GetStockMarket(cmd.StockType);
+        var market = Data.GetStockModel(cmd.StockId);
         if (market == null)
         {
-            Debug.LogError($"未找到股票类型: {cmd.StockType}");
+            Debug.LogError($"未找到股票类型: {cmd.StockId}");
             yield break;
         }
         market.holding = Mathf.Max(0, market.holding + cmd.Amount);
-        ChangeStockPriceCMD changeStockPriceCMD;
-        if (cmd.Amount > 0)
-        {
-            changeStockPriceCMD = new ChangeStockPriceCMD(PlayerAttributeSystem.Ins.playerView, cmd.StockType, PlayerAttributeSystem.Ins.ChangePriceDictionaryWhenBuy, PlayerAttributeSystem.Ins.ChangePricePersentDictionaryWhenBuy);
-        }
-        else
-        {
-            changeStockPriceCMD = new ChangeStockPriceCMD(PlayerAttributeSystem.Ins.playerView, cmd.StockType, PlayerAttributeSystem.Ins.ChangePriceDictionaryWhenSell, PlayerAttributeSystem.Ins.ChangePricePersentDictionaryWhenSell);
-        }
-        Ctrl.AddCMD(changeStockPriceCMD);
+        Ctrl.ExeCMD(new ChangePricePercentCMD(Math.Sign(cmd.Amount) * 0.3f, cmd.StockId, true, false));
         yield return null;
     }
 
     #endregion
-
-    #region Public Interface
-
-    /// <summary>
-    /// 获取指定股市数据
-    /// </summary>
-    public StockModel GetStockMarket(EStockType stockType)
-    {
-        return Data.stocks.Find(e => e.type == stockType);
-    }
-
-
-    /// <summary>
-    /// 获取当前金币
-    /// </summary>
-    public float GetCurrentMoney()
-    {
-        return currentMoney;
-    }
-
-
-    /// <summary>
-    /// 检查是否有足够的资金
-    /// </summary>
-    public bool HasEnoughMoney(float requiredAmount)
-    {
-        return currentMoney >= requiredAmount;
-    }
-
-    /// <summary>
-    /// 格式化金钱显示
-    /// </summary>
-    public string FormatMoney(float amount)
-    {
-        if (Cfg.financialData != null)
-        {
-            return Cfg.financialData.FormatMoney(amount);
-        }
-        return amount.ToString("N0");
-    }
-
-    /// <summary>
-    /// 格式化当前金钱显示
-    /// </summary>
-    public string FormatCurrentMoney()
-    {
-        return FormatMoney(currentMoney);
-    }
-
-
-
-
-    #endregion
-
 }

@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 
 public class CommandCtrlProxy
 {
+    private static int asyncIndex = 1;
     readonly LevelController ctrl;
     public CommandCtrlProxy(LevelController ctrl)
     {
@@ -14,12 +16,12 @@ public class CommandCtrlProxy
     private Dictionary<Type, List<CMDReaction>> preReactions = new();
     private Dictionary<Type, CMDPerformer> performers = new();
     private Dictionary<Type, List<CMDReaction>> postReactions = new();
-    public event Action enterPerform = () => { };
-    public event Action exitPerform = () => { };
+    public event Action Event_EnterPerform = () => { };
+    public event Action Event_ExitPerform = () => { };
 
     // 动作队列相关
     private Queue<LevelCommand> cmdQueue = new();
-    public bool IsProcessingQueue { get; private set; } = false;
+    public Coroutine QueueCoroutine { get; private set; } = null;
 
 
 
@@ -72,18 +74,23 @@ public class CommandCtrlProxy
     /// </summary>
     /// <param name="cmd"></param>
     /// <param name="OnPerformFinished"></param>
-    public void AddCMD(LevelCommand cmd)
+    public Coroutine AddCMD(LevelCommand cmd)
     {
         // 将动作加入队列
 
         cmdQueue.Enqueue(cmd);
 
         // 如果队列未在处理中，开始处理
-        if (!IsProcessingQueue)
+        if (QueueCoroutine == null)
         {
-            enterPerform.Invoke();
-            ctrl.Root.StartCoroutine(ProcessCommands());
+            Event_EnterPerform.Invoke();
+            if (GM.Ins.IsTrackCoroutine)
+                return ctrl.Root.StartTrackedCoroutine(ProcessCommands(), "Queue");
+            else
+                return ctrl.Root.StartCoroutine(ExeCMD(cmd));
         }
+        else
+            return QueueCoroutine;
     }
     /// <summary>
     /// 立即执行命令
@@ -101,7 +108,6 @@ public class CommandCtrlProxy
     /// </summary>
     private IEnumerator ProcessCommands()
     {
-        IsProcessingQueue = true;
 
         while (cmdQueue.Count > 0)
         {
@@ -109,8 +115,8 @@ public class CommandCtrlProxy
             yield return CommandPerformFlow(cmd);
         }
 
-        IsProcessingQueue = false;
-        exitPerform.Invoke();
+        QueueCoroutine = null;
+        Event_ExitPerform.Invoke();
     }
 
     /// <summary>

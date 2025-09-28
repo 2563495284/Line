@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using GameConfig;
 /// <summary>
 /// 每局游戏生成一个LevelController
 /// </summary>
@@ -42,14 +42,25 @@ public class LevelController : ControllBase
         systemCls.ForEach(c => systems.Add(Activator.CreateInstance(c, this) as LevelSystem));
         cmdCtrl.AttachPerformer<NextRoundTurnCMD>(TurnRoundIE);
         systems.ForEach(e => e.EnableSystem());
-        DrawCardsCMD drawCardsCMD = new(Cfg.playerData.initialDrawCount);
-        AddCMD(drawCardsCMD);
 
+    }
+    public void OnStart()
+    {
+        model.mana = model.ManaPerTurn;
+        Notify(NotifyConst.UpdateManaUI);
+        Notify(NotifyConst.UpdateMoneyUI);
+        Notify(NotifyConst.UpdateNewsHistory);
+        Notify(NotifyConst.UpdatePlayerAttr);
+        Notify(NotifyConst.UpdateStockChart);
+        Notify(NotifyConst.UpdateStockInfo);
+        DrawCardsCMD drawCardsCMD = new(Cfg.initialDrawCount);
+        AddCMD(drawCardsCMD);
     }
     //关卡结束
     public override void OnExit()
     {
         base.OnExit();
+        cmdCtrl.DetachPerformer<NextRoundTurnCMD>();
         systems.ForEach(e => e.DisableSystem());
         systems.Clear();
         GameObject.Destroy(Root.gameObject);
@@ -66,11 +77,11 @@ public class LevelController : ControllBase
         }
         DiscardAllCardsCMD discardAllCardsCMD = new();
         yield return ExeCMD(discardAllCardsCMD);
-        yield return null;
+        model.turn++;
         DrawCardsCMD drawCardsCMD = new(model.CardNumPerTurn);
         yield return ExeCMD(drawCardsCMD);
 
-        ChangeAttributeCMD changeAttributeCMD = new(EAttrType.Social, -1f);
+        ChangeAttributeCMD changeAttributeCMD = new(AttrType.Social, -1f);
         yield return ExeCMD(changeAttributeCMD);
         yield return ExeCMD(new RefillManaCMD());
     }
@@ -82,8 +93,8 @@ public class LevelController : ControllBase
     #endregion
 
     #region 局内指令处理 ==========================
-    public bool IsInPerform => cmdCtrl.IsProcessingQueue;
-    public void BindPerformer<T>(CMDPerformer<T> performer) where T : LevelCommand
+    public bool IsInPerform => cmdCtrl.QueueCoroutine != null;
+    public void BindProcessor<T>(CMDPerformer<T> performer) where T : LevelCommand
     {
         cmdCtrl.AttachPerformer(performer);
     }
@@ -113,6 +124,13 @@ public class LevelController : ControllBase
     public IEnumerator ExeCMD(LevelCommand cmd)
     {
         return cmdCtrl.ExeCMD(cmd);
+    }
+    public Coroutine ExeCMDAsync(LevelCommand cmd)
+    {
+        if (GM.Ins.IsTrackCoroutine)
+            return Root.StartTrackedCoroutine(ExeCMD(cmd), "Execute");
+        else
+            return Root.StartCoroutine(ExeCMD(cmd));
     }
     #endregion
 

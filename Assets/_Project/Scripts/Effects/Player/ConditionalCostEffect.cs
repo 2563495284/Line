@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using SerializeReferenceEditor;
+using GameConfig;
 
 /// <summary>
 /// 条件消耗效果 - 在执行主效果前检查并消耗资源
@@ -43,7 +43,7 @@ public class ResourceCost
     [SerializeField] public int stockAmount;
 
     // 属性相关
-    [SerializeField] public EAttrType attributeType;
+    [SerializeField] public AttrType attributeType;
     [SerializeField] public float attributeAmount;
 
     /// <summary>
@@ -105,16 +105,16 @@ public class ResourceCost
         }
     }
 
-    private string GetAttributeName(EAttrType type)
+    private string GetAttributeName(AttrType type)
     {
         switch (type)
         {
-            case EAttrType.Social: return "社交";
-            case EAttrType.Wisdom: return "智慧";
-            case EAttrType.Charisma: return "魅力";
-            case EAttrType.Courage: return "勇气";
-            case EAttrType.Calmness: return "冷静";
-            case EAttrType.Fanaticism: return "狂热";
+            case AttrType.Social: return "社交";
+            case AttrType.Wisdom: return "智慧";
+            case AttrType.Charisma: return "魅力";
+            case AttrType.Courage: return "勇气";
+            case AttrType.Calmness: return "冷静";
+            case AttrType.Fanaticism: return "狂热";
             default: return "";
         }
     }

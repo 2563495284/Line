@@ -25,13 +25,12 @@ public class ViewController : ControllBase
     private Dictionary<int, Transform> viewComRootInCanvas = new();
     public ViewController(LevelRoot viewRoot) : base(viewRoot)
     {
-        gameCanvas = new GameObject("gameCanvas").AddComponent<Canvas>();
-        gameCanvas.transform.SetParent(viewRoot.transform);
+        gameCanvas = GameObject.Instantiate(Global.Ins.canvasPrefab, viewRoot.transform).GetComponent<Canvas>();
     }
     public IEnumerator RequestPerform(string key, object args)
     {
         if (performMap.ContainsKey(key))
-            yield return performMap[key];
+            yield return performMap[key].Invoke(args);
         else
             yield return null;
     }
@@ -64,14 +63,14 @@ public class ViewController : ControllBase
         {
             RectTransform rt = new GameObject($"comRoot_{index}").AddComponent<RectTransform>();
             rt.SetParent(gameCanvas.transform);
-            rt.anchorMin = new Vector2(0, 1);
-            rt.anchorMax = new Vector2(0, 1);
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(1, 1);
             rt.sizeDelta = new Vector2(0, 0);
             rt.anchoredPosition = new Vector2(0, 0);
             viewComRootInCanvas.Add(index, rt);
             rt.SetSiblingIndex(index);
         }
-        com.transform.SetParent(viewComRootInCanvas[index]);
+        com.transform.SetParent(viewComRootInCanvas[index], false);
     }
     public void BindPerform(string key, Func<object, IEnumerator> method)
     {

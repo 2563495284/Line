@@ -58,5 +58,5 @@ MonoBehaviour:
     - rid: 9019117506563932430
       type: {class: ChangeAttributeEffect, ns: , asm: Assembly-CSharp}
       data:
-        attributeType: 3
-        attributeValue: 2
+        attributeType: 5
+        attributeValue: 1

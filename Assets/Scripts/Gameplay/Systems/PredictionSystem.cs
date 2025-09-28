@@ -6,8 +6,8 @@ using UnityEngine;
 
 public enum EPredictionType
 {
-    Rise, // 预测上涨
     Fall, // 预测下跌
+    Rise, // 预测上涨
 }
 public class Prediction_System : LevelSystem
 {
@@ -20,7 +20,7 @@ public class Prediction_System : LevelSystem
 
     public override void EnableSystem()
     {
-        Ctrl.BindPerformer<PredictionCMD>(PredictionPerformer);
+        Ctrl.BindProcessor<PredictionCMD>(PredictionProcessor);
         Ctrl.AddRection<NextRoundTurnCMD>(NextRoundTurnReaction, ReactionTiming.POST);
 
     }
@@ -36,10 +36,11 @@ public class Prediction_System : LevelSystem
     /// <summary>
     /// 处理新的预测
     /// </summary>
-    private IEnumerator PredictionPerformer(PredictionCMD predictionCMD)
+    [TraceableCoroutine("PredictStock")]
+    private IEnumerator PredictionProcessor(PredictionCMD predictionCMD)
     {
-        float currentPrice = MultiStockSystem.Ins.GetStockMarket(predictionCMD.StockType).currentPrice;
-        LineView lineView = MultiStockSystem.Ins.GetLineView(predictionCMD.StockType);
+        float currentPrice = MultiStockSystem.Ins.GetStockMarket((EStockType)predictionCMD.StockId).currentPrice;
+        LineView lineView = MultiStockSystem.Ins.GetLineView((EStockType)predictionCMD.StockId);
         switch (predictionCMD.PredictionType)
         {
             case EPredictionType.Rise:
@@ -56,7 +57,7 @@ public class Prediction_System : LevelSystem
             predictionCMD.RewardStockAmount,
             predictionCMD.PenaltyMoneyAmount,
             predictionCMD.PenaltyStockAmount,
-            predictionCMD.StockType,
+            predictionCMD.StockId,
             predictionCMD.DelayRounds
         );
 
@@ -124,7 +125,7 @@ public class Prediction_System : LevelSystem
     {
         if (prediction.isResolved) return;
 
-        float currentPrice = MultiStockSystem.Ins.GetStockMarket(prediction.stockType).currentPrice;
+        float currentPrice = MultiStockSystem.Ins.GetStockMarket((EStockType)prediction.stockId).currentPrice;
         bool wasCorrect = prediction.CheckPrediction(currentPrice);
 
         prediction.isResolved = true;
@@ -143,7 +144,7 @@ public class Prediction_System : LevelSystem
         // 执行股票变化
         if (stockChange != 0)
         {
-            ChangeStockCMD changeStockCMD = new ChangeStockCMD(stockChange, prediction.stockType);
+            ChangeHoldingCMD changeStockCMD = new ChangeHoldingCMD(stockChange, prediction.stockId);
             Ctrl.AddCMD(changeStockCMD);
         }
 
