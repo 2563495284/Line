@@ -6,27 +6,44 @@ using System.Reflection;
 using System.Threading;
 using UnityEngine;
 
-// 自定义特性：带字符串参数的协程标记
-[AttributeUsage(AttributeTargets.Method)]
-public class TraceableCoroutineAttribute : Attribute
-{
-    // 用于层级构建的字符串标识
-    public string LayerName { get; }
 
-    // 构造函数，接受层名称参数
-    public TraceableCoroutineAttribute(string layerName = "")
+// 4. 装饰器类：包装原始IEnumerator并附加数据
+public class TagedEnumerator : IEnumerator
+{
+    private readonly IEnumerator _originalEnumerator;
+    public readonly string tag = "";
+    public readonly string head = "";
+
+
+    // 实现IEnumerator接口
+    public object Current => _originalEnumerator.Current;
+    public bool MoveNext() => _originalEnumerator.MoveNext();
+    public void Reset() => _originalEnumerator.Reset();
+
+    // 构造函数：包装原始迭代器并提供数据获取方法
+    public TagedEnumerator(IEnumerator original, string tag, string head)
     {
-        LayerName = layerName;
+        _originalEnumerator = original;
+        this.tag = tag;
+        this.head = head;
     }
 }
-
 public static class CoroutineTracker
 {
-    private static Action<string> logFunc = str => Debug.Log(str);
+    private static Action<string> startLogFunc = str => Debug.Log(str);
+    private static Action<string> endLogFunc = str => Debug.Log(str);
     private static int CNT = 1;
-    public static void BindLogFunc(Action<string> func)
+    public static void BindLogFunc(Action<string> func, Action<string> endFunc)
     {
-        logFunc = func;
+        startLogFunc = func;
+        endLogFunc = endFunc;
+    }
+
+    // 5. 扩展方法：简化带数据的迭代器创建
+    // 将普通迭代器包装为带数据的迭代器
+    public static TagedEnumerator WithData(this IEnumerator enumerator, string tag, string head = "Cor")
+    {
+        return new TagedEnumerator(enumerator, tag, head);
     }
     // 启动带追踪功能的协程
     public static Coroutine StartTrackedCoroutine(this MonoBehaviour mono, IEnumerator enumerator, string name = null)
@@ -35,13 +52,14 @@ public static class CoroutineTracker
     }
     private static Coroutine StartTrackedCoroutine_Native(this MonoBehaviour mono, IEnumerator enumerator, string name, string rootLayer, int id)
     {
-        MethodInfo info = GetIEFuncInfo(enumerator);
-        var attr = info.GetCustomAttribute<TraceableCoroutineAttribute>();
-        var coroutineName = string.IsNullOrEmpty(name) ? info.Name : name;
-        var initialLayer = string.IsNullOrEmpty(rootLayer) ? (attr != null ? attr.LayerName : info.Name) : rootLayer;
-        if (attr != null)
-            logFunc.Invoke($"【{id} Cor Start】{coroutineName}: {initialLayer}");
-
+        string initialLayer = string.IsNullOrEmpty(rootLayer) ? name : rootLayer;
+        string coroutineName = name;
+        if (enumerator is TagedEnumerator e)
+        {
+            coroutineName = string.IsNullOrEmpty(name) ? e.tag : name;
+            initialLayer = string.IsNullOrEmpty(rootLayer) ? e.tag : initialLayer;
+            startLogFunc.Invoke($"【{id} {e.head} Start】{coroutineName}: {initialLayer}");
+        }
         var wrappedEnumerator = WrapEnumerator(enumerator, initialLayer, coroutineName, id, mono);
         return mono.StartCoroutine(wrappedEnumerator);
     }
@@ -54,9 +72,9 @@ public static class CoroutineTracker
         int id,
         MonoBehaviour owner)
     {
+
         var depth = CoroutineContext.CurrentDepth;
         CoroutineContext.PushContext(currentLayerPath, name, depth + 1, id);
-        MethodInfo info = GetIEFuncInfo(enumerator);
         bool moveNextResult = false;
         object currentValue = null;
 
@@ -73,14 +91,17 @@ public static class CoroutineTracker
             if (moveNextResult)
             {
                 if (currentValue == null)
+                {
+                    yield return null;
                     continue;
+                }
                 if (currentValue is not IEnumerator nestedEnumerator)
                 {
                     yield return currentValue;
                     continue;
                 }
-                MethodInfo methodInfo = GetIEFuncInfo(nestedEnumerator);
-                if (methodInfo == null)
+                TagedEnumerator tagedEnumerator = nestedEnumerator as TagedEnumerator;
+                if (tagedEnumerator == null)
                 {
                     yield return owner.StartTrackedCoroutine_Native(
                     nestedEnumerator,
@@ -90,24 +111,10 @@ public static class CoroutineTracker
                 );
                     continue;
                 }
-                TraceableCoroutineAttribute attr = methodInfo.GetCustomAttribute<TraceableCoroutineAttribute>();
-                if (attr == null)
-                {
-                    yield return owner.StartTrackedCoroutine_Native(
-                   nestedEnumerator,
-                   name,
-                   currentLayerPath, // 传递新的层级路径作为根
-                   id
-               );
-                    continue;
-                }
-                string layerName = attr.LayerName;
-                if (string.IsNullOrEmpty(layerName))
-                    layerName = methodInfo.Name;
-
+                string layerName = tagedEnumerator.tag;
                 // 构建新的层级路径（父层级 + 当前层名称）
                 var newLayerPath = $"{currentLayerPath}_{layerName}";
-                var nestedName = methodInfo.Name;
+                var nestedName = layerName;
 
                 yield return owner.StartTrackedCoroutine_Native(
                     nestedEnumerator,
@@ -119,8 +126,11 @@ public static class CoroutineTracker
         }
         CoroutineContext.PopContext();
 
-        if (info.GetCustomAttribute<TraceableCoroutineAttribute>() != null)
-            logFunc.Invoke($"【{id} Cor End】{name}: {currentLayerPath}");
+        if (enumerator is TagedEnumerator)
+        {
+            TagedEnumerator e = enumerator as TagedEnumerator;
+            endLogFunc.Invoke($"【{id} {e.head} End】{name}: {currentLayerPath}");
+        }
     }
 
 
@@ -319,20 +329,6 @@ public static class CoroutineTracker
     }
 
 
-    // 专用日志方法，显示层级信息
-    public static void Log(string message)
-    {
-        var context = CoroutineContext.Current;
-        if (context != null)
-        {
-            var indent = new string(' ', context.Depth * 2);
-            Debug.Log($"{indent}[层级 {context.LayerPath}] {message}");
-        }
-        else
-        {
-            Debug.Log(message);
-        }
-    }
 }
 
 // 协程上下文管理

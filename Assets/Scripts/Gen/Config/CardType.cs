@@ -11,16 +11,16 @@ namespace GameConfig
         /// </summary>
         Trade = 1,
         /// <summary>
-        /// 期货卡
+        /// 情绪卡
         /// </summary>
-        Futures = 2,
+        Emotion = 2,
         /// <summary>
-        /// 操盘卡
+        /// 社交卡
         /// </summary>
-        Operate = 3,
+        Social = 3,
         /// <summary>
-        /// 赋能卡
+        /// 药卡
         /// </summary>
-        Empowerment = 4
+        Medicine = 4
     }
 }

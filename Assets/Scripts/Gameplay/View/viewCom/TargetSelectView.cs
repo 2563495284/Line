@@ -22,8 +22,9 @@ public class TargetSelectView : MonoBehaviour
     {
         gameObject.SetActive(true);
         this.startPosition = startPosition;
+        arrowHead.transform.position = startPosition;
         lineRenderer.SetPosition(0, startPosition);
-        lineRenderer.SetPosition(1, MouseUtils.GetMouseWp());
+        lineRenderer.SetPosition(1, Input.mousePosition);
     }
     public void Hide()
     {

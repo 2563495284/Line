@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -68,6 +69,11 @@ public static class MUtils
         float hei = img.rectTransform.sizeDelta.y;
         img.rectTransform.sizeDelta = new Vector2(ratio * hei, hei);
     }
+    public static Color ParseColor(string hex)
+    {
+        ColorUtility.TryParseHtmlString(hex, out var color);
+        return color;
+    }
     public static void SetSpriteRatio(SpriteRenderer img)
     {
         if (img.sprite == null)
@@ -75,6 +81,34 @@ public static class MUtils
         float ratio = (float)img.sprite.texture.width / img.sprite.texture.height;
         img.transform.localScale = new Vector3(ratio, 1, 1);
     }
+
+    /// <summary>
+    /// 判断对象是否实现了IEnumerable或IEnumerable<T>
+    /// </summary>
+    /// <param name="obj">要检查的对象</param>
+    /// <returns>如果是IEnumerable类型返回true，否则返回false</returns>
+    public static bool IsEnumerable(this Type type)
+    {
+        if (type == null)
+            return false;
+
+        // 检查是否直接实现了非泛型IEnumerable
+        if (typeof(IEnumerable).IsAssignableFrom(type))
+            return true;
+
+        // 检查是否实现了泛型IEnumerable<T>
+        foreach (var interfaceType in type.GetInterfaces())
+        {
+            if (interfaceType.IsGenericType &&
+                interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     ///<summary> 输出target在self坐标系下的锚点位置
     public static Vector2 TransAnchorPos(this RectTransform self, RectTransform target)
     {
@@ -127,6 +161,10 @@ public static class MUtils
     public static float RandF()
     {
         return UnityEngine.Random.Range(0, 1);
+    }
+    public static int Rand(int min, int max)
+    {
+        return UnityEngine.Random.Range(min, max);
     }
     public static float RandF(float min, float max)
     {
@@ -284,6 +322,38 @@ public static class MUtils
                     enters.Add(now[i]);
             }
         return (enters, exits);
+    }
+    public static string FormatNumber(int num)
+    {
+        // 处理负数情况
+        if (num < 0)
+        {
+            return "-" + FormatNumber(-num);
+        }
+
+        // 十亿级别 (1,000,000,000+)
+        if (num >= 1000000000)
+        {
+            float value = num / 1000000000f;
+            return value.ToString("F2") + "B";
+        }
+
+        // 百万级别 (1,000,000+)
+        if (num >= 1000000)
+        {
+            float value = num / 1000000f;
+            return value.ToString("F2") + "M";
+        }
+
+        // 千级别 (1,000+)
+        if (num >= 1000)
+        {
+            float value = num / 1000f;
+            return value.ToString("F2") + "k";
+        }
+
+        // 小于1000的数字直接返回
+        return num.ToString();
     }
     public static (T, T) Analyse<T>(T last, T now)
     {
@@ -443,7 +513,15 @@ public static class MUtils
     }
 
 #endif
-
+    public static void SetFullRect(this GameObject ui)
+    {
+        if (ui.transform is RectTransform rt)
+        {
+            rt.SetRtAnchorSafe(Vector2.zero, Vector2.one);
+            rt.anchoredPosition = new Vector2(0, 0);
+            rt.sizeDelta = new Vector2(0, 0);
+        }
+    }
     public static int Mod(int x, int k)
     {
         while (x < 0)

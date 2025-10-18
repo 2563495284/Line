@@ -55,6 +55,7 @@ public class CommandLineCtrl : MonoBehaviour, IPointerClickHandler
     private void OnEnable()
     {
         inputField.ActivateInputField();
+        inputField.text = "";
     }
     void OnDisable()
     {
@@ -105,54 +106,90 @@ public class CommandLineCtrl : MonoBehaviour, IPointerClickHandler
         }
 
         // 分割命令
-        var parts = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        string currentPart = parts.Length > 0 ? parts[parts.Length - 1] : input;
-        bool isFirstPart = parts.Length == 1;
-
+        (int wordIdx, List<string> parts) = GetSplitWords(inputField.text);
+        string currentPart = wordIdx > parts.Count || wordIdx <= 0 ? "" : parts[wordIdx - 1];
         // 如果是第一个部分且不是空格结尾，尝试补全命令
-        if (isFirstPart)
+        if (wordIdx == 1)
         {
             var matches = _commandLibrary.FindMatchingCommands(currentPart);
 
             suggestionTips.Show();
             suggestionTips.SetList(matches);
-            // if (matches.Count > 0)
-            // {
-            //     // 显示建议
+        }
+        else if (wordIdx > 1)
+        {
+            CommandInfo info = _commandLibrary.GetCommandInfo(parts[0]);
+            if (info == null)
+            {
+                suggestionTips.Hide();
+                suggestionTips.Clear();
+                return;
+            }
+            CommandArgument argInfo = info.Arguments.Count > wordIdx - 2 ? info.Arguments[wordIdx - 2] : null;
+            if (argInfo == null)
+            {
+                suggestionTips.Hide();
+                suggestionTips.Clear();
+                return;
+            }
+            var matches = _commandLibrary.FindMatchingArgs(argInfo.Name, currentPart);
+            suggestionTips.Show();
+            suggestionTips.SetList(matches.res, matches.onlyTips);
 
-            //     // 如果只有一个匹配项，自动补全
-            //     if (matches.Count == 1)
-            //     {
-            //         string completed = matches[0];
-            //         string newInput = input.Substring(0, input.Length - currentPart.Length) + completed + completionChar;
-            //         inputField.text = newInput;
-            //         inputField.caretPosition = newInput.Length;
-            //         suggestionText.text = "";
-            //         HideSuggestionTips();
-            //     }
-            // }
-            // else
-            // {
-            //     suggestionText.text = "暂无匹配命令";
-            // }
+        }
+        else
+        {
+            suggestionTips.Clear();
+            suggestionTips.Hide();
         }
     }
 
     // 处理自动补全
     private void HandleAutoCompletion()
     {
-        if (suggestionTips.Matches.Count == 0)
+        if (suggestionTips.Matches.Count == 0 || suggestionTips.onlyTips)
             return;
+        (int currentIndex, List<string> inputParts) = GetSplitWords(inputField.text);
         string lastMatch = suggestionTips.Matches[^1];
-        string[] inputParts = inputField.text.Split(' ');
-        inputParts[^1] = lastMatch;
-        string newCmd = string.Join(" ", inputParts);
-        inputField.text = newCmd;
+        if (currentIndex == 0 || currentIndex > inputParts.Count)
+            return;
+        inputParts[currentIndex - 1] = lastMatch;
+        string newText = string.Join(" ", inputParts);
+        inputField.text = newText;
         suggestionTips.Clear();
         suggestionTips.Hide();
+        inputField.caretPosition = newText.Length;
 
     }
 
+    // 获取光标所在的单词索引（从1开始）
+    private (int, List<string>) GetSplitWords(string str, char split = ' ')
+    {
+        char[] splits = new[] { ' ', split };
+        List<string> parts = str.Split(splits).ToList();
+
+        int caretPos = Mathf.Clamp(inputField.caretPosition, 0, inputField.text.Length);
+
+        // 获取光标前的文本并分割为单词
+        string[] wordsBefore = str.Substring(0, caretPos)
+            .Split(splits, System.StringSplitOptions.RemoveEmptyEntries);
+        int wordCount = wordsBefore.Length;
+
+        // 检查光标是否在空格后且前面有单词
+        bool isAfterSpace = caretPos > 0 && caretPos <= str.Length
+            && char.IsWhiteSpace(str[caretPos - 1])
+            && (caretPos == str.Length || !char.IsWhiteSpace(str[caretPos]));
+
+        // 计算最终索引
+        if (isAfterSpace && wordCount > 0)
+            return (wordCount + 1, parts);
+
+        // 处理光标在文本开头但后面有单词的情况
+        if (wordCount == 0)
+            return (str.Split(splits, System.StringSplitOptions.RemoveEmptyEntries).Length > 0 ? 1 : 0, parts);
+
+        return (wordCount, parts);
+    }
     // 解析并执行命令
     private void ParseAndExecuteCommand(string input)
     {

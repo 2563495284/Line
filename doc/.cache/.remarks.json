@@ -1,16 +1,25 @@
 {
     "CardType": {
         "filePath": "..\\docs\\卡牌配置.xlsx",
-        "fileMD5": "5f175c9f4d3124427b4ad404a44567c7",
+        "fileMD5": "f13aef1b660237ff7fff2d758d2628f7",
         "generate": [
             1,
             2
         ],
         "sheetType": "Enum"
     },
-    "ReleaseMode": {
+    "ReleaseTarget": {
         "filePath": "..\\docs\\卡牌配置.xlsx",
-        "fileMD5": "5f175c9f4d3124427b4ad404a44567c7",
+        "fileMD5": "f13aef1b660237ff7fff2d758d2628f7",
+        "generate": [
+            1,
+            2
+        ],
+        "sheetType": "Enum"
+    },
+    "EventImpactType": {
+        "filePath": "..\\docs\\消息配置.xlsx",
+        "fileMD5": "7f8bae08b0f4d3010f9e5fa5cea8e961",
         "generate": [
             1,
             2
@@ -26,14 +35,107 @@
         ],
         "sheetType": "Enum"
     },
-    "AttrType": {
+    "StockAttrType": {
         "filePath": "..\\docs\\词条配置.xlsx",
-        "fileMD5": "d6813e5b04b1b48f4d4af9abd70c3f49",
+        "fileMD5": "0ae7c7633bb47940dca19d83d59e7138",
         "generate": [
             1,
             2
         ],
         "sheetType": "Enum"
+    },
+    "AttrType": {
+        "filePath": "..\\docs\\词条配置.xlsx",
+        "fileMD5": "0ae7c7633bb47940dca19d83d59e7138",
+        "generate": [
+            1,
+            2
+        ],
+        "sheetType": "Enum"
+    },
+    "StockStrategyConfig": {
+        "fields": {
+            "id": {
+                "type": "int",
+                "generate": [
+                    1
+                ],
+                "annotation": "决策链id"
+            },
+            "serialId": {
+                "type": "int",
+                "generate": [
+                    1
+                ],
+                "annotation": "决策链系列"
+            },
+            "round": {
+                "type": "int",
+                "generate": [
+                    1
+                ],
+                "annotation": "回合数"
+            },
+            "attrs": {
+                "type": "string[]",
+                "generate": [
+                    1
+                ],
+                "annotation": "属性（attr#回合数*延迟)"
+            }
+        },
+        "filePath": "..\\docs\\决策链配置.xlsx",
+        "fileMD5": "4e85836832e600969603069c60925b52",
+        "sheetType": "Horizontal",
+        "isSingleMainKey": true,
+        "mainKeySubs": [
+            0
+        ],
+        "mainKeyNames": [
+            "id"
+        ]
+    },
+    "StockStrategySerialConfig": {
+        "fields": {
+            "serialId": {
+                "type": "int",
+                "generate": [
+                    1
+                ],
+                "annotation": "决策链系列"
+            },
+            "name": {
+                "type": "string",
+                "generate": [
+                    1
+                ],
+                "annotation": "决策链名称"
+            },
+            "desc": {
+                "type": "string",
+                "generate": [
+                    1
+                ],
+                "annotation": "决策链描述"
+            },
+            "emotion": {
+                "type": "int",
+                "generate": [
+                    1
+                ],
+                "annotation": "影响类型（0中立，1积极，2消极）"
+            }
+        },
+        "filePath": "..\\docs\\决策链配置.xlsx",
+        "fileMD5": "4e85836832e600969603069c60925b52",
+        "sheetType": "Horizontal",
+        "isSingleMainKey": true,
+        "mainKeySubs": [
+            0
+        ],
+        "mainKeyNames": [
+            "serialId"
+        ]
     },
     "CardConfig": {
         "fields": {
@@ -70,8 +172,8 @@
                 "generate": [
                     1
                 ],
-                "annotation": "释放类型（0无目标，1对股票释放）",
-                "enum": "ReleaseMode"
+                "annotation": "目标类型",
+                "enum": "ReleaseTarget"
             },
             "manaCost": {
                 "type": "int",
@@ -88,23 +190,69 @@
                 "annotation": "卡牌类型",
                 "enum": "CardType"
             },
-            "effects": {
+            "releaseEffect": {
                 "type": "string[]",
                 "generate": [
                     1
                 ],
                 "annotation": "效果数组"
             },
-            "effectsWithTarget": {
+            "drawedEffect": {
                 "type": "string[]",
                 "generate": [
                     1
                 ],
                 "annotation": "有向效果数组"
+            },
+            "afterDrawEffect": {
+                "type": "string[]"
             }
         },
         "filePath": "..\\docs\\卡牌配置.xlsx",
-        "fileMD5": "5f175c9f4d3124427b4ad404a44567c7",
+        "fileMD5": "f13aef1b660237ff7fff2d758d2628f7",
+        "sheetType": "Horizontal",
+        "isSingleMainKey": true,
+        "mainKeySubs": [
+            0
+        ],
+        "mainKeyNames": [
+            "id"
+        ]
+    },
+    "EventMessageConfig": {
+        "fields": {
+            "id": {
+                "type": "int",
+                "generate": [
+                    1
+                ],
+                "annotation": "消息id"
+            },
+            "stockId": {
+                "type": "int",
+                "generate": [
+                    1
+                ],
+                "annotation": "相关股票id"
+            },
+            "impactType": {
+                "type": "int",
+                "generate": [
+                    1
+                ],
+                "annotation": "影响类型",
+                "enum": "EventImpactType"
+            },
+            "message": {
+                "type": "string",
+                "generate": [
+                    1
+                ],
+                "annotation": "消息字符串"
+            }
+        },
+        "filePath": "..\\docs\\消息配置.xlsx",
+        "fileMD5": "7f8bae08b0f4d3010f9e5fa5cea8e961",
         "sheetType": "Horizontal",
         "isSingleMainKey": true,
         "mainKeySubs": [
@@ -633,7 +781,7 @@
             "id"
         ]
     },
-    "AttrConfig": {
+    "StockAttrConfig": {
         "fields": {
             "id": {
                 "type": "int",
@@ -641,7 +789,7 @@
                     1
                 ],
                 "annotation": "词条id",
-                "enum": "AttrType"
+                "enum": "StockAttrType"
             },
             "name": {
                 "type": "string",
@@ -655,32 +803,39 @@
                 "generate": [
                     1
                 ],
-                "annotation": "标识"
+                "annotation": "符号"
             },
             "desc": {
                 "type": "string",
                 "generate": [
                     1
                 ],
-                "annotation": "格式化描述"
+                "annotation": "描述"
             },
-            "icon": {
-                "type": "string",
+            "effect1": {
+                "type": "string[]",
                 "generate": [
                     1
                 ],
-                "annotation": "图标"
+                "annotation": "回合开始时效果"
             },
-            "originValue": {
-                "type": "float",
+            "effect2": {
+                "type": "string[]",
                 "generate": [
                     1
                 ],
-                "annotation": "初始值"
+                "annotation": "股价计算前效果"
+            },
+            "effect3": {
+                "type": "string[]",
+                "generate": [
+                    1
+                ],
+                "annotation": "回合清算时效果"
             }
         },
         "filePath": "..\\docs\\词条配置.xlsx",
-        "fileMD5": "d6813e5b04b1b48f4d4af9abd70c3f49",
+        "fileMD5": "0ae7c7633bb47940dca19d83d59e7138",
         "sheetType": "Horizontal",
         "isSingleMainKey": true,
         "mainKeySubs": [
@@ -689,6 +844,6 @@
         "mainKeyNames": [
             "id"
         ],
-        "mainKeyOnlyOneAndIsEnum": "AttrType"
+        "mainKeyOnlyOneAndIsEnum": "StockAttrType"
     }
 }

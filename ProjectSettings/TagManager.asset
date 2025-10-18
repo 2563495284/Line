@@ -41,21 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: New Layer 1
-    uniqueID: 241700319
-    locked: 0
-  - name: New Layer 2
-    uniqueID: 4139741633
-    locked: 0
-  - name: Line
-    uniqueID: 948551841
-    locked: 0
-  - name: Card
-    uniqueID: 3561431087
-    locked: 0
-  - name: UI
-    uniqueID: 2954218373
+  - name: Game
+    uniqueID: 1371443431
     locked: 0
   - name: Tips
-    uniqueID: 2475693077
+    uniqueID: 1907696501
+    locked: 0
+  - name: Settlement
+    uniqueID: 2954218373
+    locked: 0
+  - name: Mask
+    uniqueID: 452725509
+    locked: 0
+  - name: UI
+    uniqueID: 1278631353
     locked: 0

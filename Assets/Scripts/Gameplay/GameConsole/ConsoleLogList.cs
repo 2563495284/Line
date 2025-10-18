@@ -30,12 +30,16 @@ public class ConsoleLogList : MonoBehaviour
 
     [Header("布局参数")]
     [SerializeField] private float spacing = 4f; // Item间距
-    [SerializeField] private float scrollSensitivity = 0.05f; // Item间距
+    [SerializeField] private float scrollSensitivity = 8f;
+    [SerializeField] private float scrollSpeed = 5f;
 
-    private List<LogRenderInfo> renderList = new List<LogRenderInfo>();
+
+    private Queue<LogRenderInfo> renderList = new Queue<LogRenderInfo>();
     private List<ConsoleLogItem> comList = new();
     public List<LogData> Logs => renderList.Select(e => e.data).ToList();
     private float contentHeight = 0;
+    private float targetViewProgress = 1;
+    private bool isInDragSlider = false;
     public void Init()
     {
         contentHeight = 0;
@@ -43,6 +47,8 @@ public class ConsoleLogList : MonoBehaviour
     }
     private void OnScroll(Vector2 v)
     {
+        if (isInDragSlider)
+            targetViewProgress = scrollRect.normalizedPosition.y;
         RefreshView();
     }
 
@@ -50,17 +56,13 @@ public class ConsoleLogList : MonoBehaviour
     {
         // 获取鼠标滚轮输入（正负值表示上下滚动）
         float scrollInput = Input.mouseScrollDelta.y;
-
-        // 如果没有滚轮输入，直接返回
-        if (Mathf.Approximately(scrollInput, 0))
-            return;
-
         // 如果设置了只在悬停时响应，检查鼠标是否在ScrollRect上
-        if (!IsMouseOverScrollRect())
-            return;
-
+        if (IsMouseOverScrollRect() && !Mathf.Approximately(scrollInput, 0))
+            HandleScroll(scrollInput);
         // 处理滚轮滚动
-        HandleScroll(scrollInput);
+        Vector2 newPos = scrollRect.normalizedPosition;
+        newPos.y = Mathf.Lerp(newPos.y, targetViewProgress, Mathf.Clamp01(scrollSpeed * Time.deltaTime));
+        scrollRect.normalizedPosition = newPos;
     }
 
     /// <summary>
@@ -68,19 +70,18 @@ public class ConsoleLogList : MonoBehaviour
     /// </summary>
     private void HandleScroll(float scrollInput)
     {
-        // 确保有Content可以滚动
-        if (scrollRect.content == null)
-            return;
+        targetViewProgress = scrollRect.normalizedPosition.y;
+        targetViewProgress += scrollInput * scrollSensitivity / (Input.GetKey(KeyCode.LeftControl) ? 50 : renderList.Count);
+        targetViewProgress = Mathf.Clamp01(targetViewProgress);
+    }
+    public void OnStartDragSlider()
+    {
+        isInDragSlider = true;
+    }
+    public void OnReleaseSlider()
+    {
+        isInDragSlider = false;
 
-        // 计算新的滚动位置（滚轮向上滚动时scrollInput为正，内容向上移动，normalizedPosition.y增大）
-        Vector2 newPos = scrollRect.normalizedPosition;
-        newPos.y += scrollInput * scrollSensitivity;
-
-        // 限制滚动位置在0到1之间
-        newPos.y = Mathf.Clamp01(newPos.y);
-
-        // 应用新的滚动位置
-        scrollRect.normalizedPosition = newPos;
     }
 
     /// <summary>
@@ -103,6 +104,9 @@ public class ConsoleLogList : MonoBehaviour
     }
     void OnEnable()
     {
+        ApplyCache();
+        RefreshContentHeight();
+        ScrollToBottom();
         RefreshView();
     }
     void OnDisable()
@@ -113,45 +117,62 @@ public class ConsoleLogList : MonoBehaviour
             e.gameObject.OPPush();
         });
         comList.Clear();
-        renderList.ForEach(e => e.item = null);
+        foreach (var e in renderList)
+            e.item = null;
     }
+    private List<(LogData data, Color? color)> preCache = new();
     public void AddLog(LogData logData, Color? specColor = null)
     {
+        preCache.Add((logData, specColor));
+        if (!gameObject.activeInHierarchy)
+            return;
+        ApplyCache();
+        ScrollToBottom();
+        RefreshView();
+    }
+    private void ApplyCache()
+    {
+
         GameObject logItem = logItemPrefab.OPGet(content);
         ConsoleLogItem com = logItem.GetComponent<ConsoleLogItem>();
-        com.SetData(logData, specColor);
-        float height = com.Height;
-        int idx = renderList.Count;
-        float spacingOffset = renderList.Count > 0 ? spacing : 0;
-        float posY = -contentHeight - spacingOffset;
-        contentHeight = contentHeight + spacingOffset + height;
-        renderList.Add(new LogRenderInfo
+        preCache.ForEach(e =>
         {
-            data = logData,
-            item = null,
-            height = height,
-            index = idx,
-            posY = posY,
-            specColor = specColor
+            com.SetData(e.data, e.color);
+            float height = com.Height;
+            int idx = renderList.Count;
+            float spacingOffset = renderList.Count > 0 ? spacing : 0;
+            float posY = -contentHeight - spacingOffset;
+            contentHeight = contentHeight + spacingOffset + height;
+            if (renderList.Count == ConsoleConfig.maxConsoleNum)
+                renderList.Dequeue();
+            renderList.Enqueue(new LogRenderInfo
+            {
+                data = e.data,
+                item = null,
+                height = height,
+                index = idx,
+                posY = posY,
+                specColor = e.color
+            });
         });
         com.OnRecycle();
         com.gameObject.OPPush();
-        if (gameObject.activeInHierarchy)
-        {
-            ScrollToBottom();
-            RefreshView();
-        }
+        preCache.Clear();
+    }
+    private void RefreshContentHeight()
+    {
+        content.sizeDelta = new Vector2(content.sizeDelta.x, contentHeight);
+
     }
     private void RefreshView()
     {
-        content.sizeDelta = new Vector2(content.sizeDelta.x, contentHeight);
+        RefreshContentHeight();
         float viewHeight = viewPort.rect.height;
         bool isFullInsert = contentHeight < viewHeight;
         float viewTop = -content.anchoredPosition.y;
         float viewBottom = -content.anchoredPosition.y - viewHeight;
-        for (int i = 0; i < renderList.Count; i++)
+        foreach (LogRenderInfo info in renderList)
         {
-            LogRenderInfo info = renderList[i];
             bool isVisible = isFullInsert || info.Top > viewBottom && info.Bottom < viewTop;
             if (isVisible && info.item == null)
             {
@@ -187,7 +208,8 @@ public class ConsoleLogList : MonoBehaviour
 
     public void ScrollToBottom()
     {
-        scrollRect.verticalNormalizedPosition = 0;
+        targetViewProgress = 0;
+        scrollRect.normalizedPosition = new Vector2(scrollRect.normalizedPosition.x, 0);
     }
 
 

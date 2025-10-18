@@ -1,0 +1,264 @@
+{
+    "1": {
+        "id": 1,
+        "name": "未知",
+        "key": "unknown",
+        "desc": "公司发展有一些变化，但还不清楚有什么影响",
+        "effect1": [],
+        "effect2": [],
+        "effect3": []
+    },
+    "2": {
+        "id": 2,
+        "name": "爬升",
+        "key": "up_slow",
+        "desc": "每日公司业绩额外上升0.1，若业绩上升，再放大10%",
+        "effect1": [],
+        "effect2": [
+            "Add#0.1",
+            "UpScale#1.1"
+        ],
+        "effect3": []
+    },
+    "3": {
+        "id": 3,
+        "name": "高歌",
+        "key": "up_middle",
+        "desc": "每日公司业绩额外上升0.3，若业绩上升，再放大20%",
+        "effect1": [],
+        "effect2": [
+            "Add#0.3",
+            "UpScale1.2"
+        ],
+        "effect3": []
+    },
+    "4": {
+        "id": 4,
+        "name": "火箭",
+        "key": "up_fast",
+        "desc": "每日公司业绩额外上升0.5，若业绩上升，再放大30%",
+        "effect1": [],
+        "effect2": [
+            "Add#0.5",
+            "UpScale#1.3"
+        ],
+        "effect3": []
+    },
+    "5": {
+        "id": 5,
+        "name": "滑坡",
+        "key": "fall_slow",
+        "desc": "每日公司业绩额外下降0.1，若业绩下降，再放大10%",
+        "effect1": [],
+        "effect2": [
+            "Add#-0.1",
+            "DownScale#1.1"
+        ],
+        "effect3": []
+    },
+    "6": {
+        "id": 6,
+        "name": "摔落",
+        "key": "fall_middle",
+        "desc": "每日公司业绩额外下降0.3，若业绩下降，再放大20%",
+        "effect1": [],
+        "effect2": [
+            "Add#-0.3",
+            "DownScale#1.1"
+        ],
+        "effect3": []
+    },
+    "7": {
+        "id": 7,
+        "name": "断崖",
+        "key": "fall_fast",
+        "desc": "每日公司业绩额外下降0.5，若业绩下降，再放大30%",
+        "effect1": [],
+        "effect2": [
+            "Add#-0.5",
+            "DownScale#1.3"
+        ],
+        "effect3": []
+    },
+    "8": {
+        "id": 8,
+        "name": "摇摆",
+        "key": "pingpong",
+        "desc": "每日，若上个交易日公司业绩上升，则此次业绩缩减15%，若上个交易日公司业绩下降，则此次业绩放大15%",
+        "effect1": [],
+        "effect2": [
+            "UpScaleLast#0.85",
+            "DownScaleLast#1.15"
+        ],
+        "effect3": []
+    },
+    "9": {
+        "id": 9,
+        "name": "懒散",
+        "key": "lazy",
+        "desc": "每日，公司业绩变化缩减30%",
+        "effect1": [],
+        "effect2": [
+            "Scale#0.3"
+        ],
+        "effect3": []
+    },
+    "10": {
+        "id": 10,
+        "name": "敏感",
+        "key": "sensitive",
+        "desc": "每日8%的公司实力变为市场敏感度",
+        "effect1": [
+            "Transfer#1#2#0.08"
+        ],
+        "effect2": [],
+        "effect3": []
+    },
+    "11": {
+        "id": 11,
+        "name": "盲从",
+        "key": "blindly",
+        "desc": "每日8%的公司实力变为行业冲击乘数",
+        "effect1": [
+            "Transfer#1#3#0.08"
+        ],
+        "effect2": [],
+        "effect3": []
+    },
+    "12": {
+        "id": 12,
+        "name": "腐败",
+        "key": "corruption",
+        "desc": "每日5%的公司实力变为市场敏感度，5%的公司实力变为行业冲击乘数，交易日结束后各增加5%并给予【滑坡*】",
+        "effect1": [
+            "Transfer#1#2#0.05*1",
+            "Transfer#1#3#0.05*1"
+        ],
+        "effect2": [],
+        "effect3": [
+            "GrowAdd#1#0.05",
+            "AttrAdd#5#-1"
+        ]
+    },
+    "13": {
+        "id": 13,
+        "name": "混乱",
+        "key": "chaotic",
+        "desc": "每日，1/3概率业绩上升0.4，1/3概率业绩放大30%，1/3概率业绩下降0.6",
+        "effect1": [],
+        "effect2": [
+            "Add#0.4%1",
+            "Scale#1.3%1",
+            "Add#-0.6%1"
+        ],
+        "effect3": []
+    },
+    "14": {
+        "id": 14,
+        "name": "创新",
+        "key": "innovative",
+        "desc": "每回合8%行业冲击乘数变为公司实力",
+        "effect1": [
+            "Transfer#3#1#0.08"
+        ],
+        "effect2": [],
+        "effect3": []
+    },
+    "15": {
+        "id": 15,
+        "name": "衰老",
+        "key": "aging",
+        "desc": "每日公司业绩额外下降0.15，交易日结束时该值增加0.2",
+        "effect1": [],
+        "effect2": [
+            "Add#-0.15*1"
+        ],
+        "effect3": [
+            "GrowAdd#1#0.2"
+        ]
+    },
+    "16": {
+        "id": 16,
+        "name": "生长",
+        "key": "growing",
+        "desc": "每日业绩额外上升0.2，交易日结束时该值增加0.1，3/1概率8%行业冲击乘数变为公司实力",
+        "effect1": [
+            "Transfer#3#1#0.08%0.33"
+        ],
+        "effect2": [
+            "Add#0.2*1"
+        ],
+        "effect3": [
+            "GrowAdd#1#0.1"
+        ]
+    },
+    "17": {
+        "id": 17,
+        "name": "扩张",
+        "key": "expanding",
+        "desc": "每日业绩扩大35%，交易日结束时该值减少7%，20%公司实力变为市场敏感度，交易日结束时该值减少8%",
+        "effect1": [
+            "Transfer#1#2#0.2*1"
+        ],
+        "effect2": [
+            "Scale#1.35*2"
+        ],
+        "effect3": [
+            "GrowAdd#1#-0.08",
+            "GrowAdd#2#-0.07"
+        ]
+    },
+    "18": {
+        "id": 18,
+        "name": "精简",
+        "key": "streamline",
+        "desc": "每日业绩缩减20%，交易日结束时该值减少5%，10%行业冲击乘数变为公司实力，交易日结束时该值增加8%",
+        "effect1": [
+            "Transfer#3#1#0.1*1"
+        ],
+        "effect2": [
+            "Scale#0.8*2"
+        ],
+        "effect3": [
+            "GrowAdd#1#0.08",
+            "GrowAdd#2#0.05"
+        ]
+    },
+    "19": {
+        "id": 19,
+        "name": "整顿",
+        "key": "rectify",
+        "desc": "每日5%市场敏感度和5%行业冲击乘数变为公司实力，交易日结束后各增加3%，1/3概率移除一条负面属性*",
+        "effect1": [
+            "Transfer#2#1#0.05*1",
+            "Transfer#3#1#0.05*1"
+        ],
+        "effect2": [],
+        "effect3": [
+            "GrowAdd#1#0.03",
+            "AttrPurify#1%0.3"
+        ]
+    },
+    "20": {
+        "id": 20,
+        "name": "冒险",
+        "key": "adventure",
+        "desc": "每日8%行业冲击乘数变为市场敏感度",
+        "effect1": [
+            "Transfer#3#2#0.08"
+        ],
+        "effect2": [],
+        "effect3": []
+    },
+    "21": {
+        "id": 21,
+        "name": "停滞",
+        "key": "stagnant",
+        "desc": "每回合8%市场敏感度变为行业冲击乘数",
+        "effect1": [
+            "Transfer#2#3#0.08"
+        ],
+        "effect2": [],
+        "effect3": []
+    }
+}

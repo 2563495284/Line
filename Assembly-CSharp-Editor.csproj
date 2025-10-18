@@ -52,6 +52,7 @@
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\SRActions\SRAction.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\Comparers\TypeInfoComparer.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\SRDrawer.cs" />
+    <Compile Include="Assets\Editor\ScriptReferenceScanner.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\SRDrawerOptions.cs" />
     <Compile Include="Assets\SREditor\Package\Editor\Scripts\SRActions\InstanceClassSRAction.cs" />
     <Compile Include="Assets\Editor\ProjectSearch.cs" />

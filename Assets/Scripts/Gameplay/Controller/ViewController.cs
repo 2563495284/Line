@@ -21,11 +21,19 @@ public class ViewController : ControllBase
 {
     private List<LevelView> views = new();
     private Dictionary<string, Func<object, IEnumerator>> performMap = new();
-    public Canvas gameCanvas { get; private set; }
-    private Dictionary<int, Transform> viewComRootInCanvas = new();
     public ViewController(LevelRoot viewRoot) : base(viewRoot)
     {
-        gameCanvas = GameObject.Instantiate(Global.Ins.canvasPrefab, viewRoot.transform).GetComponent<Canvas>();
+    }
+    public void AddView(LevelView view)
+    {
+        views.Add(view);
+        view.OnEnter();
+    }
+    public override void OnExit()
+    {
+        base.OnExit();
+        views.ForEach(e => e.OnExit());
+        views.Clear();
     }
     public IEnumerator RequestPerform(string key, object args)
     {
@@ -33,44 +41,6 @@ public class ViewController : ControllBase
             yield return performMap[key].Invoke(args);
         else
             yield return null;
-    }
-    public override void OnEnter()
-    {
-        base.OnEnter();
-        List<string> viewPaths = ResPath.Level.AllPaths.Where(e => e.Contains("Level/View")).ToList();
-        viewPaths.ForEach(e =>
-        {
-            LevelView view = LoadManager.Ins.GetRes<GameObject>("Level", e).OPGet().GetComponent<LevelView>();
-            view.transform.SetParent(Root.transform);
-            views.Add(view);
-            view.Init();
-        });
-    }
-    public override void OnExit()
-    {
-        base.OnExit();
-        views.ForEach(e =>
-        {
-            e.Hide();
-            e.gameObject.OPPush();
-        });
-        gameCanvas = null;
-        GameObject.Destroy(Root.gameObject);
-    }
-    public void AddCanvasCom(GameObject com, int index)
-    {
-        if (!viewComRootInCanvas.ContainsKey(index))
-        {
-            RectTransform rt = new GameObject($"comRoot_{index}").AddComponent<RectTransform>();
-            rt.SetParent(gameCanvas.transform);
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(1, 1);
-            rt.sizeDelta = new Vector2(0, 0);
-            rt.anchoredPosition = new Vector2(0, 0);
-            viewComRootInCanvas.Add(index, rt);
-            rt.SetSiblingIndex(index);
-        }
-        com.transform.SetParent(viewComRootInCanvas[index], false);
     }
     public void BindPerform(string key, Func<object, IEnumerator> method)
     {
@@ -84,20 +54,8 @@ public class ViewController : ControllBase
         if (performMap[key] == method)
             performMap.Remove(key);
     }
-    public void RegisterView(LevelView view)
-    {
-        views.Add(view);
-    }
-    public void UnregisterView(LevelView view)
-    {
-        views.Remove(view);
-    }
     public T GetView<T>()
     {
         return default;
-    }
-    public void ShowTips(string message, TipsType tipsType = TipsType.Info, float duration = -1)
-    {
-
     }
 }

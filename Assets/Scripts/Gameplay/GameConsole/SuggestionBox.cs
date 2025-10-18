@@ -9,6 +9,7 @@ public class SuggestionBox : MonoBehaviour
     public TextMeshProUGUI text;
     public int maxMatchNum = 8;
     public float paddingOffset = 16;
+    public bool onlyTips = false;
     public void Show()
     {
         gameObject.SetActive(true);
@@ -20,10 +21,12 @@ public class SuggestionBox : MonoBehaviour
     public void Clear()
     {
         text.text = "";
+        onlyTips = false;
         Matches.Clear();
     }
-    public void SetList(List<string> matches)
+    public void SetList(List<string> matches, bool onlyTips = false)
     {
+        this.onlyTips = onlyTips;
         Matches = matches.Take(8).ToList();
         string str = "";
         if (Matches.Count > 0)
@@ -37,7 +40,7 @@ public class SuggestionBox : MonoBehaviour
         }
         else
         {
-            str = "暂无匹配命令";
+            str = "no matches";
         }
         text.text = str;
         text.ForceMeshUpdate();

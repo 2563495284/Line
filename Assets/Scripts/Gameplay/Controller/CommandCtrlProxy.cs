@@ -2,19 +2,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
+public enum ReactionTiming
+{
+    PRE,
+    POST
+}
+// 自定义特性：带字符串参数的协程标记
+[AttributeUsage(AttributeTargets.Method)]
+public class TagEnumeratorAttribute : Attribute
+{
+    // 用于层级构建的字符串标识
+    public string Tag { get; }
 
+    // 构造函数，接受层名称参数
+    public TagEnumeratorAttribute(string tag = "")
+    {
+        Tag = tag;
+    }
+}
 
 public class CommandCtrlProxy
 {
-    private static int asyncIndex = 1;
     readonly LevelController ctrl;
-    public CommandCtrlProxy(LevelController ctrl)
-    {
-        this.ctrl = ctrl;
-    }
     private Dictionary<Type, List<CMDReaction>> preReactions = new();
-    private Dictionary<Type, CMDPerformer> performers = new();
+    private Dictionary<Type, CMDProcessor> processors = new();
     private Dictionary<Type, List<CMDReaction>> postReactions = new();
     public event Action Event_EnterPerform = () => { };
     public event Action Event_ExitPerform = () => { };
@@ -23,27 +36,41 @@ public class CommandCtrlProxy
     private Queue<LevelCommand> cmdQueue = new();
     public Coroutine QueueCoroutine { get; private set; } = null;
 
-
-
-    public void AttachPerformer<T>(CMDPerformer<T> performer) where T : LevelCommand
+    public CommandCtrlProxy(LevelController ctrl)
+    {
+        this.ctrl = ctrl;
+        AttachProcessor<CommandGroup>(CommandGroupProcessor);
+    }
+    [TagEnumerator("Group")]
+    private IEnumerator CommandGroupProcessor(CommandGroup grp)
+    {
+        yield return RunInParallel(grp.Cmds.Select(e => CommandProcessFlow(e)).ToArray());
+    }
+    public void AttachProcessor<T>(CMDPerformer<T> performer) where T : LevelCommand
     {
         Type type = typeof(T);
-        IEnumerator wrappedPerformer(LevelCommand action) => performer((T)action);
-
-        if (performers.ContainsKey(type))
-            performers[type] = wrappedPerformer;
+        IEnumerator wrappedPerformer(LevelCommand action)
+        {
+            var attr = performer.Method.GetCustomAttribute<TagEnumeratorAttribute>();
+            if (attr != null)
+                return performer((T)action).WithData(attr.Tag, "CMD");
+            else
+                return performer((T)action);
+        }
+        if (processors.ContainsKey(type))
+            processors[type] = wrappedPerformer;
         else
-            performers.Add(type, wrappedPerformer);
+            processors.Add(type, wrappedPerformer);
     }
-    public void DetachPerformer<T>() where T : LevelCommand
+    public void DetachProcessor<T>() where T : LevelCommand
     {
         Type type = typeof(T);
 
-        if (performers.ContainsKey(type))
-            performers.Remove(type);
+        if (processors.ContainsKey(type))
+            processors.Remove(type);
     }
 
-    public void SubscribeReaction<T>(Action<T> reaction, ReactionTiming timing) where T : LevelCommand
+    public void SubscribeReaction<T>(CMDReaction<T> reaction, ReactionTiming timing) where T : LevelCommand
     {
         Dictionary<Type, List<CMDReaction>> subs = timing == ReactionTiming.PRE ? preReactions : postReactions;
 
@@ -58,7 +85,7 @@ public class CommandCtrlProxy
         }
     }
 
-    public void UnsubscribeReaction<T>(Action<T> reaction, ReactionTiming timing) where T : LevelCommand
+    public void UnsubscribeReaction<T>(CMDReaction<T> reaction, ReactionTiming timing) where T : LevelCommand
     {
         Dictionary<Type, List<CMDReaction>> subs = timing == ReactionTiming.PRE ? preReactions : postReactions;
 
@@ -99,7 +126,7 @@ public class CommandCtrlProxy
     /// <returns></returns>
     public IEnumerator ExeCMD(LevelCommand cmd)
     {
-        yield return CommandPerformFlow(cmd);
+        yield return CommandProcessFlow(cmd);
     }
 
 
@@ -112,28 +139,66 @@ public class CommandCtrlProxy
         while (cmdQueue.Count > 0)
         {
             LevelCommand cmd = cmdQueue.Dequeue();
-            yield return CommandPerformFlow(cmd);
+            yield return CommandProcessFlow(cmd);
         }
 
         QueueCoroutine = null;
         Event_ExitPerform.Invoke();
     }
 
+    private IEnumerator RunInParallel(params IEnumerator[] coroutines)
+    {
+        if (coroutines == null || coroutines.Length == 0)
+            yield break;
+
+        // 存储所有活跃的协程迭代器
+        var activeCoroutines = new List<IEnumerator>(coroutines);
+
+        while (activeCoroutines.Count > 0)
+        {
+            // 遍历所有活跃协程并推进其执行
+            for (int i = activeCoroutines.Count - 1; i >= 0; i--)
+            {
+                var coroutine = activeCoroutines[i];
+
+                // 推进当前协程的迭代器
+                bool isCompleted;
+                try
+                {
+                    isCompleted = !coroutine.MoveNext();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"协程执行出错: {e.Message}");
+                    isCompleted = true;
+                }
+
+                // 如果协程已完成，从活跃列表中移除
+                if (isCompleted)
+                {
+                    activeCoroutines.RemoveAt(i);
+                }
+            }
+
+            // 等待一帧，让所有协程有机会推进
+            yield return null;
+        }
+    }
     /// <summary>
     /// 对于一个LevelCommand的完整的perform流程定义
     /// </summary>
-    private IEnumerator CommandPerformFlow(LevelCommand cmd)
+    private IEnumerator CommandProcessFlow(LevelCommand cmd)
     {
         PerformReactions(cmd, preReactions);
-        List<LevelCommand> preCmds = cmd.PickGen();
+        List<LevelCommand> preCmds = cmd.PickSub();
         yield return PerformCommands(preCmds);
 
         yield return PerformPerformer(cmd);
-        List<LevelCommand> subCmds = cmd.PickGen();
+        List<LevelCommand> subCmds = cmd.PickSub();
         yield return PerformCommands(subCmds);
 
         PerformReactions(cmd, postReactions);
-        List<LevelCommand> postCmds = cmd.PickGen();
+        List<LevelCommand> postCmds = cmd.PickSub();
         yield return PerformCommands(postCmds);
     }
 
@@ -144,8 +209,10 @@ public class CommandCtrlProxy
     {
         Type type = cmd.GetType();
 
-        if (performers.ContainsKey(type))
-            yield return performers[type](cmd);
+        if (processors.ContainsKey(type))
+        {
+            yield return processors[type](cmd);
+        }
     }
 
     /// <summary>
@@ -155,7 +222,7 @@ public class CommandCtrlProxy
     {
         foreach (LevelCommand cmd in cmds)
         {
-            yield return CommandPerformFlow(cmd);
+            yield return CommandProcessFlow(cmd);
         }
     }
 

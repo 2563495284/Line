@@ -2,137 +2,155 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GameConfig;
-/// <summary>
-/// 每局游戏生成一个LevelController
-/// </summary>
+enum ERoundResult
+{
+    Waiting,
+    Backrupt,
+    Finish,
+}
 public class LevelController : ControllBase
 {
-    public static int CardCNT = 0;
-    public static int EnemyCNT = 0;
-    private List<LevelSystem> systems = new();
-    public LevelConfig Cfg { get; private set; }
-    public int CurrectRound { get; private set; }
+
     private CommandCtrlProxy cmdCtrl;
-    public LevelModel model { get; private set; }
-    public LevelController(LevelConfig levelCfg, LevelRoot root) : base(root)
+    private List<LevelSystem> systems = new();
+    public LevelModel model;
+    public LevelConfig cfg;
+    public LevelController(LevelRoot root, LevelConfig cfg) : base(root)
     {
-        Cfg = levelCfg;
         cmdCtrl = new CommandCtrlProxy(this);
-        model = new LevelModel(levelCfg);
-        //【TODO】生成system
+        View = new ViewController(root);
+        this.cfg = cfg;
+        model = new LevelModel(cfg);
     }
-    #region 生命周期 ==============================
-    public IEnumerator RequestPerform(string key, object args = null)
+
+    public ViewController View { get; private set; }
+    public bool IsOver { get; set; }
+    public void Win()
     {
-        return GM.Ins.View.RequestPerform(key, args);
+        Notify(EventConst.GameWin);
     }
-    public void Notify(string key, object args = null)
+    public void Lose()
     {
-        GM.Ins.View.Send(key, args);
+        Notify(EventConst.GameLose);
     }
-    //关卡开始
     public override void OnEnter()
     {
-        CardCNT = 0;
-        EnemyCNT = 0;
-
-        List<Type> systemCls = LoadManager.GetAllSubCls(typeof(LevelSystem));
+        //Add Class
+        base.OnEnter();
+        View.OnEnter();
+        List<Type> systemCls = LoadManager.Ins.GetAllSerialClass(EDynamicSerial.LevelSystem);
         systems.Clear();
-        systemCls.ForEach(c => systems.Add(Activator.CreateInstance(c, this) as LevelSystem));
-        cmdCtrl.AttachPerformer<NextRoundTurnCMD>(TurnRoundIE);
-        systems.ForEach(e => e.EnableSystem());
+        systemCls.ForEach(c => systems.Add(Activator.CreateInstance(c) as LevelSystem));
+        systems.ForEach(e => e.OnEnter());
 
+        cmdCtrl.SubscribeReaction<FinishRoundCMD>(FinishRoundReaction, ReactionTiming.POST);
+        cmdCtrl.SubscribeReaction<BankruptCMD>(BackruptReaction, ReactionTiming.POST);
+
+        //Launch
+        InvokeAsync(StartLevelFlow(), "LevelFlow");
     }
-    public void OnStart()
-    {
-        model.mana = model.ManaPerTurn;
-        Notify(NotifyConst.UpdateManaUI);
-        Notify(NotifyConst.UpdateMoneyUI);
-        Notify(NotifyConst.UpdateNewsHistory);
-        Notify(NotifyConst.UpdatePlayerAttr);
-        Notify(NotifyConst.UpdateStockChart);
-        Notify(NotifyConst.UpdateStockInfo);
-        DrawCardsCMD drawCardsCMD = new(Cfg.initialDrawCount);
-        AddCMD(drawCardsCMD);
-    }
-    //关卡结束
     public override void OnExit()
     {
+        cmdCtrl.UnsubscribeReaction<FinishRoundCMD>(FinishRoundReaction, ReactionTiming.POST);
+        cmdCtrl.UnsubscribeReaction<BankruptCMD>(BackruptReaction, ReactionTiming.POST);
+
+        //Exit
         base.OnExit();
-        cmdCtrl.DetachPerformer<NextRoundTurnCMD>();
-        systems.ForEach(e => e.DisableSystem());
+        View.OnExit();
+        View = null;
+
+        //Destory
+        systems.ForEach(e => e.OnExit());
         systems.Clear();
         GameObject.Destroy(Root.gameObject);
     }
-
-    #endregion
-    #region 局内流程处理 ===========================
-    private IEnumerator TurnRoundIE(NextRoundTurnCMD cmd)
+    [TagEnumerator("LevelFlow")]
+    private IEnumerator StartLevelFlow()
     {
-        CurrectRound++;
-        if (CurrectRound >= Cfg.targetRounds)
+        yield return AwaitCMD(new StartLevelCMD());
+        while (true)
         {
-            JudgeGame();
+            yield return AwaitCMD(new RouteRunCMD());
+            yield return AwaitCMD(new RoundRunCMD());
+            roundResult = 0;
+            while (roundResult == ERoundResult.Waiting)
+                yield return null;
+            if (roundResult == ERoundResult.Backrupt)
+            {
+                Notify(EventConst.GameLose);
+                break;
+            }
+            else if (cfg.routeList[model.curRouteIdx - 1] > model.money)
+            {
+                Notify(EventConst.GameLose);
+                break;
+            }
+            else if (model.curRouteIdx == cfg.routeList.Count)
+            {
+                Notify(EventConst.GameWin);
+                break;
+            }
+            model.curRouteIdx++;
+            yield return AwaitCMD(new ShopRunCMD());
         }
-        DiscardAllCardsCMD discardAllCardsCMD = new();
-        yield return ExeCMD(discardAllCardsCMD);
-        model.turn++;
-        DrawCardsCMD drawCardsCMD = new(model.CardNumPerTurn);
-        yield return ExeCMD(drawCardsCMD);
-
-        ChangeAttributeCMD changeAttributeCMD = new(AttrType.Social, -1f);
-        yield return ExeCMD(changeAttributeCMD);
-        yield return ExeCMD(new RefillManaCMD());
+        yield return AwaitCMD(new EndLevelCMD());
     }
-    private void JudgeGame()
+    public IEnumerator Perform(string key, object args = null)
     {
-        //【TODO】
+        GM.AddLog("Perform: " + key, LogMsgType.Info);
+        View.Send(key);
+        return View.RequestPerform(key, args);
     }
-
-    #endregion
 
     #region 局内指令处理 ==========================
     public bool IsInPerform => cmdCtrl.QueueCoroutine != null;
     public void BindProcessor<T>(CMDPerformer<T> performer) where T : LevelCommand
     {
-        cmdCtrl.AttachPerformer(performer);
+        cmdCtrl.AttachProcessor(performer);
     }
-    public void UnbindPerformer<T>() where T : LevelCommand
+    public void UnbindProcessor<T>() where T : LevelCommand
     {
-        cmdCtrl.DetachPerformer<T>();
+        cmdCtrl.DetachProcessor<T>();
     }
 
-    public void AddRection<T>(Action<T> reaction, ReactionTiming timing) where T : LevelCommand
+    public void AddRection<T>(CMDReaction<T> reaction, ReactionTiming timing) where T : LevelCommand
     {
         cmdCtrl.SubscribeReaction(reaction, timing);
     }
 
-    public void RemoveRection<T>(Action<T> reaction, ReactionTiming timing) where T : LevelCommand
+    public void RemoveRection<T>(CMDReaction<T> reaction, ReactionTiming timing) where T : LevelCommand
     {
         cmdCtrl.UnsubscribeReaction(reaction, timing);
     }
-    /// <summary>
-    /// 触发指令
-    /// </summary>
-    /// <param name="cmd"></param>
-    /// <param name="OnPerformFinished"></param>
-    public void AddCMD(LevelCommand cmd)
-    {
-        cmdCtrl.AddCMD(cmd);
-    }
-    public IEnumerator ExeCMD(LevelCommand cmd)
+    public IEnumerator AwaitCMD(LevelCommand cmd)
     {
         return cmdCtrl.ExeCMD(cmd);
     }
-    public Coroutine ExeCMDAsync(LevelCommand cmd)
+    public Coroutine ExeCMD(LevelCommand cmd)
     {
         if (GM.Ins.IsTrackCoroutine)
-            return Root.StartTrackedCoroutine(ExeCMD(cmd), "Execute");
+            return Root.StartTrackedCoroutine(AwaitCMD(cmd), "Execute");
         else
-            return Root.StartCoroutine(ExeCMD(cmd));
+            return Root.StartCoroutine(AwaitCMD(cmd));
     }
     #endregion
+    public void Notify(string key, object args = null)
+    {
+        GM.AddLog("Notify: " + key, LogMsgType.Info);
+        View.Send(key, args);
+    }
 
 
+
+    private ERoundResult roundResult = ERoundResult.Waiting;
+    [TagEnumerator("Backrupt")]
+    private void BackruptReaction(BankruptCMD cmd)
+    {
+        roundResult = ERoundResult.Backrupt;
+    }
+    [TagEnumerator("FinishRound")]
+    private void FinishRoundReaction(FinishRoundCMD cmd)
+    {
+        roundResult = ERoundResult.Finish;
+    }
 }

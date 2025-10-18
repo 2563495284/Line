@@ -8,9 +8,12 @@ public class ControllBase
     {
         Root = root;
     }
-    protected Coroutine InvokeAsync(IEnumerator method)
+    protected Coroutine InvokeAsync(IEnumerator method, string tag = "")
     {
-        return Root.StartCoroutine(method);
+        if (UIManager.Ins.console.isTrackCoroutine)
+            return Root.StartTrackedCoroutine(method, tag);
+        else
+            return Root.StartCoroutine(method);
     }
     public virtual void OnEnter()
     {

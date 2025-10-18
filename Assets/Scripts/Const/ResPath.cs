@@ -57,14 +57,14 @@ public static class ResPath
             "Level/CardFace/sell_out",
             "Level/CardFace/spending",
             "Level/CardFace/suppress",
-            "Level/LevelConfig/CommonLevel",
-            "Level/View/BuffView",
-            "Level/View/CardDeckView",
-            "Level/View/ChartView",
-            "Level/View/HUDView",
-            "Level/View/MarketNewsView",
-            "Level/View/NotesView",
-            "Level/View/TipsView"
+            "Level/ScriptableObject/LevelConfig",
+            "Level/Prefabs/Views/CardCom",
+            "Level/Prefabs/Views/GameRoot",
+            "Level/Prefabs/Views/PlayerAttrItem",
+            "Level/Prefabs/Views/sidenoteItem",
+            "Level/Prefabs/Views/StockAttrItem",
+            "Level/Prefabs/Views/StockView",
+            "Level/Prefabs/Views/TipsItem"
         };
 
         // Level\CardFace相关资源
@@ -87,17 +87,17 @@ public static class ResPath
         public const string spending = "Level/CardFace/spending";
         public const string suppress = "Level/CardFace/suppress";
 
-        // Level\LevelConfig相关资源
-        public const string CommonLevel = "Level/LevelConfig/CommonLevel";
+        // Level\ScriptableObject相关资源
+        public const string LevelConfig = "Level/ScriptableObject/LevelConfig";
 
-        // Level\View相关资源
-        public const string BuffView = "Level/View/BuffView";
-        public const string CardDeckView = "Level/View/CardDeckView";
-        public const string ChartView = "Level/View/ChartView";
-        public const string HUDView = "Level/View/HUDView";
-        public const string MarketNewsView = "Level/View/MarketNewsView";
-        public const string NotesView = "Level/View/NotesView";
-        public const string TipsView = "Level/View/TipsView";
+        // Level\Prefabs\Views相关资源
+        public const string CardCom = "Level/Prefabs/Views/CardCom";
+        public const string GameRoot = "Level/Prefabs/Views/GameRoot";
+        public const string PlayerAttrItem = "Level/Prefabs/Views/PlayerAttrItem";
+        public const string sidenoteItem = "Level/Prefabs/Views/sidenoteItem";
+        public const string StockAttrItem = "Level/Prefabs/Views/StockAttrItem";
+        public const string StockView = "Level/Prefabs/Views/StockView";
+        public const string TipsItem = "Level/Prefabs/Views/TipsItem";
 
     }
 
@@ -116,7 +116,11 @@ public static class ResPath
         /// </summary>
         public static readonly string[] AllPaths = new string[]
         {
+            "Start/StartUI"
         };
+
+        // Start相关资源
+        public const string StartUI = "Start/StartUI";
 
     }
 

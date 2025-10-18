@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
+using Unity.VisualScripting;
 
 // 日志数据结构
 public class LogData
@@ -27,6 +28,9 @@ public class ConsoleLogItem : MonoBehaviour
     [SerializeField] private Color errorColor = new Color(1f, 0.27f, 0.27f);
     [SerializeField] private Color echoColor = new Color(0.28f, 1f, 1f);
     [SerializeField] private Color returnColor = new Color(0.254f, 0.77f, 1f);
+    [SerializeField] private Color startColor = MUtils.ParseColor("#fffd6dff");
+    [SerializeField] private Color endColor = MUtils.ParseColor("#ffb452ff");
+    [SerializeField] private Color testColor = MUtils.ParseColor("#a2ff4aff");
     public UnityEvent<float> OnHeightChanged = new UnityEvent<float>();
     protected RectTransform RT => transform as RectTransform;
     public float Height => RT.sizeDelta.y;
@@ -84,6 +88,15 @@ public class ConsoleLogItem : MonoBehaviour
             case LogMsgType.Return:
                 logText.color = returnColor;
                 break;
+            case LogMsgType.Start:
+                logText.color = startColor;
+                break;
+            case LogMsgType.End:
+                logText.color = endColor;
+                break;
+            case LogMsgType.Test:
+                logText.color = testColor;
+                break;
             case LogMsgType.Spec:
                 if (specColor == null)
                     logText.color = Color.magenta;
@@ -102,6 +115,9 @@ public class ConsoleLogItem : MonoBehaviour
             LogMsgType.Error => "Error: ",
             LogMsgType.Echo => "Echo: ",
             LogMsgType.Return => "Return: ",
+            LogMsgType.Start => "Start: ",
+            LogMsgType.End => "End: ",
+            LogMsgType.Test => "Test: ",
             LogMsgType.Spec => "",
             _ => "Info: ",
         };

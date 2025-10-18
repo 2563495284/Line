@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TipsView : LevelView
@@ -6,6 +7,7 @@ public class TipsView : LevelView
 
     [Header("提示设置")]
     [SerializeField] private GameObject tipsPrefab;
+    [SerializeField] private Transform folder;
     [SerializeField] private int maxTipsOnScreen = 3; // 最大同时显示的提示数量
 
     [Header("默认动画设置")]
@@ -14,24 +16,23 @@ public class TipsView : LevelView
     [SerializeField] private float displayDuration = 2f;
     [SerializeField] private float moveDistance = 50f; // 向上移动的距离
 
-    private Queue<TipsCom> activeTips = new Queue<TipsCom>();
-    protected override void OnShow()
+    private Queue<TipsItem> activeTips = new Queue<TipsItem>();
+    public override void OnEnter()
     {
-        Register<PopupTipsArgs>(NotifyConst.PopupTips, OnPopupTips);
+        Register<PopupTipsArgs>(EventConst.PopupTips, OnPopupTips);
     }
-    protected override void OnHide()
+    public override void OnExit()
     {
-        Unregister<PopupTipsArgs>(NotifyConst.PopupTips, OnPopupTips);
+        Unregister<PopupTipsArgs>(EventConst.PopupTips, OnPopupTips);
         tipsPrefab.OPClear();
     }
     /// <summary>
     /// 显示提示消息
     /// </summary>
-    public void OnPopupTips(PopupTipsArgs args)
+    private void OnPopupTips(PopupTipsArgs args)
     {
         if (args.duration < 0) args.duration = displayDuration;
-        TipsCom tipsUI = tipsPrefab.OPGet().GetComponent<TipsCom>();
-        AddCanvasCom(tipsUI.gameObject);
+        TipsItem tipsUI = tipsPrefab.OPGet(folder).GetComponent<TipsItem>();
         tipsUI.ShowTip(args.message, args.tipsType, args.duration, fadeInDuration, fadeOutDuration, moveDistance);
 
         // 添加到活动队列
@@ -40,7 +41,7 @@ public class TipsView : LevelView
         // 限制同时显示的提示数量
         if (activeTips.Count > maxTipsOnScreen)
         {
-            TipsCom oldTip = activeTips.Dequeue();
+            TipsItem oldTip = activeTips.Dequeue();
             oldTip.HideTip();
         }
     }

@@ -9,6 +9,9 @@ public enum LogMsgType
     Error,
     Echo,//命令回显
     Return,//命令返回值
+    Start,//某段进程的开始
+    End,//某段进程的结束
+    Test,//测试
     Spec,//自定义颜色
 }
 public class GameConsole : MonoBehaviour

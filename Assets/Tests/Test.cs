@@ -12,7 +12,7 @@ public class Test : MonoBehaviour
         // del += Log1;
         this.StartTrackedCoroutine(del.Invoke());
     }
-    [TraceableCoroutine("Root")]
+    [TagEnumerator("Root")]
     IEnumerator Log1()
     {
         Debug.Log("1");
@@ -25,7 +25,7 @@ public class Test : MonoBehaviour
         yield return Log3();
         Debug.Log("end");
     }
-    [TraceableCoroutine("log2")]
+    [TagEnumerator("log2")]
     IEnumerator Log2()
     {
         Debug.Log("2_1");
@@ -36,7 +36,7 @@ public class Test : MonoBehaviour
         Debug.Log("2_3");
 
     }
-    [TraceableCoroutine("log3")]
+    [TagEnumerator("log3")]
     IEnumerator Log3()
     {
         Debug.Log("3_1");
@@ -45,7 +45,7 @@ public class Test : MonoBehaviour
         yield return new WaitForSeconds(2);
         Debug.Log("3_3");
     }
-    [TraceableCoroutine("log4")]
+    [TagEnumerator("log4")]
     IEnumerator Log4()
     {
         Debug.Log("4_1");
@@ -54,7 +54,7 @@ public class Test : MonoBehaviour
         yield return new WaitForSeconds(2);
         Debug.Log("4_3");
     }
-    [TraceableCoroutine("log5")]
+    [TagEnumerator("log5")]
     IEnumerator Log5()
     {
         Debug.Log("5_1");

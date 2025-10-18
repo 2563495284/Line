@@ -15,31 +15,15 @@ public class PlayerAttrItem : MonoBehaviour
     [SerializeField] private Image iconImage;
 
 
+    public void SetData(PlayerAttrData info)
+    {
 
+    }
 
     /// <summary>
     /// 初始化显示项
     /// </summary>
     public void Init(AttrType type)
     {
-        this.type = type;
-        var attrCfg = Config.AttrConfig.Get(type);
-        // 设置基础信息
-        if (attributeNameText != null)
-        {
-            attributeNameText.text = attrCfg.Name + "：";
-        }
-
-        // 设置图标
-
-        // 设置按钮事件
-        // SetupUpgradeButton();
-
-        UpdateValue();
-    }
-    public void UpdateValue()
-    {
-        valueText.text = GM.LevelData.GetAttrValue(type).ToString();
-
     }
 }

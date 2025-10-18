@@ -1,91 +1,90 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-public enum CardInputType
-{
-    MouseEnter,
-    MouseExit,
-    MouseDown,
-    MouseUp,
-    MouseDrag
-}
-public delegate void CardInputAction(CardComEventArgs args);
-public class CardComEventArgs
-{
-    public CardInputType inputType;
-    public CardCom target;
-}
-public class CardCom : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler
-{
-    [SerializeField] private TMP_Text title;
-    [SerializeField] private TMP_Text mana;
-    [SerializeField] private TMP_Text description;
-    [SerializeField] private SpriteRenderer imageSR;
-    [SerializeField] private GameObject wrapper;
-    [SerializeField] private LayerMask dropAreaLayer;
-    public int cardId = 0;
-    public event CardInputAction inputAction = (args) => { };
-    public CardModel cardData => GM.LevelData.GetCardModel(cardId);
-    public void Init(int cardId)
-    {
-        this.cardId = cardId;
-        CardModel data = cardData;
-        if (data == null)
-            return;
-        title.text = data.Cfg.Title;
-        mana.text = data.Cfg.ManaCost.ToString();
-        description.text = data.RichTextDesc ?? data.Desc;
-        Texture2D tex = LoadManager.Ins.GetResByName<Texture2D>("Level", data.Cfg.FaceImg);
-        Sprite sprite = Sprite.Create(
-                        tex,
-                        new Rect(0, 0, tex.width, tex.height),
-                        new Vector2(0.5f, 0.5f) // 中心点，(0.5,0.5)表示中心
-                    );
-        imageSR.sprite = sprite;
-    }
-    public void ShowWrapper()
-    {
-        wrapper.SetActive(true);
-    }
-    public void HideWrapper()
-    {
-        wrapper.SetActive(false);
-    }
-    public void UpdateDesc()
-    {
-        CardModel data = cardData;
-        description.text = data.RichTextDesc ?? data.Desc;
-    }
-    private CardComEventArgs GetInputArgs(CardInputType type)
-    {
-        return new CardComEventArgs
-        {
-            inputType = type,
-            target = this
-        };
-    }
-    public void OnDrag(PointerEventData eventData)
-    {
-        inputAction.Invoke(GetInputArgs(CardInputType.MouseDrag));
-    }
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
+public class CardCom : MonoBehaviour, IIndexableElement<int>, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
+{
+    public int Id { get; private set; }
+    public Transform wrapper;
+    public const string SelectEvt = "SelectCard";
+    public const string PreviewEvt = "PreviewCard";
+    public const string ReleaseEvt = "ReleaseCard";
+    public const string ExitEvt = "ExitCard";
+    public GameObject select;
+    public GameObject ready;
+    public Vector2 colliderSize = new Vector2(4, 5f);
+    public BoxCollider2D clider;
+    public void ActiveHandle()
+    {
+        clider.enabled = true;
+    }
+    public void BanHandle()
+    {
+        clider.enabled = false;
+    }
+    public void SetData(int cardId)
+    {
+        Id = cardId;
+    }
+    private void Update()
+    {
+        clider.size = new Vector2(colliderSize.x * wrapper.localScale.x, colliderSize.y * wrapper.localScale.y);
+    }
+    public void SetOrder(int index)
+    {
+        GetComponent<SortingGroup>().sortingOrder = index;
+    }
+    public void SetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+    public void SetCancel()
+    {
+        select.SetActive(true);
+        ready.SetActive(false);
+    }
+    public void Preview()
+    {
+        transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+    }
+    public void CancelPreview()
+    {
+        transform.localScale = new Vector3(1, 1, 1);
+    }
+    public void SetReady()
+    {
+        ready.SetActive(true);
+        select.SetActive(false);
+    }
+    public void Reset()
+    {
+        ready.SetActive(false);
+        select.SetActive(false);
+    }
     public void OnPointerDown(PointerEventData eventData)
     {
-        inputAction.Invoke(GetInputArgs(CardInputType.MouseDown));
+        this.Send(SelectEvt, this);
+
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        inputAction.Invoke(GetInputArgs(CardInputType.MouseEnter));
+        this.Send(PreviewEvt, this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        inputAction.Invoke(GetInputArgs(CardInputType.MouseExit));
+        this.Send(ExitEvt, this);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        inputAction.Invoke(GetInputArgs(CardInputType.MouseUp));
+        this.Send(ReleaseEvt, this);
+    }
+
+    public int GetKey()
+    {
+        return Id;
     }
 }

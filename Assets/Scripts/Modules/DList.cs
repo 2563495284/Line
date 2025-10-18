@@ -30,9 +30,19 @@ public class DList<T, K> : IEnumerable<K> where K : IIndexableElement<T>
         list.Add(element);
         dict.Add(element.GetKey(), element);
     }
+    public DList<T, K> Join(IEnumerable<K> list)
+    {
+        foreach (var e in list)
+            Add(e);
+        return this;
+    }
     public K Peek()
     {
         return list[^1];
+    }
+    public int IndexOf(K element)
+    {
+        return list.IndexOf(element);
     }
     public int Count => list.Count;
     public K Dequeue()
@@ -62,6 +72,13 @@ public class DList<T, K> : IEnumerable<K> where K : IIndexableElement<T>
     {
         list.Remove(element);
         dict.Remove(element.GetKey());
+    }
+    public K Index(int i)
+    {
+        if (i >= 0)
+            return list[i];
+        else
+            return list[list.Count + i];
     }
     public K this[T key]
     {

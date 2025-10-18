@@ -1,93 +1,65 @@
-using DG.Tweening;
-using GameConfig;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
-public class Card_System : LevelSystem
+public class CardSystem : LevelSystem
 {
-    public Card_System(LevelController ctrl) : base(ctrl)
+    public override void OnEnter()
     {
+        base.OnEnter();
+        BindProcessor<DrawActionCardsCMD>(DrawActionCardsProcessor);
+        BindProcessor<DiscardAllCardsCMD>(DiscardAllCardsProcessor);
+        BindProcessor<ReleaseCardCMD>(ReleaseCardProcessor);
     }
-    public override void EnableSystem()
+    public override void OnExit()
     {
-        Ctrl.BindProcessor<DrawCardsCMD>(DrawCardsProcessor);
-        Ctrl.BindProcessor<PlayCardCMD>(PlayCardProcessor);
-        Ctrl.BindProcessor<EnemyPlayCardCMD>(EnemyPlayCardProcessor);
-
+        base.OnExit();
+        UnbindProcessor<DrawActionCardsCMD>();
+        UnbindProcessor<DiscardAllCardsCMD>();
+        UnbindProcessor<ReleaseCardCMD>();
     }
-    public override void DisableSystem()
+    private IEnumerator DiscardAllCardsProcessor(DiscardAllCardsCMD cmd)
     {
-        Ctrl.UnbindPerformer<DrawCardsCMD>();
-        Ctrl.UnbindPerformer<PlayCardCMD>();
-        Ctrl.UnbindPerformer<EnemyPlayCardCMD>();
-
+        List<int> hands = new(Model.handCards_action);
+        Model.handCards_action.ForEach(e => Model.discardCards_action.Add(e));
+        Model.handCards_action.Clear();
+        yield return Perform(EventConst.DiscardCards, new DiscardCardsArgs(hands));
     }
-
-    #region Performers
-    [TraceableCoroutine("DrawCards")]
-    private IEnumerator DrawCardsProcessor(DrawCardsCMD cmd)
+    private IEnumerator DrawActionCardsProcessor(DrawActionCardsCMD cmd)
     {
-        Func<int> GetNumInDraws = () => Data.drawCards.Count;
-        int drawRemain = cmd.num;
-        int max = Cfg.maxHandNum;
-        while (drawRemain > 0)
+        int num = cmd.num;
+        while (num > 0)
         {
-            int readyToDraw = Math.Min(drawRemain, GetNumInDraws());
-            bool fullTips = readyToDraw + Data.handCards.Count > max;
-            bool isRefill = drawRemain > GetNumInDraws();
-            int actualDraw = Math.Min(readyToDraw, max - Data.handCards.Count);
-            drawRemain -= actualDraw;
-            List<CardModel> targetCards = new();
-            while (actualDraw-- > 0) targetCards.Add(Data.drawCards.Dequeue());
-            Data.handCards = Data.handCards.Concat(targetCards).ToList();
-            yield return Ctrl.RequestPerform(PerformRequest.DrawCards, new DeckOPArgs(targetCards));
-            if (fullTips)
+            List<int> drawed = new();
+            if (Model.drawCards_action.Count <= 0)
             {
-                Ctrl.Notify(NotifyConst.PopupTips, new PopupTipsArgs
-                {
-                    message = "手牌已满"
-                });
-                yield break;
+                if (Model.discardCards_action.Count == 0)
+                    break;
+                Model.drawCards_action = new(Model.discardCards_action);
+                Model.drawCards_action.Shuffle();
+                Model.discardCards_action.Clear();
+                yield return Perform(EventConst.RefillCards, new RefillCardsArgs(new List<int>(Model.drawCards_action)));
             }
-            if (isRefill)
+            int allCnt = Model.drawCards_action.Count;
+            int realDraw = Math.Min(allCnt, num);
+            num -= realDraw;
+            while (realDraw > 0)
             {
-                yield return Ctrl.RequestPerform(PerformRequest.RefillCards);
-                List<CardModel> newDeck = Data.discardCards.ToList();
-                newDeck.Shuffle();
-                foreach (CardModel card in newDeck)
-                    Data.drawCards.Enqueue(card);
+                int drawedId = Model.drawCards_action.Draw();
+                Model.handCards_action.Add(drawedId);
+                drawed.Add(drawedId);
+                realDraw--;
             }
 
+            yield return Perform(EventConst.DrawCards, new DrawCardsArgs(drawed));
         }
-
     }
-
-    [TraceableCoroutine("PlayCard")]
-    private IEnumerator PlayCardProcessor(PlayCardCMD cmd)
+    private IEnumerator ReleaseCardProcessor(ReleaseCardCMD cmd)
     {
-        CardModel card = cmd.card;
-
-
-        yield return Ctrl.RequestPerform(PerformRequest.Play_PresentCard, new PlayCardArgs(card, cmd.receiver));
-        yield return Ctrl.RequestPerform(PerformRequest.Play_EffectCard, new PlayCardArgs(card, cmd.receiver));
-        if (card.Cfg.ReleaseMode == ReleaseMode.NoTarget)
-            yield return card.Execute(cmd.card);
-        else
-            yield return card.Execute(cmd.card, cmd.receiver);
-        yield return Ctrl.ExeCMD(new ChangeManaCMD(-cmd.card.Cfg.ManaCost));
-        yield return Ctrl.RequestPerform(PerformRequest.Play_DiscardCard, new PlayCardArgs(card, cmd.receiver));
-        Data.handCards.Remove(card);
-        Data.discardCards.Enqueue(card);
-
+        //TODO 卡牌效果
+        Model.handCards_action.Remove(cmd.cardId);
+        Model.discardCards_action.Add(cmd.cardId);
+        yield return Perform(EventConst.CardEffectStart, new CardEffectStartArgs(cmd.cardId));
+        yield return Perform(EventConst.DiscardCards, new DiscardCardsArgs(new List<int>() { cmd.cardId }));
     }
-    [TraceableCoroutine("EnemyDrawCard")]
-    private IEnumerator EnemyPlayCardProcessor(EnemyPlayCardCMD cmd)
-    {
-        CardModel card = cmd.card;
-        yield return card.Execute(cmd.enemy);
-    }
-    #endregion
 }

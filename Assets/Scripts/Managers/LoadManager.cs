@@ -4,7 +4,27 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
+using Unity.VisualScripting;
+public enum EDynamicSerial
+{
+    Default,
+    LevelCommand,
+    RoomSystem,
+    LevelSystem,
+    CardEffect,
+    StockAttrEffect,
+    PlayerAttrEffect,
+}
+//被标记的类及其子类都可以通过LoadManager速查
+[AttributeUsage(AttributeTargets.Class)]
+public class DynamicClassAttribute : Attribute
+{
+    public EDynamicSerial SerialKey { get; }
+    public DynamicClassAttribute(EDynamicSerial serialKey = EDynamicSerial.Default)
+    {
+        SerialKey = serialKey;
+    }
+}
 /// <summary>
 /// 加载进度参数
 /// </summary>
@@ -53,51 +73,62 @@ public class LoadManager : Singleton<LoadManager>
 {
     // 资源存储字典: 一级文件夹名 -> (资源路径 -> 资源对象)
     private Dictionary<string, Dictionary<string, UnityEngine.Object>> _resourceCache = new Dictionary<string, Dictionary<string, UnityEngine.Object>>();
-    public static List<Type> GetAllSubCls(Type t)
+    private Dictionary<EDynamicSerial, Dictionary<string, Type>> dynamicClass = new();
+    public void LoadAllDynamicClass()
     {
-        // 获取当前应用程序域中所有已加载的程序集
+        List<Type> validType = new();
+        Action<EDynamicSerial, Type> AddType = (serialKey, type) =>
+        {
+            string clsName = type.Name;
+            if (!dynamicClass.ContainsKey(serialKey))
+                dynamicClass.Add(serialKey, new());
+            if (!dynamicClass[serialKey].ContainsKey(clsName))
+                dynamicClass[serialKey].Add(clsName, type);
+            dynamicClass[serialKey][clsName] = type;
+        };
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-        // 存储所有找到的子类
-        List<Type> subclasses = new List<Type>();
-
         foreach (Assembly assembly in assemblies)
         {
-            try
+            Type[] types = assembly.GetTypes();
+            foreach (Type type in types)
             {
-                // 获取程序集中的所有类型
-                Type[] types = assembly.GetTypes();
-
-                foreach (Type type in types)
+                if (type.IsClass)
                 {
-                    // 检查类型是否是类、不是抽象类、并且是LevelSystem的子类
-                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(t))
+                    var attr = type.GetAttribute<DynamicClassAttribute>();
+                    if (attr != null)
                     {
-                        subclasses.Add(type);
+                        if (!type.IsAbstract)
+                            AddType(attr.SerialKey, type);
+                        validType.Add(type);
+                    }
+                    else
+                    {
+                        Type parentCls = validType.FirstOrDefault(e => type.IsSubclassOf(e));
+                        if (parentCls != null)
+                        {
+                            EDynamicSerial serialKey = parentCls.GetAttribute<DynamicClassAttribute>().SerialKey;
+                            if (!type.IsAbstract)
+                                AddType(attr.SerialKey, type);
+                        }
                     }
                 }
-            }
-            catch (ReflectionTypeLoadException ex)
-            {
-                // 处理类型加载异常
-                foreach (Type type in ex.Types)
-                {
-                    if (type != null && type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(LevelSystem)))
-                    {
-                        subclasses.Add(type);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // 处理其他可能的异常
-                continue;
             }
         }
-
-        return subclasses;
     }
-
+    public List<Type> GetAllSerialClass(EDynamicSerial serialKey)
+    {
+        if (!dynamicClass.ContainsKey(serialKey))
+            return new();
+        return dynamicClass[serialKey].Values.ToList();
+    }
+    public Type GetDynamicClass(EDynamicSerial serialKey, string clsName)
+    {
+        if (!dynamicClass.ContainsKey(serialKey))
+            return null;
+        if (!dynamicClass[serialKey].ContainsKey(clsName))
+            return null;
+        return dynamicClass[serialKey][clsName];
+    }
     /// <summary>
     /// 按一级文件夹名称异步加载整个文件夹资源
     /// </summary>

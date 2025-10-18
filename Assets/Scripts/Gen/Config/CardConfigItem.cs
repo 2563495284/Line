@@ -25,9 +25,9 @@ namespace GameConfig
         /// </summary>
         public string Desc { private set; get; }
         /// <summary>
-        /// 释放类型（0无目标，1对股票释放）
+        /// 目标类型
         /// </summary>
-        public ReleaseMode ReleaseMode { private set; get; }
+        public ReleaseTarget ReleaseMode { private set; get; }
         /// <summary>
         /// 能量消耗
         /// </summary>
@@ -39,13 +39,13 @@ namespace GameConfig
         /// <summary>
         /// 效果数组
         /// </summary>
-        public IReadOnlyList<string> Effects { private set; get; }
+        public IReadOnlyList<string> ReleaseEffect { private set; get; }
         /// <summary>
         /// 有向效果数组
         /// </summary>
-        public IReadOnlyList<string> EffectsWithTarget { private set; get; }
+        public IReadOnlyList<string> DrawedEffect { private set; get; }
 
-        public CardConfigItem(int uniqueKey, int id, string faceImg, string title, string desc, ReleaseMode releaseMode, int manaCost, CardType cardType, IReadOnlyList<string> effects, IReadOnlyList<string> effectsWithTarget)
+        public CardConfigItem(int uniqueKey, int id, string faceImg, string title, string desc, ReleaseTarget releaseMode, int manaCost, CardType cardType, IReadOnlyList<string> releaseEffect, IReadOnlyList<string> drawedEffect)
         {
             UniqueKey = uniqueKey;
             Id = id;
@@ -55,8 +55,8 @@ namespace GameConfig
             ReleaseMode = releaseMode;
             ManaCost = manaCost;
             CardType = cardType;
-            Effects = effects;
-            EffectsWithTarget = effectsWithTarget;
+            ReleaseEffect = releaseEffect;
+            DrawedEffect = drawedEffect;
         }
     }
 }

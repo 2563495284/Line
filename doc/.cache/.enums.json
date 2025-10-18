@@ -11,34 +11,93 @@
             "annotation": "交易卡"
         },
         {
-            "key": "Futures",
+            "key": "Emotion",
             "value": 2,
-            "annotation": "期货卡"
+            "annotation": "情绪卡"
         },
         {
-            "key": "Operate",
+            "key": "Social",
             "value": 3,
-            "annotation": "操盘卡"
+            "annotation": "社交卡"
         },
         {
-            "key": "Empowerment",
+            "key": "Medicine",
             "value": 4,
-            "annotation": "赋能卡"
+            "annotation": "药卡"
         }
     ],
-    "ReleaseMode": [
+    "ReleaseTarget": [
         {
             "key": "NoTarget",
             "value": 0,
             "annotation": "不指定目标"
         },
         {
-            "key": "TargetToStock",
+            "key": "Stock",
             "value": 1,
             "annotation": "指定股票目标"
+        },
+        {
+            "key": "PlayerAttr",
+            "value": 2,
+            "annotation": "玩家属性"
+        },
+        {
+            "key": "StockAttr",
+            "value": 3,
+            "annotation": "股票属性"
+        }
+    ],
+    "EventImpactType": [
+        {
+            "key": "Neutral",
+            "value": 0,
+            "annotation": "中性"
+        },
+        {
+            "key": "Positive",
+            "value": 1,
+            "annotation": "正面"
+        },
+        {
+            "key": "Negative",
+            "value": 2,
+            "annotation": "负面"
         }
     ],
     "ItemType": [
+        {
+            "key": "None",
+            "value": 0,
+            "annotation": "无"
+        },
+        {
+            "key": "Ore",
+            "value": 1,
+            "annotation": "矿物 "
+        },
+        {
+            "key": "Torch",
+            "value": 2,
+            "annotation": "火炬"
+        },
+        {
+            "key": "Device",
+            "value": 3,
+            "annotation": "设备"
+        },
+        {
+            "key": "Pickaxe",
+            "value": 4,
+            "annotation": "镐"
+        },
+        {
+            "key": "Backpack",
+            "value": 5,
+            "annotation": "背包"
+        }
+    ],
+    "StockAttrType": [
         {
             "key": "None",
             "value": 0,

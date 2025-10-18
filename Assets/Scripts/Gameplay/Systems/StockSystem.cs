@@ -2,197 +2,192 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using Unity.Mathematics;
 using GameConfig;
+using UnityEngine;
 
-/// <summary>
-/// 多股市管理系统
-/// </summary>
-class PriceChangeFactor
-{
-    //比例变化值
-    public float percent = 0;
-    //增量变化值
-    public float increment = 0;
-}
 public class StockSystem : LevelSystem
 {
-
-    private bool IsShowTradeDebugLogs => Cfg.showDebugInfo;
-
-
-    private Dictionary<int, PriceChangeFactor> stockPriceFactorMap = new();
-    // 当前资金状态
-    private float currentMoney;
-
-    public StockSystem(LevelController ctrl) : base(ctrl)
+    public override void OnEnter()
     {
-        stockPriceFactorMap = new();
-        Config.StockConfig.list.ToList().ForEach(e => stockPriceFactorMap.Add(e.Id, new()));
+        base.OnEnter();
+        BindProcessor<ApplyIndustryPowerCMD>(ApplyIndustryPowerProcessor);
+        BindProcessor<ApplyStockAttrCMD>(ApplyStockAttrProcessor);
+        BindProcessor<CalcPerformanceCMD>(CalcPerformanceProcessor);
+        BindProcessor<SettlementStockCMD>(SettlementStockProcessor);
+        BindProcessor<UpdateStockStrategyCMD>(UpdateStockStrategyProcessor);
+
+        BindProcessor<AddExtraStockAttrCMD>(AddExtraStockAttrProcessor);
+        BindProcessor<AddPerformanceCMD>(AddPerformanceProcessor);
+        BindProcessor<RemoveExtraStockAttrCMD>(RemoveExtraStockAttrProcessor);
+        BindProcessor<ScalePerformanceCMD>(ScalePerformanceProcessor);
+        BindProcessor<StockAttrGrownCMD>(StockAttrGrownProcessor);
+        BindProcessor<TransferStockFactorCMD>(TransferStockFactorProcessor);
     }
-    public override void EnableSystem()
+    public override void OnExit()
     {
-        currentMoney = 200000f;
-        Ctrl.BindProcessor<ChangePricePercentCMD>(ChangePricePercentProcessor);
-        Ctrl.BindProcessor<ChangePriceIncrementCMD>(ChangePriceIncrementProcessor);
-        Ctrl.BindProcessor<TradeSpecificStockCMD>(TradeSpecificStockProcessor);
-        Ctrl.BindProcessor<ChangeMoneyCMD>(ChangeMoneyProcessor);
-        Ctrl.BindProcessor<ChangeHoldingCMD>(ChangeStockHoldingProcessor);
-        Ctrl.AddRection<NextRoundTurnCMD>(NextRoundTurnPostReaction, ReactionTiming.POST);
-        Ctrl.Notify(NotifyConst.UpdateStockChart);
+        base.OnExit();
+        UnbindProcessor<ApplyIndustryPowerCMD>();
+        UnbindProcessor<ApplyStockAttrCMD>();
+        UnbindProcessor<CalcPerformanceCMD>();
+        UnbindProcessor<SettlementStockCMD>();
+        UnbindProcessor<UpdateStockStrategyCMD>();
+        UnbindProcessor<AddExtraStockAttrCMD>();
+        UnbindProcessor<AddPerformanceCMD>();
+        UnbindProcessor<RemoveExtraStockAttrCMD>();
+        UnbindProcessor<ScalePerformanceCMD>();
+        UnbindProcessor<StockAttrGrownCMD>();
+        UnbindProcessor<TransferStockFactorCMD>();
     }
-    public override void DisableSystem()
+    private IEnumerator ApplyIndustryPowerProcessor(ApplyIndustryPowerCMD cmd)
     {
-        Ctrl.UnbindPerformer<ChangePricePercentCMD>();
-        Ctrl.UnbindPerformer<ChangePriceIncrementCMD>();
-        Ctrl.UnbindPerformer<TradeSpecificStockCMD>();
-        Ctrl.UnbindPerformer<ChangeMoneyCMD>();
-        Ctrl.UnbindPerformer<ChangeHoldingCMD>();
-        Ctrl.RemoveRection<NextRoundTurnCMD>(NextRoundTurnPostReaction, ReactionTiming.POST);
+        yield return 0;
     }
-
-
-
-    #region GameAction Performers
-    [TraceableCoroutine("ChangePricePercent")]
-    private IEnumerator ChangePricePercentProcessor(ChangePricePercentCMD cmd)
+    private IEnumerator ApplyStockAttrProcessor(ApplyStockAttrCMD cmd)
     {
-        stockPriceFactorMap[cmd.stockId].percent += cmd.percent * (cmd.isFromPlayer ? Data.PlayerInfluenceToPrice : Data.EnvInfluenceToPrice);
-        if (cmd.isMarkPoint)
-            Ctrl.Notify(NotifyConst.SetPointState, new SetPointStateArgs()
-            {
-                stockId = cmd.stockId,
-                state = cmd.percent > 0 ? PointState.Bullish : PointState.Bearish
-            });
-        yield break;
-    }
-    [TraceableCoroutine("ChangePriceIncrement")]
-    private IEnumerator ChangePriceIncrementProcessor(ChangePriceIncrementCMD cmd)
-    {
-        stockPriceFactorMap[cmd.stockId].increment += cmd.increment * (cmd.isFromPlayer ? Data.PlayerInfluenceToPrice : Data.EnvInfluenceToPrice);
-        if (cmd.isMarkPoint)
-            Ctrl.Notify(NotifyConst.SetPointState, new SetPointStateArgs()
-            {
-                stockId = cmd.stockId,
-                state = cmd.increment > 0 ? PointState.Bullish : PointState.Bearish
-            });
-        yield break;
-    }
-    /// <summary>
-    /// 处理特定股票交易（支持尽可能多地买卖模式）
-    /// </summary>
-    [TraceableCoroutine("TradeStock")]
-    private IEnumerator TradeSpecificStockProcessor(TradeSpecificStockCMD cmd)
-    {
-        var market = Data.GetStockModel(cmd.StockId);
-        if (market == null)
+        List<StockModel> stocks = new(Model.stocks.List);
+        for (int i = 0; i < stocks.Count; i++)
         {
-            Debug.LogError($"未找到股票类型: {cmd.StockId}");
-            yield break;
-        }
-
-        int amount = (int)math.floor(cmd.Amount * PlayerAttributeSystem.Ins.GetStockCourageBonus());
-        int actualTradeAmount = 0;
-        // 尽可能多地买卖模式
-        if (amount > 0) // 买入意向
-        {
-            // 计算能买入的最大数量
-            int maxBuyAmount = (int)Math.Floor(currentMoney / market.price);
-            actualTradeAmount = Math.Min(amount, maxBuyAmount);
-
-            if (actualTradeAmount <= 0)
+            StockModel stock = stocks[i];
+            for (int j = 0; j < stock.attrs.Count; j++)
             {
-                if (IsShowTradeDebugLogs)
-                    Debug.LogWarning($"[MultiStockSystem] 资金不足，无法买入 {cmd.StockId} 股票。当前资金: {currentMoney:F2}，股价: {market.price:F2}");
-                TipsSystem.Ins.ShowTip("资金不足，无法买入股票");
-                Utils.ShakeCamera();
-                yield break;
+                StockAttrData attr = stock.attrs[j];
+                if (attr.delay <= 0 && attr.HasEffectReady(cmd.timing))
+                {
+                    bool hasPerformEffect = false;
+                    for (int k = 0; k < attr.Effects.Count; k++)
+                    {
+                        EffectBase effect = attr.Effects[k];
+                        if (effect.probablity >= 1 || RNG.Rand() < effect.probablity)
+                        {
+                            if (!hasPerformEffect)
+                            {
+                                yield return Perform(EventConst.StartStockAttrEffect, new StartStockAttrEffectArgs(stock.stockId, attr.Id));
+                                hasPerformEffect = true;
+                            }
+                            switch (cmd.timing)
+                            {
+                                case EStockAttrApplyTiming.RoundStart:
+                                    if (effect is IAutoEffect_RoundStart roundStartEff)
+                                        yield return roundStartEff.ApplyInRoundStart(attr);
+                                    break;
+                                case EStockAttrApplyTiming.BeforeSettlement:
+                                    if (effect is IAutoEffect_BeforeCalc beforeCalcEff)
+                                        yield return beforeCalcEff.ApplyBeforeCalc(attr);
+                                    break;
+                                case EStockAttrApplyTiming.AfterSettlement:
+                                    if (effect is IAutoEffect_RoundEnd roundEndEff)
+                                        yield return roundEndEff.ApplyInRoundEnd(attr);
+                                    break;
+                            }
+                        }
+                    }
+                    if (hasPerformEffect)
+                        yield return Perform(EventConst.ExitStockAttrEffect, new ExitStockAttrEffectArgs(stock.stockId, attr.Id));
+                }
             }
-
-            if (IsShowTradeDebugLogs)
-                Debug.Log($"[MultiStockSystem] 买入 {cmd.StockId}: 请求 {amount} 股，实际买入 {actualTradeAmount} 股 (最大化模式)");
         }
-        else // 卖出意向
+    }
+    private IEnumerator CalcPerformanceProcessor(CalcPerformanceCMD cmd)
+    {
+        yield return 0;
+    }
+    private IEnumerator SettlementStockProcessor(SettlementStockCMD cmd)
+    {
+        yield return 0;
+    }
+    private IEnumerator UpdateStockStrategyProcessor(UpdateStockStrategyCMD cmd)
+    {
+        List<StockModel> stocks = Model.stocks.List;
+        List<(int, int)> changedInfo = new();
+        for (int i = 0; i < stocks.Count; i++)
         {
-            // 计算能卖出的最大数量
-            int maxSellAmount = market.holding;
-            actualTradeAmount = Math.Max(amount, -maxSellAmount); // amount是负数
-
-            if (actualTradeAmount >= 0)
+            if (stocks[i].remainRound <= 0)
             {
-                if (IsShowTradeDebugLogs)
-                    Debug.LogWarning($"[MultiStockSystem] 持有量不足，无法卖出 {cmd.StockId} 股票。当前持有: {market.holding} 股");
-                TipsSystem.Ins.ShowTip("持有量不足，无法卖出股票");
-                Utils.ShakeCamera();
-                yield break;
+                int newStrategy = GetStockStrategy(stocks[i].CurStrategyId, stocks[i].cfg);
+                changedInfo.Add((stocks[i].stockId, newStrategy));
+                stocks[i].NextStrategy(newStrategy);
             }
-
-            if (IsShowTradeDebugLogs)
-                Debug.Log($"[MultiStockSystem] 卖出 {cmd.StockId}: 请求卖出 {-amount} 股，实际卖出 {-actualTradeAmount} 股 (最大化模式)");
         }
-        // // 传统固定数量交易模式
-        // if (!CanTradeStock(action.StockType, action.Amount))
-        // {
-        //     if (showTradeDebugLogs)
-        //         Debug.LogWarning($"[MultiStockSystem] 无法交易 {action.Amount} 股 {action.StockType}");
-        //     Utils.ShakeCamera();
-        //     yield break;
-        // }
-
-        // actualTradeAmount = action.Amount;
-        // if (showTradeDebugLogs)
-        //     Debug.Log($"[MultiStockSystem] 交易 {action.StockType}: {actualTradeAmount} 股 (固定数量模式)");
-
-        // 执行交易
-        ChangeHoldingCMD changeStockCMD = new ChangeHoldingCMD(actualTradeAmount, cmd.StockId);
-        Ctrl.ExeCMD(changeStockCMD);
-
-        ChangeMoneyCMD changeMoneyCMD = new ChangeMoneyCMD(-actualTradeAmount * market.price);
-        Ctrl.ExeCMD(changeMoneyCMD);
-
-        Ctrl.Notify(NotifyConst.SetPointState, new SetPointStateArgs()
+        for (int i = 0; i < changedInfo.Count; i++)
         {
-            stockId = cmd.StockId,
-            state = actualTradeAmount > 0 ? PointState.Buy : PointState.Sell
-        });
-
-        yield return null;
-    }
-
-    private void NextRoundTurnPostReaction(NextRoundTurnCMD action)
-    {
-        foreach (var stock in Data.stocks)
-        {
-            int stockId = stock.stockId;
-            float price = stock.price;
-            PriceChangeFactor factor = stockPriceFactorMap[stockId];
-            float newPrice = (price + factor.increment) * (1 + factor.percent);
-            stock.GrowPrice(newPrice);
+            (int stockId, int strategyId) = changedInfo[i];
+            yield return Perform(EventConst.StockStrategyChange, new StockStrategyChangeArgs(stockId, strategyId));
         }
-        Ctrl.Notify(NotifyConst.UpdateStockChart);
+        yield return 0;
     }
-    [TraceableCoroutine("ChangeMoney")]
-    private IEnumerator ChangeMoneyProcessor(ChangeMoneyCMD action)
+    private int GetStockStrategy(int lastStrategyId, StockConfig cfg)
     {
-        currentMoney += action.Amount;
-        currentMoney = Mathf.Max(0, currentMoney);
-        yield return null;
+        int lastStrategySerial = Config.StockStrategyConfig.Get(lastStrategyId).SerialId;
+        int maxRound = cfg.maxRoundInStrategy;
+        List<float> wei = new() { cfg.neutralStrategyWeight, cfg.positiveStrategyWeight, cfg.negativeStrategyWeight };
+        List<int> sign = new() { 0, 1, 2 };
+        int targetStrategyEmotion = sign.WeiRand(wei);
+        int result = Config.StockStrategyConfig.list
+            .Where(e => e.SerialId != lastStrategyId &&
+                e.Round <= maxRound &&
+                Config.StockStrategySerialConfig.Get(e.SerialId).Emotion == targetStrategyEmotion)
+            .Select(e => e.Id)
+            .ToList().Rand();
+        return result;
     }
 
-    [TraceableCoroutine("ChangeHolding")]
-    private IEnumerator ChangeStockHoldingProcessor(ChangeHoldingCMD cmd)
+    #region  Attr Effect CMD
+
+    private IEnumerator AddExtraStockAttrProcessor(AddExtraStockAttrCMD cmd)
     {
-        var market = Data.GetStockModel(cmd.StockId);
-        if (market == null)
+        StockModel stock = Model.stocks[cmd.stockId];
+        StockAttrData attrData = new(stock.stockId, cmd.attrType, cmd.round, 0, true);
+        stock.attrs.Add(attrData);
+        yield return Perform(EventConst.AddExtraStockAttr, new AddExtraStockAttrArgs(stock.stockId, attrData.Id));
+    }
+    private IEnumerator AddPerformanceProcessor(AddPerformanceCMD cmd)
+    {
+        StockModel stock = Model.stocks[cmd.stockId];
+        stock.calcFactor.performanceAdd += cmd.addVal;
+        yield return Perform(EventConst.StockPerformanceAdded, new StockPerformaceAddedArgs(stock.stockId, cmd.addVal));
+    }
+    private IEnumerator RemoveExtraStockAttrProcessor(RemoveExtraStockAttrCMD cmd)
+    {
+        StockModel stock = Model.stocks[cmd.stockId];
+        List<StockAttrData> extraDatas = stock.attrs.Where(e => e.isExtra).ToList();
+        List<StockAttrData> removeTargets = extraDatas.WeiRandMul(extraDatas.Select(e => 1f).ToList(), cmd.num, false);
+        if (removeTargets.Count > 0)
         {
-            Debug.LogError($"未找到股票类型: {cmd.StockId}");
-            yield break;
+            removeTargets.ForEach(e => stock.attrs.Remove(e));
+            yield return Perform(EventConst.RemoveExtraStockAttr, new RemoveExtraStockAttrArgs(stock.stockId, removeTargets.Select(e => e.Id).ToList()));
         }
-        market.holding = Mathf.Max(0, market.holding + cmd.Amount);
-        Ctrl.ExeCMD(new ChangePricePercentCMD(Math.Sign(cmd.Amount) * 0.3f, cmd.StockId, true, false));
-        yield return null;
     }
-
+    private IEnumerator ScalePerformanceProcessor(ScalePerformanceCMD cmd)
+    {
+        StockModel stock = Model.stocks[cmd.stockId];
+        stock.calcFactor.performanceMul *= cmd.mul;
+        yield return Perform(EventConst.StockPerformanceMuled, new StockPerformanceMuledArgs(stock.stockId, cmd.mul));
+    }
+    private IEnumerator StockAttrGrownProcessor(StockAttrGrownCMD cmd)
+    {
+        yield return Perform(EventConst.StockAttrGrown, new StockAttrGrownArgs(cmd.stockId, cmd.attrId));
+    }
+    private IEnumerator TransferStockFactorProcessor(TransferStockFactorCMD cmd)
+    {
+        StockModel stock = Model.stocks[cmd.stockId];
+        List<Func<float>> factorGetter = new()
+        {
+            ()=>stock.Info.factor_strength,
+            ()=>stock.Info.factor_senity,
+            ()=>stock.Info.factor_industry
+        };
+        List<Action<float>> factorSetter = new()
+        {
+            v=>stock.Info.factor_strength = v,
+            v=>stock.Info.factor_senity=v,
+            v=>stock.Info.factor_industry=v
+        };
+        List<float> oldFactors = new List<int>() { 0, 1, 2 }.Select(e => factorGetter[e].Invoke()).ToList();
+        float amount = cmd.volume * factorGetter[cmd.fromFactorId - 1].Invoke();
+        factorSetter[cmd.toFactorId - 1].Invoke(factorGetter[cmd.toFactorId - 1].Invoke() + amount);
+        factorSetter[cmd.fromFactorId - 1].Invoke(factorGetter[cmd.fromFactorId - 1].Invoke() - amount);
+        List<float> newFactors = new List<int>() { 0, 1, 2 }.Select(e => factorGetter[e].Invoke()).ToList();
+        yield return Perform(EventConst.TransferStockFactor, new TransferStockFactorArgs(stock.stockId, oldFactors, newFactors));
+    }
     #endregion
 }
