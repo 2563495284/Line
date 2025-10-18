@@ -3,28 +3,88 @@ namespace GameConfig
     public enum StockAttrType
     {
         /// <summary>
-        /// 无
+        /// 未知
         /// </summary>
-        None = 0,
+        Unknown = 1,
         /// <summary>
-        /// 矿物 
+        /// 爬升
         /// </summary>
-        Ore = 1,
+        Up_Slow = 2,
         /// <summary>
-        /// 火炬
+        /// 高歌
         /// </summary>
-        Torch = 2,
+        Up_Middle = 3,
         /// <summary>
-        /// 设备
+        /// 火箭
         /// </summary>
-        Device = 3,
+        Up_Fast = 4,
         /// <summary>
-        /// 镐
+        /// 滑坡
         /// </summary>
-        Pickaxe = 4,
+        Fall_Slow = 5,
         /// <summary>
-        /// 背包
+        /// 摔落
         /// </summary>
-        Backpack = 5
+        Fall_Middle = 6,
+        /// <summary>
+        /// 断崖
+        /// </summary>
+        Fall_Fast = 7,
+        /// <summary>
+        /// 摇摆
+        /// </summary>
+        Pingpong = 8,
+        /// <summary>
+        /// 懒散
+        /// </summary>
+        Lazy = 9,
+        /// <summary>
+        /// 敏感
+        /// </summary>
+        Sensitive = 10,
+        /// <summary>
+        /// 盲从
+        /// </summary>
+        Blindly = 11,
+        /// <summary>
+        /// 腐败
+        /// </summary>
+        Corruption = 12,
+        /// <summary>
+        /// 混乱
+        /// </summary>
+        Chaotic = 13,
+        /// <summary>
+        /// 创新
+        /// </summary>
+        Innovative = 14,
+        /// <summary>
+        /// 衰老
+        /// </summary>
+        Aging = 15,
+        /// <summary>
+        /// 生长
+        /// </summary>
+        Growing = 16,
+        /// <summary>
+        /// 扩张
+        /// </summary>
+        Expanding = 17,
+        /// <summary>
+        /// 精简
+        /// </summary>
+        Streamline = 18,
+        /// <summary>
+        /// 整顿
+        /// </summary>
+        Rectify = 19,
+        /// <summary>
+        /// 冒险
+        /// </summary>
+        Adventure = 20,
+        /// <summary>
+        /// 停滞
+        /// </summary>
+        Stagant = 21
     }
 }

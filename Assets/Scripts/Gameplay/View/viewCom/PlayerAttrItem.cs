@@ -8,7 +8,6 @@ using GameConfig;
 /// </summary>
 public class PlayerAttrItem : MonoBehaviour
 {
-    private AttrType type;
     [Header("UI组件")]
     [SerializeField] private TextMeshProUGUI attributeNameText;
     [SerializeField] private TextMeshProUGUI valueText;
@@ -20,10 +19,4 @@ public class PlayerAttrItem : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// 初始化显示项
-    /// </summary>
-    public void Init(AttrType type)
-    {
-    }
 }

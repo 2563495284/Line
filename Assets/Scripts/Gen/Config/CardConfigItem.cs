@@ -13,50 +13,45 @@ namespace GameConfig
         /// </summary>
         public int Id { private set; get; }
         /// <summary>
-        /// 卡面名
+        /// 符号
         /// </summary>
-        public string FaceImg { private set; get; }
+        public string Key { private set; get; }
         /// <summary>
-        /// 卡牌标题
+        /// 名称
         /// </summary>
-        public string Title { private set; get; }
+        public string Name { private set; get; }
         /// <summary>
-        /// 卡牌描述
+        /// 描述
         /// </summary>
         public string Desc { private set; get; }
         /// <summary>
-        /// 目标类型
+        /// 阶段类型
         /// </summary>
-        public ReleaseTarget ReleaseMode { private set; get; }
+        public PhaseType PhaseType { private set; get; }
         /// <summary>
-        /// 能量消耗
+        /// 释放目标类型
         /// </summary>
-        public int ManaCost { private set; get; }
+        public ReleaseTarget ReleaseTarget { private set; get; }
         /// <summary>
-        /// 卡牌类型
+        /// 卡牌标签
         /// </summary>
-        public CardType CardType { private set; get; }
+        public CardTag Tag { private set; get; }
         /// <summary>
-        /// 效果数组
+        /// 释放效果
         /// </summary>
         public IReadOnlyList<string> ReleaseEffect { private set; get; }
-        /// <summary>
-        /// 有向效果数组
-        /// </summary>
-        public IReadOnlyList<string> DrawedEffect { private set; get; }
 
-        public CardConfigItem(int uniqueKey, int id, string faceImg, string title, string desc, ReleaseTarget releaseMode, int manaCost, CardType cardType, IReadOnlyList<string> releaseEffect, IReadOnlyList<string> drawedEffect)
+        public CardConfigItem(int uniqueKey, int id, string key, string name, string desc, PhaseType phaseType, ReleaseTarget releaseTarget, CardTag tag, IReadOnlyList<string> releaseEffect)
         {
             UniqueKey = uniqueKey;
             Id = id;
-            FaceImg = faceImg;
-            Title = title;
+            Key = key;
+            Name = name;
             Desc = desc;
-            ReleaseMode = releaseMode;
-            ManaCost = manaCost;
-            CardType = cardType;
+            PhaseType = phaseType;
+            ReleaseTarget = releaseTarget;
+            Tag = tag;
             ReleaseEffect = releaseEffect;
-            DrawedEffect = drawedEffect;
         }
     }
 }

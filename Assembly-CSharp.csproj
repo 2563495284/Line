@@ -58,7 +58,6 @@
     <Compile Include="Assets\Scripts\Gameplay\Effect\define\Effect.cs" />
     <Compile Include="Assets\Scripts\Modules\Singleton.cs" />
     <Compile Include="Assets\Scripts\Modules\EC.cs" />
-    <Compile Include="Assets\Scripts\Gen\Config\StockConfigItem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\LevelFlowCMDS\ShopRunCMD.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Define\LevelConfig.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\LevelFlowCMDS\EndLevelCMD.cs" />
@@ -72,9 +71,9 @@
     <Compile Include="Assets\Scripts\Gameplay\Systems\RouteSystem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\viewCom\CircleSector.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\PlayerInfoView.cs" />
-    <Compile Include="Assets\Scripts\Gen\Config\CardType.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\TipsView.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\SettlementView.cs" />
+    <Compile Include="Assets\Scripts\Gen\Config\CardTag.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\viewCom\CardGoods.cs" />
     <Compile Include="Assets\Scripts\Gen\Config\PickaxeConfigItem.cs" />
     <Compile Include="Assets\Scripts\Gen\Config\StockAttrType.cs" />
@@ -111,7 +110,6 @@
     <Compile Include="Assets\Scripts\LayoutMark.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\ShopView.cs" />
     <Compile Include="Assets\Scripts\Modules\DList.cs" />
-    <Compile Include="Assets\Scripts\Gen\Config\EventMessageConfigItem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Effect\StockAttrEffects\SEffect_AttrAdd.cs" />
     <Compile Include="Assets\Scripts\LoadingCtrl.cs" />
     <Compile Include="Assets\Scripts\Modules\RNG.cs" />
@@ -153,8 +151,6 @@
     <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\ApplyStockAttrCMD.cs" />
     <Compile Include="Assets\Scripts\Gen\Config\ResConfigItem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\viewCom\SideNoteTarget.cs" />
-    <Compile Include="Assets\Scripts\Gen\Config\AttrType.cs" />
-    <Compile Include="Assets\Scripts\Gen\Config\EventImpactType.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Controller\LevelController.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Controller\ControllerBase.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Effect\define\StockAttrEffect.cs" />
@@ -188,6 +184,7 @@
     <Compile Include="Assets\Scripts\Const\ResPath.cs" />
     <Compile Include="Assets\Scripts\FontTest.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\DiscardAllCardsCMD.cs" />
+    <Compile Include="Assets\Scripts\Gen\Config\PhaseType.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Systems\IndustrySystem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Systems\RoundSystem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\viewCom\TipsItem.cs" />

@@ -1,26 +1,26 @@
 namespace GameConfig
 {
-    public enum CardType
+    public enum CardTag
     {
         /// <summary>
         /// 无
         /// </summary>
         Unknown = 0,
         /// <summary>
-        /// 交易卡
+        /// 期货
         /// </summary>
-        Trade = 1,
+        Future = 1,
         /// <summary>
-        /// 情绪卡
+        /// 交易协议
         /// </summary>
-        Emotion = 2,
+        Agreement = 2,
         /// <summary>
-        /// 社交卡
+        /// 杠杆
         /// </summary>
-        Social = 3,
+        Lever = 3,
         /// <summary>
-        /// 药卡
+        /// 煽动
         /// </summary>
-        Medicine = 4
+        Agitation = 4
     }
 }

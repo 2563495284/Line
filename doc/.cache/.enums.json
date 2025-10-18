@@ -1,70 +1,4 @@
 {
-    "CardType": [
-        {
-            "key": "Unknown",
-            "value": 0,
-            "annotation": "无"
-        },
-        {
-            "key": "Trade",
-            "value": 1,
-            "annotation": "交易卡"
-        },
-        {
-            "key": "Emotion",
-            "value": 2,
-            "annotation": "情绪卡"
-        },
-        {
-            "key": "Social",
-            "value": 3,
-            "annotation": "社交卡"
-        },
-        {
-            "key": "Medicine",
-            "value": 4,
-            "annotation": "药卡"
-        }
-    ],
-    "ReleaseTarget": [
-        {
-            "key": "NoTarget",
-            "value": 0,
-            "annotation": "不指定目标"
-        },
-        {
-            "key": "Stock",
-            "value": 1,
-            "annotation": "指定股票目标"
-        },
-        {
-            "key": "PlayerAttr",
-            "value": 2,
-            "annotation": "玩家属性"
-        },
-        {
-            "key": "StockAttr",
-            "value": 3,
-            "annotation": "股票属性"
-        }
-    ],
-    "EventImpactType": [
-        {
-            "key": "Neutral",
-            "value": 0,
-            "annotation": "中性"
-        },
-        {
-            "key": "Positive",
-            "value": 1,
-            "annotation": "正面"
-        },
-        {
-            "key": "Negative",
-            "value": 2,
-            "annotation": "负面"
-        }
-    ],
     "ItemType": [
         {
             "key": "None",
@@ -97,68 +31,172 @@
             "annotation": "背包"
         }
     ],
-    "StockAttrType": [
+    "PhaseType": [
         {
-            "key": "None",
+            "key": "Action",
+            "value": 1,
+            "annotation": "行动阶段"
+        },
+        {
+            "key": "Trade",
+            "value": 2,
+            "annotation": "交易阶段"
+        }
+    ],
+    "CardTag": [
+        {
+            "key": "Unknown",
             "value": 0,
             "annotation": "无"
         },
         {
-            "key": "Ore",
+            "key": "Future",
             "value": 1,
-            "annotation": "矿物 "
+            "annotation": "期货"
         },
         {
-            "key": "Torch",
+            "key": "Agreement",
             "value": 2,
-            "annotation": "火炬"
+            "annotation": "交易协议"
         },
         {
-            "key": "Device",
+            "key": "Lever",
             "value": 3,
-            "annotation": "设备"
+            "annotation": "杠杆"
         },
         {
-            "key": "Pickaxe",
+            "key": "Agitation",
             "value": 4,
-            "annotation": "镐"
-        },
-        {
-            "key": "Backpack",
-            "value": 5,
-            "annotation": "背包"
+            "annotation": "煽动"
         }
     ],
-    "AttrType": [
+    "ReleaseTarget": [
         {
-            "key": "Social",
+            "key": "NoTarget",
+            "value": 0,
+            "annotation": "不指定目标"
+        },
+        {
+            "key": "Stock",
             "value": 1,
-            "annotation": "社交"
+            "annotation": "指定股票目标"
         },
         {
-            "key": "Wisdom",
+            "key": "PlayerAttr",
             "value": 2,
-            "annotation": "智慧"
+            "annotation": "玩家属性"
         },
         {
-            "key": "Charisma",
+            "key": "StockAttr",
             "value": 3,
-            "annotation": "魅力"
+            "annotation": "股票属性"
+        }
+    ],
+    "StockAttrType": [
+        {
+            "key": "Unknown",
+            "value": 1,
+            "annotation": "未知"
         },
         {
-            "key": "Courage",
+            "key": "Up_Slow",
+            "value": 2,
+            "annotation": "爬升"
+        },
+        {
+            "key": "Up_Middle",
+            "value": 3,
+            "annotation": "高歌"
+        },
+        {
+            "key": "Up_Fast",
             "value": 4,
-            "annotation": "勇气"
+            "annotation": "火箭"
         },
         {
-            "key": "Calmness",
+            "key": "Fall_Slow",
             "value": 5,
-            "annotation": "冷静"
+            "annotation": "滑坡"
         },
         {
-            "key": "Fanaticism",
+            "key": "Fall_Middle",
             "value": 6,
-            "annotation": "狂热"
+            "annotation": "摔落"
+        },
+        {
+            "key": "Fall_Fast",
+            "value": 7,
+            "annotation": "断崖"
+        },
+        {
+            "key": "Pingpong",
+            "value": 8,
+            "annotation": "摇摆"
+        },
+        {
+            "key": "Lazy",
+            "value": 9,
+            "annotation": "懒散"
+        },
+        {
+            "key": "Sensitive",
+            "value": 10,
+            "annotation": "敏感"
+        },
+        {
+            "key": "Blindly",
+            "value": 11,
+            "annotation": "盲从"
+        },
+        {
+            "key": "Corruption",
+            "value": 12,
+            "annotation": "腐败"
+        },
+        {
+            "key": "Chaotic",
+            "value": 13,
+            "annotation": "混乱"
+        },
+        {
+            "key": "Innovative",
+            "value": 14,
+            "annotation": "创新"
+        },
+        {
+            "key": "Aging",
+            "value": 15,
+            "annotation": "衰老"
+        },
+        {
+            "key": "Growing",
+            "value": 16,
+            "annotation": "生长"
+        },
+        {
+            "key": "Expanding",
+            "value": 17,
+            "annotation": "扩张"
+        },
+        {
+            "key": "Streamline",
+            "value": 18,
+            "annotation": "精简"
+        },
+        {
+            "key": "Rectify",
+            "value": 19,
+            "annotation": "整顿"
+        },
+        {
+            "key": "Adventure",
+            "value": 20,
+            "annotation": "冒险"
+        },
+        {
+            "key": "Stagant",
+            "value": 21,
+            "annotation": "停滞"
         }
     ]
 }
