@@ -21,6 +21,11 @@ public class StockAttrData : IEffectSource, IIndexableElement<int>
         this.isExtra = isExtra;
         this.round = round;
         this.delay = delay;
+        Effects = new List<EffectBase>()
+            .Concat(EffectFactory.GetEffects(Cfg.Effect1, EDynamicSerial.StockAttrEffect))
+            .Concat(EffectFactory.GetEffects(Cfg.Effect2, EDynamicSerial.StockAttrEffect))
+            .Concat(EffectFactory.GetEffects(Cfg.Effect3, EDynamicSerial.StockAttrEffect))
+            .ToList();
     }
     public bool HasEffectReady(EStockAttrApplyTiming timing)
     {

@@ -112,7 +112,7 @@ public class StockModel : IIndexableElement<int>
             int delay = 0;
             if (subStr.Length > 1)
                 delay = int.Parse(subStr[1]);
-            subStr = subStr[0].Split("#");
+            subStr = subStr[0].Split("/");
             int round = -1;
             if (subStr.Length > 1)
                 round = int.Parse(subStr[1]);

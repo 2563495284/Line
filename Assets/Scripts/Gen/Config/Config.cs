@@ -28,7 +28,7 @@ namespace GameConfig
             var configText = ConfigUtility.DecodeBase64(textAsset.text);
             Parse(configText);
         }
-
+        
         public static void Parse(string configText)
         {
             var sections = configText.Split("#"[0]);
@@ -119,7 +119,7 @@ namespace GameConfig
             Dictionary<int, ItemConfigItem> itemConfigData = new Dictionary<int, ItemConfigItem>();
             for (int n = 0; n < lines.Length - 1; n += 8)
             {
-                var item = new ItemConfigItem(ConfigUtility.ParseInt(lines[n]), ConfigUtility.ParseInt(lines[n + 1]), lines[n + 2], ConfigUtility.ParseInt(lines[n + 3]), lines[n + 4], lines[n + 5], (ItemType)ConfigUtility.ParseInt(lines[n + 6]), ConfigUtility.ParseBool(lines[n + 7]));
+                var item = new ItemConfigItem(ConfigUtility.ParseInt(lines[n]), ConfigUtility.ParseInt(lines[n + 1]), lines[n + 2], ConfigUtility.ParseInt(lines[n + 3]), lines[n + 4], lines[n + 5], (ItemType) ConfigUtility.ParseInt(lines[n + 6]), ConfigUtility.ParseBool(lines[n + 7]));
                 itemConfigData[item.UniqueKey] = item;
             }
             ItemConfig = new BaseConfig<int, ItemConfigItem>("ItemConfig", itemConfigData);
@@ -130,7 +130,7 @@ namespace GameConfig
             Dictionary<int, CardConfigItem> cardConfigData = new Dictionary<int, CardConfigItem>();
             for (int n = 0; n < lines.Length - 1; n += 9)
             {
-                var item = new CardConfigItem(ConfigUtility.ParseInt(lines[n]), ConfigUtility.ParseInt(lines[n + 1]), lines[n + 2], lines[n + 3], lines[n + 4], (PhaseType)ConfigUtility.ParseInt(lines[n + 5]), (ReleaseTarget)ConfigUtility.ParseInt(lines[n + 6]), (CardTag)ConfigUtility.ParseInt(lines[n + 7]), ConfigUtility.ParseStringList(lines[n + 8]));
+                var item = new CardConfigItem(ConfigUtility.ParseInt(lines[n]), ConfigUtility.ParseInt(lines[n + 1]), lines[n + 2], lines[n + 3], lines[n + 4], (PhaseType) ConfigUtility.ParseInt(lines[n + 5]), (ReleaseTarget) ConfigUtility.ParseInt(lines[n + 6]), (CardTag) ConfigUtility.ParseInt(lines[n + 7]), ConfigUtility.ParseStringList(lines[n + 8]));
                 cardConfigData[item.UniqueKey] = item;
             }
             CardConfig = new BaseConfig<int, CardConfigItem>("CardConfig", cardConfigData);
@@ -141,16 +141,8 @@ namespace GameConfig
             Dictionary<StockAttrType, StockAttrConfigItem> stockAttrConfigData = new Dictionary<StockAttrType, StockAttrConfigItem>();
             for (int n = 0; n < lines.Length - 1; n += 8)
             {
-                try
-                {
-                    var item = new StockAttrConfigItem((StockAttrType)ConfigUtility.ParseInt(lines[n]), (StockAttrType)ConfigUtility.ParseInt(lines[n + 1]), lines[n + 2], lines[n + 3], lines[n + 4], ConfigUtility.ParseStringList(lines[n + 5]), ConfigUtility.ParseStringList(lines[n + 6]), ConfigUtility.ParseStringList(lines[n + 7]));
-                    stockAttrConfigData[item.UniqueKey] = item;
-
-                }
-                catch (System.Exception)
-                {
-                    Debug.Log("No");
-                }
+                var item = new StockAttrConfigItem((StockAttrType) ConfigUtility.ParseInt(lines[n]), (StockAttrType) ConfigUtility.ParseInt(lines[n + 1]), lines[n + 2], lines[n + 3], lines[n + 4], ConfigUtility.ParseStringList(lines[n + 5]), ConfigUtility.ParseStringList(lines[n + 6]), ConfigUtility.ParseStringList(lines[n + 7]));
+                stockAttrConfigData[item.UniqueKey] = item;
             }
             StockAttrConfig = new BaseConfig<StockAttrType, StockAttrConfigItem>("StockAttrConfig", stockAttrConfigData);
 

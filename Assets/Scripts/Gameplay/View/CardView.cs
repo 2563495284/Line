@@ -2,9 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
-
+enum EViewPhaseState
+{
+    None,
+    Action,
+    Trade
+}
 public class CardView : LevelView
 {
     [Header("配置")]
@@ -21,6 +27,7 @@ public class CardView : LevelView
     public Spline cardsSpline;
     private GameObject CardPrefab => LoadManager.Ins.GetRes<GameObject>(ResPath.Level.Key, ResPath.Level.CardCom);
     private bool isCardsActive = false;
+    private EViewPhaseState phaseState = EViewPhaseState.None;
     protected override void OnAwake()
     {
         base.OnAwake();
@@ -34,9 +41,15 @@ public class CardView : LevelView
         Register(EventConst.EnterShopView, HideView);
         Register(EventConst.EnterRoundView, ShowView);
         Bind<RefillCardsArgs>(EventConst.RefillCards, RefillCardsPerformer);
-        Bind<DrawCardsArgs>(EventConst.DrawCards, DrawCardsPerformer);
-        Bind<DiscardCardsArgs>(EventConst.DiscardCards, DiscardCardsPerformer);
+        Bind<DrawActionCardsArgs>(EventConst.DrawActionCards, DrawActionCardsPerformer);
+        Bind<DiscardActionCardsArgs>(EventConst.DiscardActionCards, DiscardActionCardsPerformer);
         Bind<CardEffectStartArgs>(EventConst.CardEffectStart, CardEffectStartPerformer);
+        Bind<DrawTradeCardsArgs>(EventConst.DrawTradeCards, DrawTradeCardsPerformer);
+        Bind<DiscardTradeCardsArgs>(EventConst.DiscardTradeCards, DiscardTradeCardsPerformer);
+        Bind(EventConst.EnterActionPhase, EnterActionPhasePerformer);
+        Bind(EventConst.ExitActionPhase, ExitActionPhasePerformer);
+        Bind(EventConst.EnterTradePhase, EnterTradePhasePerformer);
+        Bind(EventConst.ExitTradePhase, ExitTradePhasePerformer);
         Register<DrawActionCardsCMD>(ActiveCards, ReactionTiming.POST);
         Register<ReleaseCardCMD>(BanCards, ReactionTiming.PRE);
         Register<ReleaseCardCMD>(ActiveCards, ReactionTiming.POST);
@@ -49,9 +62,15 @@ public class CardView : LevelView
         Unregister(EventConst.EnterShopView, HideView);
         Unregister(EventConst.EnterRoundView, ShowView);
         Unbind<RefillCardsArgs>(EventConst.RefillCards, RefillCardsPerformer);
-        Unbind<DrawCardsArgs>(EventConst.DrawCards, DrawCardsPerformer);
-        Unbind<DiscardCardsArgs>(EventConst.DiscardCards, DiscardCardsPerformer);
+        Unbind<DrawActionCardsArgs>(EventConst.DrawActionCards, DrawActionCardsPerformer);
+        Unbind<DiscardActionCardsArgs>(EventConst.DiscardActionCards, DiscardActionCardsPerformer);
         Unbind<CardEffectStartArgs>(EventConst.CardEffectStart, CardEffectStartPerformer);
+        Unbind<DrawTradeCardsArgs>(EventConst.DrawTradeCards, DrawTradeCardsPerformer);
+        Unbind<DiscardTradeCardsArgs>(EventConst.DiscardTradeCards, DiscardTradeCardsPerformer);
+        Unbind(EventConst.EnterActionPhase, EnterActionPhasePerformer);
+        Unbind(EventConst.ExitActionPhase, ExitActionPhasePerformer);
+        Unbind(EventConst.EnterTradePhase, EnterTradePhasePerformer);
+        Unbind(EventConst.ExitTradePhase, ExitTradePhasePerformer);
         Unregister<DrawActionCardsCMD>();
         Unregister<ReleaseCardCMD>();
     }
@@ -74,7 +93,10 @@ public class CardView : LevelView
     }
     private void OnClickPassRound()
     {
-        ExeCMD(new FinishRoundCMD());
+        if (phaseState == EViewPhaseState.Action)
+            ExeCMD(new FinishActionCMD());
+        else if (phaseState == EViewPhaseState.Trade)
+            ExeCMD(new FinishTradeCMD());
     }
     private CardCom NewCard(int cardId)
     {
@@ -181,7 +203,21 @@ public class CardView : LevelView
         }
 
     }
-    private IEnumerator DrawCardsPerformer(DrawCardsArgs args)
+    private IEnumerator DrawActionCardsPerformer(DrawActionCardsArgs args)
+    {
+        int drawCnt = args.drawed.Count;
+        for (int i = 0; i < drawCnt; i++)
+        {
+            CardCom card = NewCard(args.drawed[i]);
+            card.ActiveHandle();
+            cards.Add(card);
+            card.transform.DOScale(1, arrangeTime).From(0);
+            ArrangeCards(arrangeTime);
+            yield return new WaitForSeconds(intervalTime);
+        }
+        yield return new WaitForSeconds(arrangeTime - intervalTime);
+    }
+    private IEnumerator DrawTradeCardsPerformer(DrawTradeCardsArgs args)
     {
         int drawCnt = args.drawed.Count;
         for (int i = 0; i < drawCnt; i++)
@@ -211,7 +247,27 @@ public class CardView : LevelView
             isValidRelease = isValid;
         }
     }
-    private IEnumerator DiscardCardsPerformer(DiscardCardsArgs args)
+    private IEnumerator EnterActionPhasePerformer()
+    {
+        phaseState = EViewPhaseState.Action;
+        yield return 0;
+    }
+    private IEnumerator ExitActionPhasePerformer()
+    {
+        phaseState = EViewPhaseState.None;
+        yield return 0;
+    }
+    private IEnumerator EnterTradePhasePerformer()
+    {
+        phaseState = EViewPhaseState.Trade;
+        yield return 0;
+    }
+    private IEnumerator ExitTradePhasePerformer()
+    {
+        phaseState = EViewPhaseState.None;
+        yield return 0;
+    }
+    private IEnumerator DiscardActionCardsPerformer(DiscardActionCardsArgs args)
     {
         List<CardCom> targets = new();
         for (int i = 0; i < args.discards.Count; i++)
@@ -230,6 +286,27 @@ public class CardView : LevelView
             yield return new WaitForSeconds(intervalTime);
         }
         yield return new WaitForSeconds(arrangeTime);
+    }
+    private IEnumerator DiscardTradeCardsPerformer(DiscardTradeCardsArgs args)
+    {
+        List<CardCom> targets = new();
+        for (int i = 0; i < args.discards.Count; i++)
+            if (cards.Has(args.discards[i]))
+                targets.Add(cards[args.discards[i]]);
+        for (int i = 0; i < targets.Count; i++)
+        {
+            CardCom card = targets[i];
+            card.transform.DOMove(drawFromPoint.position, arrangeTime).SetEase(Ease.OutQuad);
+            card.transform.DOScale(0, arrangeTime).SetEase(Ease.OutQuad).onComplete = () =>
+            {
+                RecycleCard(card);
+            };
+            cards.Remove(card);
+            ArrangeCards(arrangeTime);
+            yield return new WaitForSeconds(intervalTime);
+        }
+        yield return new WaitForSeconds(arrangeTime);
+
     }
     private IEnumerator CardEffectStartPerformer(CardEffectStartArgs args)
     {

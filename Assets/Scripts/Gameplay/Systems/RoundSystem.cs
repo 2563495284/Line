@@ -55,6 +55,7 @@ public class RoundSystem : LevelSystem
         yield return AwaitCMD(new TradePhaseCMD());//交易阶段
         yield return AwaitCMD(new RoundEndCMD());   //回合结束效果发动
         yield return AwaitCMD(new SummaryPhaseCMD());//回合清算
+        yield return AwaitCMD(new FinishRoundCMD());//通知结束回合
     }
     #endregion
 
@@ -64,19 +65,24 @@ public class RoundSystem : LevelSystem
     [TagEnumerator("ActionPhase")]
     private IEnumerator ActionPhaseProcessor(ActionPhaseCMD cmd)
     {
+        yield return Perform(EventConst.EnterActionPhase);
         yield return AwaitCMD(new DrawActionCardsCMD(5));
         finishAction = false;
         while (!finishAction)
             yield return null;
-
+        yield return AwaitCMD(new DiscardAllActionCardsCMD());
+        yield return Perform(EventConst.ExitActionPhase);
     }
     [TagEnumerator("TradePhase")]
     private IEnumerator TradePhaseProcessor(TradePhaseCMD cmd)
     {
+        yield return Perform(EventConst.EnterTradePhase);
+        yield return AwaitCMD(new DrawTradeCardsCMD(3));
         finishTrade = false;
         while (!finishTrade)
             yield return null;
-
+        yield return AwaitCMD(new DiscardAllTradeCardsCMD());
+        yield return Perform(EventConst.ExitTradePhase);
     }
     [TagEnumerator("SummaryPhase")]
     private IEnumerator SummaryPhaseProcessor(SummaryPhaseCMD cmd)

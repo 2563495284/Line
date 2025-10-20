@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CardSystem : LevelSystem
 {
@@ -8,23 +9,45 @@ public class CardSystem : LevelSystem
     {
         base.OnEnter();
         BindProcessor<DrawActionCardsCMD>(DrawActionCardsProcessor);
-        BindProcessor<DiscardAllCardsCMD>(DiscardAllCardsProcessor);
+        BindProcessor<DiscardAllActionCardsCMD>(DiscardAllActionCardsProcessor);
         BindProcessor<ReleaseCardCMD>(ReleaseCardProcessor);
+        BindProcessor<DrawTradeCardsCMD>(DrawTradeCardsProcessor);
+        BindProcessor<DiscardAllTradeCardsCMD>(DiscardAllTradeCardsProcessor);
     }
     public override void OnExit()
     {
         base.OnExit();
         UnbindProcessor<DrawActionCardsCMD>();
-        UnbindProcessor<DiscardAllCardsCMD>();
+        UnbindProcessor<DiscardAllActionCardsCMD>();
         UnbindProcessor<ReleaseCardCMD>();
+        UnbindProcessor<DrawTradeCardsCMD>();
+        UnbindProcessor<DiscardAllTradeCardsCMD>();
     }
-    private IEnumerator DiscardAllCardsProcessor(DiscardAllCardsCMD cmd)
+    [TagEnumerator("DiscardAllActionCards")]
+    private IEnumerator DiscardAllActionCardsProcessor(DiscardAllActionCardsCMD cmd)
     {
         List<int> hands = new(Model.handCards_action);
         Model.handCards_action.ForEach(e => Model.discardCards_action.Add(e));
         Model.handCards_action.Clear();
-        yield return Perform(EventConst.DiscardCards, new DiscardCardsArgs(hands));
+        yield return Perform(EventConst.DiscardActionCards, new DiscardActionCardsArgs(hands));
     }
+    [TagEnumerator("DrawTradeCards")]
+    private IEnumerator DrawTradeCardsProcessor(DrawTradeCardsCMD cmd)
+    {
+        int num = Math.Min(cmd.num, Model.drawCards_trade.Count);
+        List<int> res = Model.drawCards_trade.WeiRandMul(Model.drawCards_trade.Select(e => 1f).ToList(), num, false);
+        Model.handCards_trade = Model.handCards_trade.Concat(res).ToList();
+        yield return Perform(EventConst.DrawTradeCards, new DrawTradeCardsArgs(res));
+    }
+    [TagEnumerator("DiscardTradeCards")]
+    private IEnumerator DiscardAllTradeCardsProcessor(DiscardAllTradeCardsCMD cmd)
+    {
+        List<int> hands = new(Model.handCards_trade);
+        Model.handCards_trade.Clear();
+        yield return Perform(EventConst.DiscardTradeCards, new DiscardTradeCardsArgs(hands));
+
+    }
+    [TagEnumerator("DrawActionCards")]
     private IEnumerator DrawActionCardsProcessor(DrawActionCardsCMD cmd)
     {
         int num = cmd.num;
@@ -51,15 +74,16 @@ public class CardSystem : LevelSystem
                 realDraw--;
             }
 
-            yield return Perform(EventConst.DrawCards, new DrawCardsArgs(drawed));
+            yield return Perform(EventConst.DrawActionCards, new DrawActionCardsArgs(drawed));
         }
     }
+    [TagEnumerator("ReleaseCard")]
     private IEnumerator ReleaseCardProcessor(ReleaseCardCMD cmd)
     {
         //TODO 卡牌效果
         Model.handCards_action.Remove(cmd.cardId);
         Model.discardCards_action.Add(cmd.cardId);
         yield return Perform(EventConst.CardEffectStart, new CardEffectStartArgs(cmd.cardId));
-        yield return Perform(EventConst.DiscardCards, new DiscardCardsArgs(new List<int>() { cmd.cardId }));
+        yield return Perform(EventConst.DiscardActionCards, new DiscardActionCardsArgs(new List<int>() { cmd.cardId }));
     }
 }

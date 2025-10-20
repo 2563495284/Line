@@ -15,9 +15,11 @@ public static class EventConst
         PopupTips = "PopupTips",
         GameLose = "GameLose",
         GameWin = "GameWin",
-        DrawCards = "DrawCards",
+        DrawActionCards = "DrawActionCards",
+        DrawTradeCards = "DrawTradeCards",
         RefillCards = "RefillCards",
-        DiscardCards = "DiscardCards",
+        DiscardActionCards = "DiscardActionCards",
+        DiscardTradeCards = "DiscardTradeCards",
         CardEffectStart = "CardEffectStart",
 
         //TODO
@@ -30,7 +32,11 @@ public static class EventConst
         StockPerformanceAdded = "StockPerformanceAdded",
         StockPerformanceMuled = "StockPerformanceMuled",
         StockAttrGrown = "StockAttrGrown",
-        TransferStockFactor = "TransferStockFactor";
+        TransferStockFactor = "TransferStockFactor",
+        EnterActionPhase = "EnterActionPhase",
+        ExitActionPhase = "ExitActionPhase",
+        EnterTradePhase = "EnterTradePhase",
+        ExitTradePhase = "ExitTradePhase";
 }
 public class TransferStockFactorArgs
 {
@@ -130,15 +136,26 @@ public class RefillCardsArgs
     public List<int> cardIds = new();
     public RefillCardsArgs(List<int> cardIds) => this.cardIds = cardIds;
 }
-public class DrawCardsArgs
+public class DrawActionCardsArgs
 {
     public List<int> drawed = new();
-    public DrawCardsArgs(List<int> drawed) => this.drawed = drawed;
+    public DrawActionCardsArgs(List<int> drawed) => this.drawed = drawed;
 }
-public class DiscardCardsArgs
+public class DrawTradeCardsArgs
+{
+    public List<int> drawed = new();
+    public DrawTradeCardsArgs(List<int> drawed) => this.drawed = drawed;
+}
+public class DiscardActionCardsArgs
 {
     public List<int> discards = new();
-    public DiscardCardsArgs(List<int> discards) => this.discards = discards;
+    public DiscardActionCardsArgs(List<int> discards) => this.discards = discards;
+}
+public class DiscardTradeCardsArgs
+{
+    public List<int> discards = new();
+    public DiscardTradeCardsArgs(List<int> discards) => this.discards = discards;
+
 }
 public class CardEffectStartArgs
 {

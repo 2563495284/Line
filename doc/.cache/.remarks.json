@@ -37,7 +37,7 @@
     },
     "StockAttrType": {
         "filePath": "..\\docs\\股票配置.xlsx",
-        "fileMD5": "623e60d51491c3f837cef1f20edf52cc",
+        "fileMD5": "e9683e68c1dff06111023009280a2da1",
         "generate": [
             1,
             2
@@ -641,7 +641,7 @@
             }
         },
         "filePath": "..\\docs\\股票配置.xlsx",
-        "fileMD5": "623e60d51491c3f837cef1f20edf52cc",
+        "fileMD5": "e9683e68c1dff06111023009280a2da1",
         "sheetType": "Horizontal",
         "isSingleMainKey": true,
         "mainKeySubs": [
@@ -684,7 +684,7 @@
             }
         },
         "filePath": "..\\docs\\股票配置.xlsx",
-        "fileMD5": "623e60d51491c3f837cef1f20edf52cc",
+        "fileMD5": "e9683e68c1dff06111023009280a2da1",
         "sheetType": "Horizontal",
         "isSingleMainKey": true,
         "mainKeySubs": [
@@ -726,7 +726,7 @@
             }
         },
         "filePath": "..\\docs\\股票配置.xlsx",
-        "fileMD5": "623e60d51491c3f837cef1f20edf52cc",
+        "fileMD5": "e9683e68c1dff06111023009280a2da1",
         "sheetType": "Horizontal",
         "isSingleMainKey": true,
         "mainKeySubs": [

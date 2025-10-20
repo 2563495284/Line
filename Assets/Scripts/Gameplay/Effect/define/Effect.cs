@@ -60,19 +60,26 @@ public static class EffectFactory
                 else
                     probability = val;
             }
-            subStr = subStr[0].Split('#');
+            subStr = subStr[0].Split('/');
             string key = subStr[0];
             string[] args = subStr.Skip(1).ToArray();
-            Type type = LoadManager.Ins.GetDynamicClass(EDynamicSerial.CardEffect, prefix + key);
-            EffectBase effect = Activator.CreateInstance(type, key, (object)args, probability, growId) as EffectBase;
-
-            if (isInGrp)
+            Type type = LoadManager.Ins.GetDynamicClass(serial, prefix + key);
+            try
             {
-                grp.Add(effect);
-                wei.Add(grpWeight);
+                EffectBase effect = Activator.CreateInstance(type, key, (object)args, probability, growId) as EffectBase;
+                if (isInGrp)
+                {
+                    grp.Add(effect);
+                    wei.Add(grpWeight);
+                }
+                else
+                    res.Add(effect);
+
             }
-            else
-                res.Add(effect);
+            catch (System.Exception)
+            {
+                Debug.Log("No");
+            }
         }
         if (grp.Count > 0)
             res.Add(new EffectGroup(grp, wei));

@@ -117,7 +117,6 @@ public class StockSystem : LevelSystem
     }
     private int GetStockStrategy(int lastStrategyId, StockConfig cfg)
     {
-        int lastStrategySerial = Config.StockStrategyConfig.Get(lastStrategyId).SerialId;
         int maxRound = cfg.maxRoundInStrategy;
         List<float> wei = new() { cfg.neutralStrategyWeight, cfg.positiveStrategyWeight, cfg.negativeStrategyWeight };
         List<int> sign = new() { 0, 1, 2 };

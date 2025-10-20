@@ -71,10 +71,8 @@ public class LevelController : ControllBase
         while (true)
         {
             yield return AwaitCMD(new RouteRunCMD());
-            yield return AwaitCMD(new RoundRunCMD());
             roundResult = 0;
-            while (roundResult == ERoundResult.Waiting)
-                yield return null;
+            yield return AwaitCMD(new RoundRunCMD());
             if (roundResult == ERoundResult.Backrupt)
             {
                 Notify(EventConst.GameLose);

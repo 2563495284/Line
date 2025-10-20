@@ -92,6 +92,7 @@
     <Compile Include="Assets\Scripts\Gameplay\View\viewCom\ClickModal.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\viewCom\StockAttrList.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\LevelFlowCMDS\RouteRunCMD.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\DrawActionCardsCMD.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Systems\InvestorSystem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Define\LevelModel.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\EffectCMDS\StockAttr\ScalePerformanceCMD.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Assets\Scripts\Gen\Config\TerminalConfigItem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\viewCom\DiceProp.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\RoundEndCMD.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\DiscardAllTradeCardsCMD.cs" />
     <Compile Include="Assets\Scripts\LayoutMark.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\ShopView.cs" />
     <Compile Include="Assets\Scripts\Modules\DList.cs" />
@@ -141,7 +143,6 @@
     <Compile Include="Assets\SREditor\Package\Scripts\SRNameAttribute.cs" />
     <Compile Include="Assets\Scripts\Gen\Config\ItemType.cs" />
     <Compile Include="Assets\Scripts\Gen\Config\ItemConfigItem.cs" />
-    <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\DrawCardsCMD.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\LevelFlowCMDS\StartLevelCMD.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Systems\StockSystem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\FeedbackCMDS\FinishTradeCMD.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Assets\Scripts\Gameplay\Effect\define\StockAttrEffect.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Define\StockAttrData.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\EffectCMDS\StockAttr\TransferStockFactorCMD.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\DrawTradeCardsCMD.cs" />
     <Compile Include="Assets\Scripts\Gen\Config\BackpackConfigItem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\GameConsole\ConsoleConfig.cs" />
     <Compile Include="Assets\Scripts\CameraSetup.cs" />
@@ -164,6 +166,7 @@
     <Compile Include="Assets\Scripts\Gameplay\Systems\ShopSystem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\viewCom\PlayerAttrItem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\View\SidenoteView.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\DiscardAllActionCardsCMD.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\ApplyIndustryPowerCMD.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Define\CardModel.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Effect\StockAttrEffects\SEffect_Transfer.cs" />
@@ -183,7 +186,6 @@
     <Compile Include="Assets\Scripts\Managers\UIManager.cs" />
     <Compile Include="Assets\Scripts\Const\ResPath.cs" />
     <Compile Include="Assets\Scripts\FontTest.cs" />
-    <Compile Include="Assets\Scripts\Gameplay\Commands\RoundCMDS\DiscardAllCardsCMD.cs" />
     <Compile Include="Assets\Scripts\Gen\Config\PhaseType.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Systems\IndustrySystem.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Systems\RoundSystem.cs" />
