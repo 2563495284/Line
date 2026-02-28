@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Data/CharacterData")]
-public class CharacterData : ScriptableObject
+public class CharacterGameData : ScriptableObject
 {
     [field: SerializeField] public List<CardData> Deck { get; private set; }
     [field: SerializeField] public List<CardData> fakeDeck { get; private set; }

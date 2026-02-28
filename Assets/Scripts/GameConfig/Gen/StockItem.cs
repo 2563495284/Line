@@ -11,21 +11,21 @@ using Luban;
 using SimpleJSON;
 
 
-namespace cfg.demo
+namespace cfg
 {
-public sealed partial class item : Luban.BeanBase
+public sealed partial class StockItem : Luban.BeanBase
 {
-    public item(JSONNode _buf) 
+    public StockItem(JSONNode _buf) 
     {
         { if(!_buf["id"].IsNumber) { throw new SerializationException(); }  Id = _buf["id"]; }
         { if(!_buf["name"].IsString) { throw new SerializationException(); }  Name = _buf["name"]; }
         { if(!_buf["desc"].IsString) { throw new SerializationException(); }  Desc = _buf["desc"]; }
-        { if(!_buf["count"].IsNumber) { throw new SerializationException(); }  Count = _buf["count"]; }
+        { if(!_buf["stockItemQuality"].IsNumber) { throw new SerializationException(); }  StockItemQuality = (StockItemQuality)_buf["stockItemQuality"].AsInt; }
     }
 
-    public static item Deserializeitem(JSONNode _buf)
+    public static StockItem DeserializeStockItem(JSONNode _buf)
     {
-        return new demo.item(_buf);
+        return new StockItem(_buf);
     }
 
     /// <summary>
@@ -40,12 +40,9 @@ public sealed partial class item : Luban.BeanBase
     /// 描述
     /// </summary>
     public readonly string Desc;
-    /// <summary>
-    /// 个数
-    /// </summary>
-    public readonly int Count;
+    public readonly StockItemQuality StockItemQuality;
    
-    public const int __ID__ = 750578750;
+    public const int __ID__ = -1023243479;
     public override int GetTypeId() => __ID__;
 
     public  void ResolveRef(Tables tables)
@@ -58,7 +55,7 @@ public sealed partial class item : Luban.BeanBase
         + "id:" + Id + ","
         + "name:" + Name + ","
         + "desc:" + Desc + ","
-        + "count:" + Count + ","
+        + "stockItemQuality:" + StockItemQuality + ","
         + "}";
     }
 }

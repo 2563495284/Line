@@ -27,7 +27,7 @@ public class PlayerAttributeSystem : Singleton<PlayerAttributeSystem>
         base.Awake();
         InitializeAttributes();
     }
-    public void Setup(PlayerData playerData)
+    public void Setup(PlayerGameData playerData)
     {
         playerView.Setup(playerData);
         ChangePricePersentDictionaryWhenBuy = playerData.changePricePersentDictionaryWhenBuy.ToDictionary();

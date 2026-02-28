@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MatchSetupSystem : Singleton<MatchSetupSystem>
 {
-    [SerializeField] private PlayerData playerData;
+    [SerializeField] private PlayerGameData playerData;
     [SerializeField] private PerkData perkData;
     [SerializeField] private List<NPCData> npcDataList;
 
@@ -29,7 +29,7 @@ public class MatchSetupSystem : Singleton<MatchSetupSystem>
     /// <summary>
     /// 获取玩家数据（供重启时使用）
     /// </summary>
-    public PlayerData GetPlayerData()
+    public PlayerGameData GetPlayerData()
     {
         return playerData;
     }

@@ -68,7 +68,7 @@ public class PlayerView : CharacterView
             StopCoroutine(cooldownCoroutine);
         }
     }
-    public void Setup(PlayerData playerData)
+    public void Setup(PlayerGameData playerData)
     {
         base.Setup(playerData);
         doTweenScaleDuration = playerData.doTweenScaleDuration;

@@ -7,7 +7,7 @@ public enum ECharacterStrategyType
     conservative,
 }
 [CreateAssetMenu(menuName = "Data/NPC")]
-public class NPCData : CharacterData
+public class NPCData : CharacterGameData
 {
     [field: SerializeField] public int Id { get; private set; }
     [field: SerializeField] public string Name { get; private set; }

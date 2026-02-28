@@ -30,7 +30,7 @@ public abstract class CharacterView : MonoBehaviour
     /// 初始化NPC的卡牌系统
     /// </summary>
     /// <param name="npcData">NPC数据</param>
-    public void Setup(CharacterData characterData)
+    public void Setup(CharacterGameData characterData)
     {
         // 复制卡牌数据到牌堆
         foreach (CardData cardData in characterData.Deck)

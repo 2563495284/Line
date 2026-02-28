@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "棉花",
+    "desc": "棉花",
+    "stockItemQuality": 1
+  },
+  {
+    "id": 2,
+    "name": "石油",
+    "desc": "石油",
+    "stockItemQuality": 2
+  },
+  {
+    "id": 3,
+    "name": "钢铁",
+    "desc": "钢铁",
+    "stockItemQuality": 3
+  }
+]
